@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { supabase } from '../../lib/supabase'
 
 export default function Registro() {
   const [formulario, setFormulario] = useState({
@@ -10,14 +11,45 @@ export default function Registro() {
     visitas: '',
     recompensa: ''
   })
+  const [enviando, setEnviando] = useState(false)
+  const [exito, setExito] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert('¡Negocio registrado! Próximamente conectamos esto a la base de datos.')
+    setEnviando(true)
+
+    const { error } = await supabase
+      .from('negocios')
+      .insert([{
+        nombre: formulario.nombre,
+        tipo: formulario.tipo,
+        correo: formulario.correo,
+        visitas: parseInt(formulario.visitas),
+        recompensas: formulario.recompensa
+      }])
+
+    setEnviando(false)
+
+    if (error) {
+      alert('Hubo un error: ' + error.message)
+    } else {
+      setExito(true)
+    }
+  }
+
+  if (exito) {
+    return (
+      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <h1 className="text-3xl font-bold text-white mb-4">¡Listo! 🎉</h1>
+          <p className="text-gray-400 text-lg">Tu negocio fue registrado exitosamente.</p>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -95,9 +127,10 @@ export default function Registro() {
           </div>
           <button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition mt-2"
+            disabled={enviando}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition mt-2 disabled:opacity-50"
           >
-            Crear mi programa de lealtad
+            {enviando ? 'Guardando...' : 'Crear mi programa de lealtad'}
           </button>
         </form>
       </div>
