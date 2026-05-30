@@ -59,9 +59,9 @@ function VisitaContent() {
 
     setEnviando(false)
     setResultado({
-      visitas: cliente.visitas,
-      meta: negocio.visitas,
-      recompensa: negocio.recompensas
+      visitas: cliente?.visitas ?? 0,
+      meta: negocio?.visitas ?? 0,
+      recompensa: negocio?.recompensas ?? ''
     })
   }
 
@@ -69,8 +69,8 @@ function VisitaContent() {
     return (
       <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
         <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold text-white mb-4">⏳ Ya registraste hoy</h1>
-          <p className="text-gray-400">Solo puedes registrar una visita por día. Vuelve mañana.</p>
+          <h1 className="text-4xl font-bold text-white mb-4">Ya registraste hoy</h1>
+          <p className="text-gray-400">Solo puedes registrar una visita por dia. Vuelve manana.</p>
         </div>
       </main>
     )
@@ -85,13 +85,13 @@ function VisitaContent() {
         <div className="text-center max-w-md">
           {completo ? (
             <>
-              <h1 className="text-4xl font-bold text-white mb-4">🎉 Felicidades</h1>
+              <h1 className="text-4xl font-bold text-white mb-4">Felicidades</h1>
               <p className="text-xl text-indigo-400 mb-4">Ganaste: {resultado.recompensa}</p>
               <p className="text-gray-400">Muestra esta pantalla en caja para reclamar tu recompensa.</p>
             </>
           ) : (
             <>
-              <h1 className="text-4xl font-bold text-white mb-4">✅ Visita registrada</h1>
+              <h1 className="text-4xl font-bold text-white mb-4">Visita registrada</h1>
               <p className="text-2xl text-indigo-400 mb-2">{resultado.visitas} de {resultado.meta} visitas</p>
               <p className="text-gray-400">Te faltan {faltan} visita{faltan !== 1 ? 's' : ''} para obtener: {resultado.recompensa}</p>
             </>
