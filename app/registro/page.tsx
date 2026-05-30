@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
 export default function Registro() {
+  const router = useRouter()
   const [formulario, setFormulario] = useState({
     nombre: '',
     tipo: '',
@@ -12,7 +14,6 @@ export default function Registro() {
     recompensa: ''
   })
   const [enviando, setEnviando] = useState(false)
-  const [exito, setExito] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value })
@@ -22,7 +23,7 @@ export default function Registro() {
     e.preventDefault()
     setEnviando(true)
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('negocios')
       .insert([{
         nombre: formulario.nombre,
@@ -31,25 +32,16 @@ export default function Registro() {
         visitas: parseInt(formulario.visitas),
         recompensas: formulario.recompensa
       }])
+      .select()
 
     setEnviando(false)
 
     if (error) {
       alert('Hubo un error: ' + error.message)
     } else {
-      setExito(true)
+      const negocio = data[0]
+      router.push(`/dashboard?id=${negocio.id}&nombre=${encodeURIComponent(negocio.nombre)}`)
     }
-  }
-
-  if (exito) {
-    return (
-      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-        <div className="text-center max-w-md">
-          <h1 className="text-3xl font-bold text-white mb-4">¡Listo! 🎉</h1>
-          <p className="text-gray-400 text-lg">Tu negocio fue registrado exitosamente.</p>
-        </div>
-      </main>
-    )
   }
 
   return (
@@ -102,7 +94,7 @@ export default function Registro() {
             />
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">¿Cuántas visitas para obtener recompensa?</label>
+            <label className="text-gray-300 text-sm mb-1 block">Cuantas visitas para obtener recompensa</label>
             <input
               type="number"
               name="visitas"
@@ -115,13 +107,13 @@ export default function Registro() {
             />
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">¿Cuál es la recompensa?</label>
+            <label className="text-gray-300 text-sm mb-1 block">Cual es la recompensa</label>
             <input
               type="text"
               name="recompensa"
               value={formulario.recompensa}
               onChange={handleChange}
-              placeholder="Ej. Café gratis"
+              placeholder="Ej. Cafe gratis"
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
