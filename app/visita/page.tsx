@@ -12,6 +12,7 @@ function VisitaContent() {
   const [celular, setCelular] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [resultado, setResultado] = useState<null | { visitas: number, meta: number, recompensa: string }>(null)
+  const [bloqueado, setBloqueado] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,19 +31,30 @@ function VisitaContent() {
       .eq('negocio_id', negocioId)
       .single()
 
-    if (!cliente) {
+    if (cliente) {
+      const ultimaVisita = new Date(cliente.ultima_visita)
+      const ahora = new Date()
+      const diferenciaHoras = (ahora.getTime() - ultimaVisita.getTime()) / (1000 * 60 * 60)
+
+      if (diferenciaHoras < 24) {
+        setEnviando(false)
+        setBloqueado(true)
+        return
+      }
+
+      await supabase
+        .from('clientes')
+        .update({ visitas: cliente.visitas + 1, ultima_visita: new Date().toISOString() })
+        .eq('id', cliente.id)
+      cliente.visitas = cliente.visitas + 1
+
+    } else {
       const { data: nuevoCliente } = await supabase
         .from('clientes')
-        .insert([{ celular, negocio_id: negocioId, visitas: 1 }])
+        .insert([{ celular, negocio_id: negocioId, visitas: 1, ultima_visita: new Date().toISOString() }])
         .select()
         .single()
       cliente = nuevoCliente
-    } else {
-      await supabase
-        .from('clientes')
-        .update({ visitas: cliente.visitas + 1 })
-        .eq('id', cliente.id)
-      cliente.visitas = cliente.visitas + 1
     }
 
     setEnviando(false)
@@ -51,6 +63,17 @@ function VisitaContent() {
       meta: negocio.visitas,
       recompensa: negocio.recompensas
     })
+  }
+
+  if (bloqueado) {
+    return (
+      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <h1 className="text-4xl font-bold text-white mb-4">⏳ Ya registraste hoy</h1>
+          <p className="text-gray-400">Solo puedes registrar una visita por día. Vuelve mañana.</p>
+        </div>
+      </main>
+    )
   }
 
   if (resultado) {
@@ -85,7 +108,7 @@ function VisitaContent() {
           Registra tu visita
         </h1>
         <p className="text-gray-400 mb-8">
-          Ingresa tu número de celular para acumular puntos
+          Ingresa tu numero de celular para acumular puntos
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
