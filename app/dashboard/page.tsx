@@ -1,12 +1,13 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import { Suspense, useEffect, useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 
 function DashboardContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const negocioId = searchParams.get('id')
   const negocioNombre = searchParams.get('nombre')
   const qrRef = useRef<HTMLDivElement>(null)
@@ -63,7 +64,11 @@ function DashboardContent() {
     if (negocioId) cargarDatos()
   }, [negocioId])
 
-  const urlCliente = `https://loyaltyapp-4knq.vercel.app/visita?negocio=${negocioId}`
+  const urlCliente = 'https://loyaltyapp-4knq.vercel.app/visita?negocio=' + negocioId
+
+  const irAlEditor = () => {
+    router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocioNombre || ''))
+  }
 
   const descargarQR = () => {
     const svg = qrRef.current?.querySelector('svg')
@@ -90,7 +95,7 @@ function DashboardContent() {
       URL.revokeObjectURL(url)
 
       const link = document.createElement('a')
-      link.download = `QR-${negocioNombre}.png`
+      link.download = 'QR-' + negocioNombre + '.png'
       link.href = canvas.toDataURL('image/png')
       link.click()
     }
@@ -140,9 +145,15 @@ function DashboardContent() {
               </p>
               <button
                 onClick={descargarQR}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+                className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
               >
                 Descargar QR en PNG
+              </button>
+              <button
+                onClick={irAlEditor}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+              >
+                Personalizar QR
               </button>
             </div>
           </div>
@@ -165,7 +176,7 @@ function DashboardContent() {
                     <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-indigo-500 h-2 rounded-full"
-                        style={{ width: `${progreso}%` }}
+                        style={{ width: progreso + '%' }}
                       />
                     </div>
                   </div>
