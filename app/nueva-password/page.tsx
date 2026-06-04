@@ -15,12 +15,31 @@ export default function NuevaPassword() {
   const [listo, setListo] = useState(false)
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setListo(true)
+    const verificarToken = async () => {
+      const params = new URLSearchParams(window.location.search)
+      const tokenHash = params.get('token_hash')
+      const type = params.get('type')
+
+      if (tokenHash && type === 'recovery') {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: 'recovery'
+        })
+        if (error) {
+          setError('Este enlace expiro. Solicita uno nuevo.')
+        } else {
+          setListo(true)
+        }
+      } else {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+          if (event === 'PASSWORD_RECOVERY') {
+            setListo(true)
+          }
+        })
+        return () => subscription.unsubscribe()
       }
-    })
-    return () => subscription.unsubscribe()
+    }
+    verificarToken()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,16 +57,30 @@ export default function NuevaPassword() {
     }
 
     setEnviando(true)
-
     const { error } = await supabase.auth.updateUser({ password })
-
     setEnviando(false)
 
     if (error) {
-      setError('Hubo un error. El enlace puede haber expirado. Solicita uno nuevo.')
+      setError('Hubo un error. Intenta de nuevo.')
     } else {
       router.push('/login')
     }
+  }
+
+  if (error && !listo) {
+    return (
+      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <p className="text-6xl mb-6">!</p>
+          <h1 className="text-3xl font-bold text-white mb-4">Enlace expirado</h1>
+          <p className="text-gray-400 mb-8">{error}</p>
+          
+          <a href="/recuperar" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition">
+            Solicitar nuevo enlace
+          </a>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -75,7 +108,7 @@ export default function NuevaPassword() {
                 onClick={() => setVerPassword(!verPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
               >
-                {verPassword ? '🙈' : '👁️'}
+                {verPassword ? 'Ver' : 'Ocultar'}
               </button>
             </div>
           </div>
@@ -94,14 +127,14 @@ export default function NuevaPassword() {
                 onClick={() => setVerConfirm(!verConfirm)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
               >
-                {verConfirm ? '🙈' : '👁️'}
+                {verConfirm ? 'Ver' : 'Ocultar'}
               </button>
             </div>
           </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
             type="submit"
-            disabled={enviando || !password || !confirmPassword}
+            disabled={enviando || !password || !confirmPassword || !listo}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50"
           >
             {enviando ? 'Guardando...' : 'Guardar nueva contrasena'}
