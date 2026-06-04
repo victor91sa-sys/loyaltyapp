@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 import QRCodeStyling from 'qr-code-styling'
 
@@ -16,6 +16,7 @@ const FUENTES = [
 
 function EditorQRContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const negocioId = searchParams.get('id')
   const negocioNombre = searchParams.get('nombre')
 
@@ -257,8 +258,18 @@ function EditorQRContent() {
     <main className="min-h-screen bg-gray-950 p-8">
       <div className="max-w-4xl mx-auto">
 
-        <h1 className="text-3xl font-bold text-white mb-2">Editor de cartel</h1>
-        <p className="text-gray-400 mb-8">Personaliza el cartel de {negocioNombre}</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-1">Editor de cartel</h1>
+            <p className="text-gray-400">Personaliza el cartel de {negocioNombre}</p>
+          </div>
+          <button
+            onClick={() => router.back()}
+            className="border border-gray-600 hover:border-gray-400 text-gray-300 font-semibold py-2 px-5 rounded-xl transition text-sm"
+          >
+            Volver al dashboard
+          </button>
+        </div>
 
         <div className="grid grid-cols-2 gap-8">
 
@@ -384,6 +395,13 @@ function EditorQRContent() {
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50"
             >
               {descargando ? 'Generando cartel...' : 'Descargar cartel en PNG'}
+            </button>
+
+            <button
+              onClick={() => router.back()}
+              className="border border-gray-600 hover:border-gray-400 text-gray-300 font-semibold py-3 px-6 rounded-xl transition text-center"
+            >
+              Volver al dashboard
             </button>
 
           </div>
