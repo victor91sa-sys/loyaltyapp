@@ -64,7 +64,7 @@ function DashboardContent() {
     if (negocioId) cargarDatos()
   }, [negocioId])
 
-  const urlCliente = 'https://loyaltyapp-4knq.vercel.app/visita?negocio=' + negocioId
+  const urlCliente = 'https://huellaclub.app/visita?negocio=' + negocioId
 
   const irAlEditor = () => {
     router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocioNombre || ''))
