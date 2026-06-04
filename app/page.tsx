@@ -1,53 +1,26 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../lib/supabase'
 
 export default function Home() {
   const router = useRouter()
-  const [enlaceExpirado, setEnlaceExpirado] = useState(false)
 
   useEffect(() => {
     const hash = window.location.hash
-    const esEnlaceAuth = hash.includes('access_token') || hash.includes('type=')
-
-    if (esEnlaceAuth) {
+    if (hash.includes('access_token') || hash.includes('type=')) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
           router.push('/nueva-password')
         } else if (event === 'SIGNED_IN' && hash.includes('type=signup')) {
           router.push('/bienvenida')
-        } else if (esEnlaceAuth && !session) {
-          setEnlaceExpirado(true)
         }
       })
       return () => subscription.unsubscribe()
     }
   }, [])
-
-  if (enlaceExpirado) {
-    return (
-      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-        <div className="text-center max-w-md">
-          <div className="text-6xl mb-6">⏰</div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Enlace expirado
-          </h1>
-          <p className="text-gray-400 mb-8">
-            Este enlace ya fue usado o expiro. Solicita uno nuevo.
-          </p>
-          <Link
-            href="/recuperar"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition"
-          >
-            Solicitar nuevo enlace
-          </Link>
-        </div>
-      </main>
-    )
-  }
 
   return (
     <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
@@ -72,6 +45,12 @@ export default function Home() {
             Iniciar sesion
           </Link>
         </div>
+        <p className="text-gray-600 text-sm mt-8">
+          Tu enlace expiro?{' '}
+          <Link href="/recuperar" className="text-indigo-400 hover:text-indigo-300">
+            Solicita uno nuevo
+          </Link>
+        </p>
       </div>
     </main>
   )
