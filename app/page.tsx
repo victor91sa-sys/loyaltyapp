@@ -5,7 +5,7 @@ export default function Home() {
     <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
       <div className="text-center max-w-md">
         <h1 className="text-4xl font-bold text-white mb-4">
-          LoyaltyApp
+          HuellaClub
         </h1>
         <p className="text-gray-400 text-lg mb-8">
           Programa de lealtad digital para negocios locales
@@ -17,9 +17,12 @@ export default function Home() {
           >
             Registrar mi negocio
           </Link>
-          <button className="border border-gray-600 hover:border-gray-400 text-gray-300 font-semibold py-3 px-6 rounded-xl transition">
-            Iniciar sesión
-          </button>
+          <Link
+            href="/login"
+            className="w-full border border-gray-600 hover:border-gray-400 text-gray-300 font-semibold py-3 px-6 rounded-xl transition text-center block"
+          >
+            Iniciar sesion
+          </Link>
         </div>
       </div>
     </main>
