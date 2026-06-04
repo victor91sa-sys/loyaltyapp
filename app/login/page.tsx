@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState('')
+  const [verPassword, setVerPassword] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -63,13 +64,22 @@ export default function Login() {
           </div>
           <div>
             <label className="text-gray-300 text-sm mb-1 block">Contrasena</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Tu contrasena"
-              className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <div className="relative">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Tu contrasena"
+                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setVerPassword(!verPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+              >
+                {verPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           {error && (
             <p className="text-red-400 text-sm">{error}</p>

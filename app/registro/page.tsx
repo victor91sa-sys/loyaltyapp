@@ -15,6 +15,7 @@ export default function Registro() {
     recompensa: ''
   })
   const [enviando, setEnviando] = useState(false)
+  const [verPassword, setVerPassword] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value })
@@ -108,14 +109,23 @@ export default function Registro() {
           </div>
           <div>
             <label className="text-gray-300 text-sm mb-1 block">Contrasena</label>
-            <input
-              type="password"
-              name="password"
-              value={formulario.password}
-              onChange={handleChange}
-              placeholder="Minimo 6 caracteres"
-              className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <div className="relative">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                name="password"
+                value={formulario.password}
+                onChange={handleChange}
+                placeholder="Minimo 6 caracteres"
+                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setVerPassword(!verPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+              >
+                {verPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           <div>
             <label className="text-gray-300 text-sm mb-1 block">Cuantas visitas para obtener recompensa</label>
