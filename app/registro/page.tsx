@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
 export default function Registro() {
-  const router = useRouter()
   const [formulario, setFormulario] = useState({
     nombre: '',
     tipo: '',
@@ -16,6 +14,7 @@ export default function Registro() {
   })
   const [enviando, setEnviando] = useState(false)
   const [verPassword, setVerPassword] = useState(false)
+  const [registrado, setRegistrado] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value })
@@ -36,7 +35,7 @@ export default function Registro() {
       return
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('negocios')
       .insert([{
         nombre: formulario.nombre,
@@ -46,16 +45,36 @@ export default function Registro() {
         recompensas: formulario.recompensa,
         user_id: authData.user?.id
       }])
-      .select()
 
     setEnviando(false)
 
     if (error) {
       alert('Hubo un error: ' + error.message)
     } else {
-      const negocio = data[0]
-      router.push('/dashboard?id=' + negocio.id + '&nombre=' + encodeURIComponent(negocio.nombre))
+      setRegistrado(true)
     }
+  }
+
+  if (registrado) {
+    return (
+      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-6">📧</div>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Revisa tu bandeja de entrada
+          </h1>
+          <p className="text-gray-400 text-lg mb-4">
+            Te mandamos un correo a <span className="text-white font-semibold">{formulario.correo}</span>
+          </p>
+          <p className="text-gray-500 text-sm mb-8">
+            Haz click en el enlace del correo para confirmar tu cuenta y empezar a usar LoyaltyApp.
+          </p>
+          <p className="text-gray-600 text-xs">
+            No encuentras el correo? Revisa tu carpeta de spam.
+          </p>
+        </div>
+      </main>
+    )
   }
 
   return (
