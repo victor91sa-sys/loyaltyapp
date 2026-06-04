@@ -10,6 +10,7 @@ export default function Registro() {
     nombre: '',
     tipo: '',
     correo: '',
+    password: '',
     visitas: '',
     recompensa: ''
   })
@@ -23,6 +24,17 @@ export default function Registro() {
     e.preventDefault()
     setEnviando(true)
 
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: formulario.correo,
+      password: formulario.password
+    })
+
+    if (authError) {
+      alert('Error al crear cuenta: ' + authError.message)
+      setEnviando(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from('negocios')
       .insert([{
@@ -30,7 +42,8 @@ export default function Registro() {
         tipo: formulario.tipo,
         correo: formulario.correo,
         visitas: parseInt(formulario.visitas),
-        recompensas: formulario.recompensa
+        recompensas: formulario.recompensa,
+        user_id: authData.user?.id
       }])
       .select()
 
@@ -40,7 +53,7 @@ export default function Registro() {
       alert('Hubo un error: ' + error.message)
     } else {
       const negocio = data[0]
-      router.push(`/dashboard?id=${negocio.id}&nombre=${encodeURIComponent(negocio.nombre)}`)
+      router.push('/dashboard?id=' + negocio.id + '&nombre=' + encodeURIComponent(negocio.nombre))
     }
   }
 
@@ -61,7 +74,7 @@ export default function Registro() {
               name="nombre"
               value={formulario.nombre}
               onChange={handleChange}
-              placeholder="Ej. Café La Paloma"
+              placeholder="Ej. Cafe La Paloma"
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -73,23 +86,34 @@ export default function Registro() {
               onChange={handleChange}
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">Selecciona una opción</option>
-              <option value="cafeteria">Cafetería</option>
+              <option value="">Selecciona una opcion</option>
+              <option value="cafeteria">Cafeteria</option>
               <option value="restaurante">Restaurante</option>
-              <option value="barberia">Barbería</option>
-              <option value="salon">Salón de belleza</option>
-              <option value="lavanderia">Lavandería</option>
+              <option value="barberia">Barberia</option>
+              <option value="salon">Salon de belleza</option>
+              <option value="lavanderia">Lavanderia</option>
               <option value="otro">Otro</option>
             </select>
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Correo del dueño</label>
+            <label className="text-gray-300 text-sm mb-1 block">Correo del dueno</label>
             <input
               type="email"
               name="correo"
               value={formulario.correo}
               onChange={handleChange}
               placeholder="tucorreo@email.com"
+              className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div>
+            <label className="text-gray-300 text-sm mb-1 block">Contrasena</label>
+            <input
+              type="password"
+              name="password"
+              value={formulario.password}
+              onChange={handleChange}
+              placeholder="Minimo 6 caracteres"
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -122,9 +146,15 @@ export default function Registro() {
             disabled={enviando}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition mt-2 disabled:opacity-50"
           >
-            {enviando ? 'Guardando...' : 'Crear mi programa de lealtad'}
+            {enviando ? 'Creando cuenta...' : 'Crear mi programa de lealtad'}
           </button>
         </form>
+        <p className="text-gray-500 text-sm text-center mt-6">
+          Ya tienes cuenta?{' '}
+          <a href="/login" className="text-indigo-400 hover:text-indigo-300">
+            Inicia sesion
+          </a>
+        </p>
       </div>
     </main>
   )
