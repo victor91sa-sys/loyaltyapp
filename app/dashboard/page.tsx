@@ -20,6 +20,7 @@ function DashboardContent() {
   const [clientes, setClientes] = useState<any[]>([])
   const [negocio, setNegocio] = useState<any>(null)
   const [cargando, setCargando] = useState(true)
+  const [pagando, setPagando] = useState(false)
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -103,6 +104,31 @@ function DashboardContent() {
     img.src = url
   }
 
+  const handlePago = async () => {
+    setPagando(true)
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          negocioId,
+          negocioNombre,
+          correo: negocio?.correo
+        })
+      })
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        alert('Error al procesar el pago: ' + data.error)
+      }
+    } catch (error) {
+      alert('Error al conectar con el servidor de pagos')
+    } finally {
+      setPagando(false)
+    }
+  }
+
   if (cargando) {
     return (
       <main className="min-h-screen bg-gray-950 flex items-center justify-center">
@@ -117,6 +143,20 @@ function DashboardContent() {
 
         <h1 className="text-3xl font-bold text-white mb-2">{negocioNombre}</h1>
         <p className="text-gray-400 mb-8">Panel de control</p>
+
+        <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-5 mb-8 flex items-center justify-between">
+          <div>
+            <p className="text-white font-semibold">HuellaClub Pro</p>
+            <p className="text-indigo-300 text-sm">$199 MXN / mes · Acceso completo</p>
+          </div>
+          <button
+            onClick={handlePago}
+            disabled={pagando}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
+          >
+            {pagando ? 'Cargando...' : 'Suscribirme'}
+          </button>
+        </div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-gray-900 rounded-2xl p-5 text-center">
