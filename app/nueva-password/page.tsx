@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
@@ -10,6 +10,18 @@ export default function NuevaPassword() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState('')
+  const [verPassword, setVerPassword] = useState(false)
+  const [verConfirm, setVerConfirm] = useState(false)
+  const [listo, setListo] = useState(false)
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setListo(true)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +44,7 @@ export default function NuevaPassword() {
     setEnviando(false)
 
     if (error) {
-      setError('Hubo un error. Intenta de nuevo.')
+      setError('Hubo un error. El enlace puede haber expirado. Solicita uno nuevo.')
     } else {
       router.push('/login')
     }
@@ -50,23 +62,41 @@ export default function NuevaPassword() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className="text-gray-300 text-sm mb-1 block">Nueva contrasena</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimo 6 caracteres"
-              className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <div className="relative">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimo 6 caracteres"
+                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setVerPassword(!verPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+              >
+                {verPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           <div>
             <label className="text-gray-300 text-sm mb-1 block">Confirmar contrasena</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Repite tu contrasena"
-              className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <div className="relative">
+              <input
+                type={verConfirm ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repite tu contrasena"
+                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setVerConfirm(!verConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+              >
+                {verConfirm ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
           <button
@@ -77,6 +107,11 @@ export default function NuevaPassword() {
             {enviando ? 'Guardando...' : 'Guardar nueva contrasena'}
           </button>
         </form>
+        <p className="text-gray-500 text-sm text-center mt-6">
+          <a href="/login" className="text-indigo-400 hover:text-indigo-300">
+            Volver al inicio de sesion
+          </a>
+        </p>
       </div>
     </main>
   )
