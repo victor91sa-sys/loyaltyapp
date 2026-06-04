@@ -1,6 +1,25 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { supabase } from '../lib/supabase'
 
 export default function Home() {
+  const router = useRouter()
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.push('/nueva-password')
+      }
+      if (event === 'SIGNED_IN' && window.location.hash.includes('type=signup')) {
+        router.push('/bienvenida')
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
   return (
     <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
       <div className="text-center max-w-md">
