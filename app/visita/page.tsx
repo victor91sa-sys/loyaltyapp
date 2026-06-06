@@ -20,7 +20,7 @@ function VisitaContent() {
 
     const { data: negocio } = await supabase
       .from('negocios')
-      .select('visitas, recompensas')
+      .select('visitas, recompensas, nombre')
       .eq('id', negocioId)
       .single()
 
@@ -57,11 +57,32 @@ function VisitaContent() {
       cliente = nuevoCliente
     }
 
+    const visitasActuales = cliente?.visitas ?? 0
+    const meta = negocio?.visitas ?? 0
+    const recompensa = negocio?.recompensas ?? ''
+    const negocioNombre = negocio?.nombre ?? ''
+
+    try {
+      await fetch('/api/whatsapp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          celular,
+          visitas: visitasActuales,
+          meta,
+          recompensa,
+          negocioNombre
+        })
+      })
+    } catch (error) {
+      console.log('WhatsApp no disponible')
+    }
+
     setEnviando(false)
     setResultado({
-      visitas: cliente?.visitas ?? 0,
-      meta: negocio?.visitas ?? 0,
-      recompensa: negocio?.recompensas ?? ''
+      visitas: visitasActuales,
+      meta,
+      recompensa
     })
   }
 
@@ -94,6 +115,7 @@ function VisitaContent() {
               <h1 className="text-4xl font-bold text-white mb-4">Visita registrada</h1>
               <p className="text-2xl text-indigo-400 mb-2">{resultado.visitas} de {resultado.meta} visitas</p>
               <p className="text-gray-400">Te faltan {faltan} visita{faltan !== 1 ? 's' : ''} para obtener: {resultado.recompensa}</p>
+              <p className="text-gray-500 text-sm mt-4">Te enviamos un mensaje de WhatsApp con tu progreso.</p>
             </>
           )}
         </div>
