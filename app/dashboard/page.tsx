@@ -144,19 +144,27 @@ function DashboardContent() {
         <h1 className="text-3xl font-bold text-white mb-2">{negocioNombre}</h1>
         <p className="text-gray-400 mb-8">Panel de control</p>
 
-        <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-5 mb-8 flex items-center justify-between">
-          <div>
-            <p className="text-white font-semibold">HuellaClub Pro</p>
-            <p className="text-indigo-300 text-sm">$199 MXN / mes · Acceso completo</p>
+        {!negocio?.suscripcion_activa && (
+          <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-5 mb-8 flex items-center justify-between">
+            <div>
+              <p className="text-white font-semibold">HuellaClub Pro</p>
+              <p className="text-indigo-300 text-sm">$199 MXN / mes · Acceso completo</p>
+            </div>
+            <button
+              onClick={handlePago}
+              disabled={pagando}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
+            >
+              {pagando ? 'Cargando...' : 'Suscribirme'}
+            </button>
           </div>
-          <button
-            onClick={handlePago}
-            disabled={pagando}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
-          >
-            {pagando ? 'Cargando...' : 'Suscribirme'}
-          </button>
-        </div>
+        )}
+
+        {negocio?.suscripcion_activa && (
+          <div className="bg-green-900 border border-green-600 rounded-2xl p-4 mb-8 flex items-center gap-3">
+            <p className="text-green-400 text-sm font-semibold">HuellaClub Pro activo</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-gray-900 rounded-2xl p-5 text-center">
