@@ -67,6 +67,16 @@ function DashboardContent() {
 
   const urlCliente = 'https://huellaclub.app/visita?negocio=' + negocioId
 
+  const diasRestantes = negocio ? (() => {
+    const creado = new Date(negocio.created_at)
+    const hoy = new Date()
+    const dias = Math.floor((hoy.getTime() - creado.getTime()) / (1000 * 60 * 60 * 24))
+    return Math.max(0, 30 - dias)
+  })() : 0
+
+  const trialActivo = diasRestantes > 0
+  const accesoActivo = negocio?.suscripcion_activa || trialActivo
+
   const irAlEditor = () => {
     router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocioNombre || ''))
   }
@@ -144,25 +154,39 @@ function DashboardContent() {
         <h1 className="text-3xl font-bold text-white mb-2">{negocioNombre}</h1>
         <p className="text-gray-400 mb-8">Panel de control</p>
 
-        {!negocio?.suscripcion_activa && (
+        {negocio?.suscripcion_activa && (
+          <div className="bg-green-900 border border-green-600 rounded-2xl p-4 mb-8 flex items-center gap-3">
+            <p className="text-green-400 text-sm font-semibold">HuellaClub Pro activo</p>
+          </div>
+        )}
+
+        {!negocio?.suscripcion_activa && trialActivo && (
           <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-5 mb-8 flex items-center justify-between">
             <div>
-              <p className="text-white font-semibold">HuellaClub Pro</p>
-              <p className="text-indigo-300 text-sm">$199 MXN / mes · Acceso completo</p>
+              <p className="text-white font-semibold">Periodo de prueba</p>
+              <p className="text-indigo-300 text-sm">Te quedan {diasRestantes} dias gratis</p>
             </div>
             <button
               onClick={handlePago}
               disabled={pagando}
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
             >
-              {pagando ? 'Cargando...' : 'Suscribirme'}
+              {pagando ? 'Cargando...' : 'Suscribirme $199/mes'}
             </button>
           </div>
         )}
 
-        {negocio?.suscripcion_activa && (
-          <div className="bg-green-900 border border-green-600 rounded-2xl p-4 mb-8 flex items-center gap-3">
-            <p className="text-green-400 text-sm font-semibold">HuellaClub Pro activo</p>
+        {!negocio?.suscripcion_activa && !trialActivo && (
+          <div className="bg-red-900 border border-red-600 rounded-2xl p-5 mb-8">
+            <p className="text-white font-semibold mb-1">Tu periodo de prueba termino</p>
+            <p className="text-red-300 text-sm mb-4">Suscribete para reactivar tu programa de lealtad y que tus clientes puedan seguir acumulando visitas.</p>
+            <button
+              onClick={handlePago}
+              disabled={pagando}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
+            >
+              {pagando ? 'Cargando...' : 'Reactivar por $199/mes'}
+            </button>
           </div>
         )}
 
@@ -183,28 +207,40 @@ function DashboardContent() {
 
         <div className="bg-gray-900 rounded-2xl p-6 mb-8">
           <h2 className="text-white font-semibold mb-4">Tu codigo QR</h2>
-          <div className="flex items-center gap-6">
-            <div ref={qrRef} className="bg-white p-4 rounded-xl">
-              <QRCodeSVG value={urlCliente} size={120} />
+          {accesoActivo ? (
+            <div className="flex items-center gap-6">
+              <div ref={qrRef} className="bg-white p-4 rounded-xl">
+                <QRCodeSVG value={urlCliente} size={120} />
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="text-gray-400 text-sm">
+                  Imprime este QR y colócalo en tu caja. Tus clientes lo escanean para registrar su visita.
+                </p>
+                <button
+                  onClick={descargarQR}
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+                >
+                  Descargar QR en PNG
+                </button>
+                <button
+                  onClick={irAlEditor}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+                >
+                  Personalizar QR
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-gray-400 text-sm">
-                Imprime este QR y colócalo en tu caja. Tus clientes lo escanean para registrar su visita.
-              </p>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500 text-sm mb-4">Tu QR esta desactivado. Suscribete para reactivarlo.</p>
               <button
-                onClick={descargarQR}
-                className="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+                onClick={handlePago}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition text-sm"
               >
-                Descargar QR en PNG
-              </button>
-              <button
-                onClick={irAlEditor}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
-              >
-                Personalizar QR
+                Reactivar
               </button>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="bg-gray-900 rounded-2xl p-6">
