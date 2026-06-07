@@ -51,6 +51,11 @@ export default function Home() {
             Solicita uno nuevo
           </Link>
         </p>
+        <p className="text-gray-700 text-xs mt-4">
+          <Link href="/terminos" className="hover:text-gray-500 transition">
+            Terminos y condiciones
+          </Link>
+        </p>
       </div>
     </main>
   )
