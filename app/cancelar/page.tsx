@@ -6,9 +6,23 @@ export default function Cancelar() {
   const [enviado, setEnviado] = useState(false)
   const [motivo, setMotivo] = useState('')
   const [correo, setCorreo] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setEnviando(true)
+
+    try {
+      await fetch('/api/cancelar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, motivo })
+      })
+    } catch (error) {
+      console.log('Error al enviar')
+    }
+
+    setEnviando(false)
     setEnviado(true)
   }
 
@@ -20,8 +34,8 @@ export default function Cancelar() {
           <p className="text-gray-400 mb-8">
             Recibimos tu solicitud de cancelacion. Te contactaremos en menos de 24 horas para confirmar y procesar tu cancelacion.
           </p>
-          <a href="/dashboard" className="text-indigo-400 hover:text-indigo-300 text-sm">
-            Volver al dashboard
+          <a href="/" className="text-indigo-400 hover:text-indigo-300 text-sm">
+            Volver al inicio
           </a>
         </div>
       </main>
@@ -33,7 +47,7 @@ export default function Cancelar() {
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-bold text-white mb-2">Cancelar suscripcion</h1>
         <p className="text-gray-400 mb-8">
-          Lamentamos que quieras cancelar. Cuéntanos por qué para poder mejorar.
+          Lamentamos que quieras cancelar. Cuentanos por que para poder mejorar.
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
@@ -65,10 +79,10 @@ export default function Cancelar() {
           </div>
           <button
             type="submit"
-            disabled={!correo || !motivo}
+            disabled={!correo || !motivo || enviando}
             className="bg-red-700 hover:bg-red-800 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50 mt-2"
           >
-            Solicitar cancelacion
+            {enviando ? 'Enviando...' : 'Solicitar cancelacion'}
           </button>
         </form>
         <div className="mt-6 text-center">
