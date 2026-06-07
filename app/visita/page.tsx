@@ -157,7 +157,7 @@ function VisitaContent() {
                   transition: `background-color 0.3s ease ${i * 100}ms`
                 }}
               >
-                {i < resultado.visitas ? '⭐' : ''}
+                {i < resultado.visitas ? '⭐' : '○'}
               </div>
             ))}
           </div>
@@ -185,7 +185,7 @@ function VisitaContent() {
             type="tel"
             value={celular}
             onChange={(e) => setCelular(e.target.value)}
-            placeholder="Ej. 2221234567"
+            placeholder="Ej. 5512345678"
             className="w-full bg-gray-800 text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-indigo-500 text-center text-xl tracking-widest"
           />
           <button
