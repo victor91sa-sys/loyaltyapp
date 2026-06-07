@@ -13,6 +13,7 @@ export default function Registro() {
     recompensa: ''
   })
   const [enviando, setEnviando] = useState(false)
+  const [reenviando, setReenviando] = useState(false)
   const [verPassword, setVerPassword] = useState(false)
   const [registrado, setRegistrado] = useState(false)
 
@@ -26,7 +27,10 @@ export default function Registro() {
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: formulario.correo,
-      password: formulario.password
+      password: formulario.password,
+      options: {
+        emailRedirectTo: 'https://huellaclub.app/bienvenida'
+      }
     })
 
     if (authError) {
@@ -55,6 +59,18 @@ export default function Registro() {
     }
   }
 
+  const reenviarCorreo = async () => {
+    setReenviando(true)
+    await supabase.auth.resend({
+      type: 'signup',
+      email: formulario.correo,
+      options: {
+        emailRedirectTo: 'https://huellaclub.app/bienvenida'
+      }
+    })
+    setReenviando(false)
+  }
+
   if (registrado) {
     return (
       <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
@@ -63,15 +79,30 @@ export default function Registro() {
           <h1 className="text-3xl font-bold text-white mb-4">
             Revisa tu bandeja de entrada
           </h1>
-          <p className="text-gray-400 text-lg mb-4">
-            Te mandamos un correo a <span className="text-white font-semibold">{formulario.correo}</span>
+          <p className="text-gray-400 text-lg mb-2">
+            Te mandamos un correo a:
+          </p>
+          <p className="text-indigo-400 font-semibold mb-6">
+            {formulario.correo}
           </p>
           <p className="text-gray-500 text-sm mb-8">
-            Haz click en el enlace del correo para confirmar tu cuenta y empezar a usar LoyaltyApp.
+            Haz click en el enlace del correo para confirmar tu cuenta y empezar a usar HuellaClub.
           </p>
+          <button
+            onClick={reenviarCorreo}
+            disabled={reenviando}
+            className="text-indigo-400 hover:text-indigo-300 text-sm transition disabled:opacity-50 mb-4 block w-full text-center"
+          >
+            {reenviando ? 'Reenviando...' : '¿No llegó el correo? Reenviar'}
+          </button>
           <p className="text-gray-600 text-xs">
-            No encuentras el correo? Revisa tu carpeta de spam.
+            Revisa también tu carpeta de spam.
           </p>
+          <div className="mt-8">
+            <a href="/login" className="text-gray-600 hover:text-gray-400 text-sm transition">
+              Volver al inicio de sesión
+            </a>
+          </div>
         </div>
       </main>
     )
@@ -94,7 +125,8 @@ export default function Registro() {
               name="nombre"
               value={formulario.nombre}
               onChange={handleChange}
-              placeholder="Ej. Cafe La Paloma"
+              placeholder="Ej. Taquería El Güero"
+              required
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -104,37 +136,46 @@ export default function Registro() {
               name="tipo"
               value={formulario.tipo}
               onChange={handleChange}
+              required
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">Selecciona una opcion</option>
-              <option value="cafeteria">Cafeteria</option>
+              <option value="">Selecciona una opción</option>
+              <option value="cafeteria">Cafetería</option>
               <option value="restaurante">Restaurante</option>
-              <option value="barberia">Barberia</option>
-              <option value="salon">Salon de belleza</option>
-              <option value="lavanderia">Lavanderia</option>
+              <option value="taqueria">Taquería</option>
+              <option value="tortilleria">Tortillería</option>
+              <option value="barberia">Barbería</option>
+              <option value="salon">Salón de belleza</option>
+              <option value="lavanderia">Lavandería</option>
+              <option value="abarrotes">Abarrotes</option>
+              <option value="farmacia">Farmacia</option>
+              <option value="tianguis">Tianguis</option>
               <option value="otro">Otro</option>
             </select>
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Correo del dueno</label>
+            <label className="text-gray-300 text-sm mb-1 block">Correo del dueño</label>
             <input
               type="email"
               name="correo"
               value={formulario.correo}
               onChange={handleChange}
               placeholder="tucorreo@email.com"
+              required
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Contrasena</label>
+            <label className="text-gray-300 text-sm mb-1 block">Contraseña</label>
             <div className="relative">
               <input
                 type={verPassword ? 'text' : 'password'}
                 name="password"
                 value={formulario.password}
                 onChange={handleChange}
-                placeholder="Minimo 6 caracteres"
+                placeholder="Mínimo 6 caracteres"
+                required
+                minLength={6}
                 className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
               />
               <button
@@ -147,26 +188,28 @@ export default function Registro() {
             </div>
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Cuantas visitas para obtener recompensa</label>
+            <label className="text-gray-300 text-sm mb-1 block">¿Cuántas visitas para obtener la recompensa?</label>
             <input
               type="number"
               name="visitas"
               value={formulario.visitas}
               onChange={handleChange}
               placeholder="Ej. 10"
-              min="1"
+              required
+              min="2"
               max="50"
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Cual es la recompensa</label>
+            <label className="text-gray-300 text-sm mb-1 block">¿Cuál es la recompensa?</label>
             <input
               type="text"
               name="recompensa"
               value={formulario.recompensa}
               onChange={handleChange}
-              placeholder="Ej. Cafe gratis"
+              placeholder="Ej. Un café gratis"
+              required
               className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -179,9 +222,9 @@ export default function Registro() {
           </button>
         </form>
         <p className="text-gray-500 text-sm text-center mt-6">
-          Ya tienes cuenta?{' '}
+          ¿Ya tienes cuenta?{' '}
           <a href="/login" className="text-indigo-400 hover:text-indigo-300">
-            Inicia sesion
+            Inicia sesión
           </a>
         </p>
       </div>
