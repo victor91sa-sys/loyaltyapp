@@ -8,8 +8,8 @@ import QRCodeStyling from 'qr-code-styling'
 const FUENTES = [
   { nombre: 'Sans-serif (moderna)', valor: 'sans-serif' },
   { nombre: 'Serif (elegante)', valor: 'serif' },
-  { nombre: 'Monospace (tecnica)', valor: 'monospace' },
-  { nombre: 'Georgia (clasica)', valor: 'Georgia' },
+  { nombre: 'Monospace (técnica)', valor: 'monospace' },
+  { nombre: 'Georgia (clásica)', valor: 'Georgia' },
   { nombre: 'Arial Black (impacto)', valor: 'Arial Black' },
   { nombre: 'Courier New (retro)', valor: 'Courier New' },
 ]
@@ -27,14 +27,14 @@ function EditorQRContent() {
   const [nombrePersonalizado, setNombrePersonalizado] = useState(negocioNombre || '')
   const [titulo, setTitulo] = useState('Acumula visitas y gana premios')
   const [tamanoTitulo, setTamanoTitulo] = useState(22)
-  const [subtitulo, setSubtitulo] = useState('Escanea el codigo con la camara de tu telefono')
+  const [subtitulo, setSubtitulo] = useState('Escanea el código con la cámara de tu teléfono')
   const [contacto, setContacto] = useState('')
   const [fuente, setFuente] = useState('sans-serif')
   const [descargando, setDescargando] = useState(false)
   const qrRef = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling | null>(null)
 
-  const urlCliente = 'https://loyaltyapp-4knq.vercel.app/visita?negocio=' + negocioId
+  const urlCliente = 'https://huellaclub.app/visita?negocio=' + negocioId
 
   useEffect(() => {
     qrCode.current = new QRCodeStyling({
@@ -304,7 +304,7 @@ function EditorQRContent() {
                     type="text"
                     value={nombrePersonalizado}
                     onChange={(e) => setNombrePersonalizado(e.target.value)}
-                    placeholder="Ej. Cafe La Paloma"
+                    placeholder="Ej. Café La Paloma"
                     className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                   />
                 </div>
@@ -312,7 +312,7 @@ function EditorQRContent() {
             </div>
 
             <div className="bg-gray-900 rounded-2xl p-5">
-              <label className="text-white font-semibold block mb-1">Titulo del cartel</label>
+              <label className="text-white font-semibold block mb-1">Título del cartel</label>
               <p className="text-gray-500 text-xs mb-3">El mensaje principal para tu cliente</p>
               <input
                 type="text"
@@ -332,7 +332,7 @@ function EditorQRContent() {
             </div>
 
             <div className="bg-gray-900 rounded-2xl p-5">
-              <label className="text-white font-semibold block mb-1">Instruccion para el cliente</label>
+              <label className="text-white font-semibold block mb-1">Instrucción para el cliente</label>
               <p className="text-gray-500 text-xs mb-3">Aparece debajo del QR</p>
               <input
                 type="text"
@@ -353,7 +353,7 @@ function EditorQRContent() {
 
             <div className="bg-gray-900 rounded-2xl p-5">
               <label className="text-white font-semibold block mb-1">Color del QR</label>
-              <p className="text-gray-500 text-xs mb-3">El color de los puntos del codigo</p>
+              <p className="text-gray-500 text-xs mb-3">El color de los puntos del código</p>
               <div className="flex items-center gap-3">
                 <input type="color" value={colorPuntos} onChange={(e) => setColorPuntos(e.target.value)} className="w-12 h-12 rounded-xl cursor-pointer border-0" />
                 <span className="text-gray-400 text-sm">{colorPuntos}</span>
@@ -361,7 +361,7 @@ function EditorQRContent() {
             </div>
 
             <div className="bg-gray-900 rounded-2xl p-5">
-              <label className="text-white font-semibold block mb-1">Tipografia</label>
+              <label className="text-white font-semibold block mb-1">Tipografía</label>
               <p className="text-gray-500 text-xs mb-3">Se aplica a todo el cartel</p>
               <div className="flex flex-col gap-2">
                 {FUENTES.map((f) => (
@@ -417,7 +417,7 @@ function EditorQRContent() {
               ) : logo ? (
                 <img src={logo} alt="logo" className="h-20 object-contain" />
               ) : (
-                <p className="text-gray-400 text-sm">Sin logo aun</p>
+                <p className="text-gray-400 text-sm">Sin logo aún</p>
               )}
               <p className="text-white text-center" style={{ fontSize: tamanoTitulo + 'px' }}>{titulo}</p>
               <div className="bg-white p-4 rounded-2xl">
