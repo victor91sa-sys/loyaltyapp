@@ -21,6 +21,13 @@ function DashboardContent() {
   const [negocio, setNegocio] = useState<any>(null)
   const [cargando, setCargando] = useState(true)
   const [pagando, setPagando] = useState(false)
+  const [editando, setEditando] = useState(false)
+  const [guardando, setGuardando] = useState(false)
+  const [configForm, setConfigForm] = useState({
+    nombre: '',
+    visitas: '',
+    recompensas: ''
+  })
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -31,6 +38,11 @@ function DashboardContent() {
         .single()
 
       setNegocio(negocioData)
+      setConfigForm({
+        nombre: negocioData?.nombre || '',
+        visitas: negocioData?.visitas?.toString() || '',
+        recompensas: negocioData?.recompensas || ''
+      })
 
       const { data: clientesData } = await supabase
         .from('clientes')
@@ -78,7 +90,7 @@ function DashboardContent() {
   const accesoActivo = negocio?.suscripcion_activa || trialActivo
 
   const irAlEditor = () => {
-    router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocioNombre || ''))
+    router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocio?.nombre || negocioNombre || ''))
   }
 
   const cerrarSesion = async () => {
@@ -144,6 +156,26 @@ function DashboardContent() {
     }
   }
 
+  const guardarConfiguracion = async () => {
+    setGuardando(true)
+    const { error } = await supabase
+      .from('negocios')
+      .update({
+        nombre: configForm.nombre,
+        visitas: parseInt(configForm.visitas),
+        recompensas: configForm.recompensas
+      })
+      .eq('id', negocioId)
+
+    if (error) {
+      alert('Error al guardar: ' + error.message)
+    } else {
+      setNegocio({ ...negocio, ...configForm, visitas: parseInt(configForm.visitas) })
+      setEditando(false)
+    }
+    setGuardando(false)
+  }
+
   if (cargando) {
     return (
       <main className="min-h-screen bg-gray-950 flex items-center justify-center">
@@ -157,12 +189,12 @@ function DashboardContent() {
       <div className="max-w-2xl mx-auto">
 
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold text-white">{negocioNombre}</h1>
+          <h1 className="text-3xl font-bold text-white">{negocio?.nombre || negocioNombre}</h1>
           <button
             onClick={cerrarSesion}
             className="text-gray-500 hover:text-gray-300 text-sm transition"
           >
-            Cerrar sesion
+            Cerrar sesión
           </button>
         </div>
         <p className="text-gray-400 mb-8">Panel de control</p>
@@ -176,8 +208,8 @@ function DashboardContent() {
         {!negocio?.suscripcion_activa && trialActivo && (
           <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-5 mb-8 flex items-center justify-between">
             <div>
-              <p className="text-white font-semibold">Periodo de prueba</p>
-              <p className="text-indigo-300 text-sm">Te quedan {diasRestantes} dias gratis</p>
+              <p className="text-white font-semibold">Período de prueba</p>
+              <p className="text-indigo-300 text-sm">Te quedan {diasRestantes} días gratis</p>
             </div>
             <button
               onClick={handlePago}
@@ -191,8 +223,8 @@ function DashboardContent() {
 
         {!negocio?.suscripcion_activa && !trialActivo && (
           <div className="bg-red-900 border border-red-600 rounded-2xl p-5 mb-8">
-            <p className="text-white font-semibold mb-1">Tu periodo de prueba termino</p>
-            <p className="text-red-300 text-sm mb-4">Suscribete para reactivar tu programa de lealtad.</p>
+            <p className="text-white font-semibold mb-1">Tu período de prueba terminó</p>
+            <p className="text-red-300 text-sm mb-4">Suscríbete para reactivar tu programa de lealtad.</p>
             <button
               onClick={handlePago}
               disabled={pagando}
@@ -219,7 +251,7 @@ function DashboardContent() {
         </div>
 
         <div className="bg-gray-900 rounded-2xl p-6 mb-8">
-          <h2 className="text-white font-semibold mb-4">Tu codigo QR</h2>
+          <h2 className="text-white font-semibold mb-4">Tu código QR</h2>
           {accesoActivo ? (
             <div className="flex items-center gap-6">
               <div ref={qrRef} className="bg-white p-4 rounded-xl">
@@ -245,7 +277,7 @@ function DashboardContent() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-500 text-sm mb-4">Tu QR esta desactivado. Suscribete para reactivarlo.</p>
+              <p className="text-gray-500 text-sm mb-4">Tu QR está desactivado. Suscríbete para reactivarlo.</p>
               <button
                 onClick={handlePago}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition text-sm"
@@ -256,10 +288,89 @@ function DashboardContent() {
           )}
         </div>
 
+        <div className="bg-gray-900 rounded-2xl p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-white font-semibold">Configuración de tu programa</h2>
+            {!editando && (
+              <button
+                onClick={() => setEditando(true)}
+                className="text-indigo-400 hover:text-indigo-300 text-sm transition"
+              >
+                Editar
+              </button>
+            )}
+          </div>
+
+          {!editando ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center py-3 border-b border-gray-800">
+                <span className="text-gray-400 text-sm">Nombre del negocio</span>
+                <span className="text-white text-sm font-semibold">{negocio?.nombre}</span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-800">
+                <span className="text-gray-400 text-sm">Visitas para la recompensa</span>
+                <span className="text-white text-sm font-semibold">{negocio?.visitas} visitas</span>
+              </div>
+              <div className="flex justify-between items-center py-3">
+                <span className="text-gray-400 text-sm">Recompensa</span>
+                <span className="text-white text-sm font-semibold">{negocio?.recompensas}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-gray-400 text-sm block mb-1">Nombre del negocio</label>
+                <input
+                  type="text"
+                  value={configForm.nombre}
+                  onChange={(e) => setConfigForm({ ...configForm, nombre: e.target.value })}
+                  className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1">¿Cuántas visitas para la recompensa?</label>
+                <input
+                  type="number"
+                  value={configForm.visitas}
+                  onChange={(e) => setConfigForm({ ...configForm, visitas: e.target.value })}
+                  min="2"
+                  max="50"
+                  className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 text-sm block mb-1">¿Cuál es la recompensa?</label>
+                <input
+                  type="text"
+                  value={configForm.recompensas}
+                  onChange={(e) => setConfigForm({ ...configForm, recompensas: e.target.value })}
+                  placeholder="Ej. Un café gratis"
+                  className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={guardarConfiguracion}
+                  disabled={guardando}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 text-sm"
+                >
+                  {guardando ? 'Guardando...' : 'Guardar cambios'}
+                </button>
+                <button
+                  onClick={() => setEditando(false)}
+                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 rounded-xl transition text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="bg-gray-900 rounded-2xl p-6">
           <h2 className="text-white font-semibold mb-4">Tus clientes</h2>
           {clientes.length === 0 ? (
-            <p className="text-gray-400">Aun no tienes clientes registrados.</p>
+            <p className="text-gray-400">Aún no tienes clientes registrados.</p>
           ) : (
             <div className="flex flex-col gap-3">
               {clientes.map((cliente) => {
@@ -284,14 +395,12 @@ function DashboardContent() {
         </div>
 
         <div className="mt-10 pt-6 border-t border-gray-900 flex justify-between items-center">
-          
-        <a href="/terminos"
-            className="text-gray-700 hover:text-gray-500 text-xs transition"
-          >
-            Terminos y condiciones
+          <a href="/terminos" className="text-gray-700 hover:text-gray-500 text-xs transition">
+            Términos y condiciones
           </a>
-          
-          <a href="/cancelar" className="text-gray-700 hover:text-gray-500 text-xs transition">Cancelar suscripcion</a>
+          <a href="/cancelar" className="text-gray-700 hover:text-gray-500 text-xs transition">
+            Cancelar suscripción
+          </a>
         </div>
 
       </div>
