@@ -81,6 +81,11 @@ function DashboardContent() {
     router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocioNombre || ''))
   }
 
+  const cerrarSesion = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
   const descargarQR = () => {
     const svg = qrRef.current?.querySelector('svg')
     if (!svg) return
@@ -151,7 +156,15 @@ function DashboardContent() {
     <main className="min-h-screen bg-gray-950 p-8">
       <div className="max-w-2xl mx-auto">
 
-        <h1 className="text-3xl font-bold text-white mb-2">{negocioNombre}</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold text-white">{negocioNombre}</h1>
+          <button
+            onClick={cerrarSesion}
+            className="text-gray-500 hover:text-gray-300 text-sm transition"
+          >
+            Cerrar sesion
+          </button>
+        </div>
         <p className="text-gray-400 mb-8">Panel de control</p>
 
         {negocio?.suscripcion_activa && (
@@ -179,7 +192,7 @@ function DashboardContent() {
         {!negocio?.suscripcion_activa && !trialActivo && (
           <div className="bg-red-900 border border-red-600 rounded-2xl p-5 mb-8">
             <p className="text-white font-semibold mb-1">Tu periodo de prueba termino</p>
-            <p className="text-red-300 text-sm mb-4">Suscribete para reactivar tu programa de lealtad y que tus clientes puedan seguir acumulando visitas.</p>
+            <p className="text-red-300 text-sm mb-4">Suscribete para reactivar tu programa de lealtad.</p>
             <button
               onClick={handlePago}
               disabled={pagando}
