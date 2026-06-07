@@ -67,10 +67,10 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="relative flex flex-col items-center justify-center text-center px-8 py-24 flex-1 overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center text-center px-8 py-24 flex-1 overflow-hidden min-h-screen">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/hero.png" alt="Dueña de tortillería" fill className="object-cover opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-950/80 to-gray-950" />
+          <Image src="/images/hero.png" alt="Dueña de tortillería" fill className="object-cover opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950/70 via-gray-950/60 to-gray-950" />
         </div>
         <div className="relative z-10" style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
           <div className="inline-block bg-indigo-900 text-indigo-300 text-xs font-semibold px-4 py-2 rounded-full mb-6">
@@ -79,10 +79,10 @@ export default function Home() {
           <h1 className="text-5xl font-bold text-white mb-6 max-w-2xl leading-tight mx-auto">
             Un sistema para que tus clientes tengan razones para regresar a comprarte más
           </h1>
-          <p className="text-gray-400 text-lg mb-4 max-w-lg mx-auto">
+          <p className="text-gray-300 text-lg mb-4 max-w-lg mx-auto">
             Solo pones un código QR en tu negocio. Tus clientes lo escanean, acumulan visitas y ganan premios. Sin apps, sin aparatos, sin complicaciones.
           </p>
-          <p className="text-gray-500 text-sm mb-10 max-w-md mx-auto">
+          <p className="text-gray-400 text-sm mb-10 max-w-md mx-auto">
             Funciona para cafeterías, restaurantes, barberías, taquerías, tortillerías, abarrotes, tianguis y más.
           </p>
           <Link
@@ -91,7 +91,7 @@ export default function Home() {
           >
             Pruébalo gratis 30 días
           </Link>
-          <p className="text-gray-600 text-sm mt-3">Sin tarjeta. Sin letra chica.</p>
+          <p className="text-gray-500 text-sm mt-3">Sin tarjeta. Sin letra chica.</p>
         </div>
       </section>
 
@@ -313,8 +313,8 @@ export default function Home() {
 
       <section className="relative px-8 py-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/comunidad.png" alt="Comunidad de negocios" fill className="object-cover opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-transparent to-gray-950" />
+          <Image src="/images/comunidad.png" alt="Comunidad de negocios" fill className="object-cover opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-950/50 to-gray-950" />
         </div>
         <Reveal>
           <div className="relative z-10 max-w-lg mx-auto text-center">
