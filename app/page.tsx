@@ -38,6 +38,73 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode, delay?: nu
   )
 }
 
+function MockupCartel() {
+  const [color, setColor] = useState('#4f46e5')
+  const colores = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#7c3aed', '#0891b2']
+
+  return (
+    <div className="flex flex-col items-center gap-6">
+      <div
+        className="rounded-3xl p-6 w-72 shadow-2xl transition-all duration-500"
+        style={{ backgroundColor: color }}
+      >
+        <div className="text-center mb-4">
+          <div className="text-4xl mb-1">🌮</div>
+          <h3 className="text-white font-bold text-lg">Taquería El Güero</h3>
+          <p className="text-white text-opacity-80 text-xs mt-1" style={{ opacity: 0.8 }}>
+            Escanea y acumula visitas
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 mb-4 flex items-center justify-center">
+          <div className="grid grid-cols-7 gap-0.5">
+            {[1,1,1,0,1,0,1, 1,0,1,0,0,0,1, 1,0,1,0,1,0,1, 1,1,1,0,0,1,0, 0,1,0,1,0,1,1, 1,0,0,0,1,0,1, 0,1,1,1,0,1,0].map((cell, i) => (
+              <div
+                key={i}
+                className="w-4 h-4 rounded-sm"
+                style={{ backgroundColor: cell ? color : 'white' }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white bg-opacity-20 rounded-2xl p-3">
+          <div className="flex justify-between text-white text-xs mb-2" style={{ opacity: 0.9 }}>
+            <span>Tu progreso</span>
+            <span className="font-bold">3 de 10 visitas</span>
+          </div>
+          <div className="w-full bg-white bg-opacity-30 rounded-full h-2">
+            <div
+              className="h-2 rounded-full bg-white transition-all"
+              style={{ width: '30%' }}
+            />
+          </div>
+          <p className="text-white text-xs mt-2 text-center" style={{ opacity: 0.8 }}>
+            7 visitas más para tu taco gratis 🎁
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <p className="text-gray-400 text-xs text-center mb-3">Elige el color de tu negocio</p>
+        <div className="flex gap-3 justify-center">
+          {colores.map((c) => (
+            <button
+              key={c}
+              onClick={() => setColor(c)}
+              className="w-8 h-8 rounded-full transition-all hover:scale-110 border-2"
+              style={{
+                backgroundColor: c,
+                borderColor: color === c ? 'white' : 'transparent'
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const router = useRouter()
 
@@ -149,35 +216,35 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <Reveal>
             <h2 className="text-white font-bold text-3xl text-center mb-2">Tu QR, a tu manera</h2>
-            <p className="text-gray-500 text-center text-sm mb-16">Personaliza tu cartel con los colores y nombre de tu negocio</p>
+            <p className="text-gray-500 text-center text-sm mb-16">Personaliza tu cartel con los colores y nombre de tu negocio. Listo para imprimir.</p>
           </Reveal>
-          <Reveal delay={200}>
-            <div className="bg-gray-800 border border-gray-700 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-10">
-              <div className="flex-1 text-center">
-                <div className="text-7xl mb-4">🎨</div>
-                <div className="flex gap-2 justify-center mb-3">
-                  <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
-                  <div className="w-8 h-8 rounded-full bg-pink-500"></div>
-                  <div className="w-8 h-8 rounded-full bg-yellow-500"></div>
-                  <div className="w-8 h-8 rounded-full bg-green-500"></div>
-                </div>
-              </div>
-              <div className="flex-1">
+          <div className="grid grid-cols-2 gap-12 items-center">
+            <Reveal delay={100}>
+              <MockupCartel />
+            </Reveal>
+            <Reveal delay={250}>
+              <div>
                 <h3 className="text-white font-bold text-2xl mb-4">Diseña tu cartel en minutos</h3>
-                <ul className="flex flex-col gap-3">
+                <ul className="flex flex-col gap-4 mb-8">
                   {[
-                    '✅ Agrega el nombre de tu negocio',
-                    '✅ Elige tus colores',
-                    '✅ Sube tu logo',
-                    '✅ Descarga listo para imprimir',
-                    '✅ Sin diseñador, sin Photoshop'
+                    { emoji: '🎨', texto: 'Elige los colores de tu negocio' },
+                    { emoji: '🏪', texto: 'Agrega el nombre de tu negocio' },
+                    { emoji: '🖼️', texto: 'Sube tu logo si tienes uno' },
+                    { emoji: '🖨️', texto: 'Descarga listo para imprimir' },
+                    { emoji: '✅', texto: 'Sin diseñador, sin Photoshop, sin complicaciones' }
                   ].map((item) => (
-                    <li key={item} className="text-gray-300 text-sm">{item}</li>
+                    <li key={item.texto} className="flex items-start gap-3">
+                      <span className="text-2xl">{item.emoji}</span>
+                      <p className="text-gray-300 text-sm pt-1">{item.texto}</p>
+                    </li>
                   ))}
                 </ul>
+                <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition inline-block">
+                  Crear mi cartel gratis
+                </Link>
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </section>
 
