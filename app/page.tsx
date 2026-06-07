@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../lib/supabase'
@@ -66,8 +67,12 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="flex flex-col items-center justify-center text-center px-8 py-24 flex-1">
-        <div style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
+      <section className="relative flex flex-col items-center justify-center text-center px-8 py-24 flex-1 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/hero.png" alt="Dueña de tortillería" fill className="object-cover opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-950/80 to-gray-950" />
+        </div>
+        <div className="relative z-10" style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
           <div className="inline-block bg-indigo-900 text-indigo-300 text-xs font-semibold px-4 py-2 rounded-full mb-6">
             30 días gratis · Después $199 MXN/mes
           </div>
@@ -119,22 +124,42 @@ export default function Home() {
 
       <section className="px-8 py-20">
         <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 gap-12 items-center">
+            <Reveal>
+              <div className="relative h-80 rounded-3xl overflow-hidden">
+                <Image src="/images/tacos.png" alt="Taquero con QR" fill className="object-cover" />
+              </div>
+            </Reveal>
+            <Reveal delay={200}>
+              <div>
+                <h2 className="text-white font-bold text-3xl mb-4">Tu negocio. Tu programa.</h2>
+                <p className="text-gray-400 mb-6">
+                  No necesitas saber de tecnología. Si sabes usar WhatsApp, puedes usar HuellaClub. En menos de 10 minutos tienes tu programa de lealtad funcionando.
+                </p>
+                <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition inline-block">
+                  Empieza hoy gratis
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-8 py-20 bg-gray-900">
+        <div className="max-w-4xl mx-auto">
           <Reveal>
             <h2 className="text-white font-bold text-3xl text-center mb-2">Tu QR, a tu manera</h2>
             <p className="text-gray-500 text-center text-sm mb-16">Personaliza tu cartel con los colores y nombre de tu negocio</p>
           </Reveal>
           <Reveal delay={200}>
-            <div className="bg-gray-900 border border-gray-800 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-10">
+            <div className="bg-gray-800 border border-gray-700 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-10">
               <div className="flex-1 text-center">
-                <div className="bg-gray-800 rounded-2xl p-6 inline-block mb-4">
-                  <div className="text-6xl mb-2">🎨</div>
-                  <div className="flex gap-2 justify-center mb-3">
-                    <div className="w-6 h-6 rounded-full bg-indigo-500"></div>
-                    <div className="w-6 h-6 rounded-full bg-pink-500"></div>
-                    <div className="w-6 h-6 rounded-full bg-yellow-500"></div>
-                    <div className="w-6 h-6 rounded-full bg-green-500"></div>
-                  </div>
-                  <p className="text-gray-400 text-xs">Elige tus colores</p>
+                <div className="text-7xl mb-4">🎨</div>
+                <div className="flex gap-2 justify-center mb-3">
+                  <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
+                  <div className="w-8 h-8 rounded-full bg-pink-500"></div>
+                  <div className="w-8 h-8 rounded-full bg-yellow-500"></div>
+                  <div className="w-8 h-8 rounded-full bg-green-500"></div>
                 </div>
               </div>
               <div className="flex-1">
@@ -156,36 +181,42 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-8 py-20 bg-gray-900">
+      <section className="px-8 py-20">
         <div className="max-w-4xl mx-auto">
-          <Reveal>
-            <h2 className="text-white font-bold text-3xl text-center mb-2">Para cualquier negocio</h2>
-            <p className="text-gray-500 text-center text-sm mb-16">Si tienes clientes que regresan, HuellaClub es para ti</p>
-          </Reveal>
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { emoji: '☕', nombre: 'Cafeterías' },
-              { emoji: '🍽️', nombre: 'Restaurantes' },
-              { emoji: '✂️', nombre: 'Barberías' },
-              { emoji: '🌮', nombre: 'Taquerías' },
-              { emoji: '💅', nombre: 'Salones de belleza' },
-              { emoji: '👗', nombre: 'Boutiques' },
-              { emoji: '🫓', nombre: 'Tortillerías' },
-              { emoji: '🛒', nombre: 'Abarrotes' },
-              { emoji: '🛍️', nombre: 'Tianguis' }
-            ].map((negocio, i) => (
-              <Reveal key={negocio.nombre} delay={i * 80}>
-                <div className="bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-indigo-600 rounded-2xl p-4 text-center transition cursor-default">
-                  <div className="text-3xl mb-2">{negocio.emoji}</div>
-                  <p className="text-gray-300 text-sm">{negocio.nombre}</p>
+          <div className="grid grid-cols-2 gap-12 items-center">
+            <Reveal>
+              <div>
+                <h2 className="text-white font-bold text-3xl mb-4">Para cualquier negocio local</h2>
+                <p className="text-gray-400 mb-6">
+                  Si tienes clientes que regresan, HuellaClub es para ti. Sin importar el tamaño de tu negocio.
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { emoji: '☕', nombre: 'Cafeterías' },
+                    { emoji: '🌮', nombre: 'Taquerías' },
+                    { emoji: '✂️', nombre: 'Barberías' },
+                    { emoji: '🫓', nombre: 'Tortillerías' },
+                    { emoji: '🛒', nombre: 'Abarrotes' },
+                    { emoji: '🛍️', nombre: 'Tianguis' }
+                  ].map((negocio) => (
+                    <div key={negocio.nombre} className="bg-gray-900 rounded-xl p-3 text-center">
+                      <div className="text-2xl mb-1">{negocio.emoji}</div>
+                      <p className="text-gray-400 text-xs">{negocio.nombre}</p>
+                    </div>
+                  ))}
                 </div>
-              </Reveal>
-            ))}
+              </div>
+            </Reveal>
+            <Reveal delay={200}>
+              <div className="relative h-80 rounded-3xl overflow-hidden">
+                <Image src="/images/barberia.png" alt="Barbero sonriendo" fill className="object-cover" />
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="px-8 py-20">
+      <section className="px-8 py-20 bg-gray-900">
         <div className="max-w-2xl mx-auto">
           <Reveal>
             <h2 className="text-white font-bold text-3xl text-center mb-16">Lo que dicen los números</h2>
@@ -207,7 +238,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-8 py-20 bg-gray-900">
+      <section className="px-8 py-20">
         <div className="max-w-3xl mx-auto">
           <Reveal>
             <h2 className="text-white font-bold text-3xl text-center mb-2">Qué incluye</h2>
@@ -223,7 +254,7 @@ export default function Home() {
               { emoji: '🎨', titulo: 'Editor de cartel', desc: 'Diseña tu cartel en minutos sin necesidad de un diseñador.' }
             ].map((item, i) => (
               <Reveal key={item.titulo} delay={i * 100}>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 flex gap-4">
+                <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex gap-4">
                   <div className="text-3xl">{item.emoji}</div>
                   <div>
                     <h3 className="text-white font-semibold mb-1">{item.titulo}</h3>
@@ -236,14 +267,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-8 py-20">
+      <section className="px-8 py-20 bg-gray-900">
         <div className="max-w-lg mx-auto">
           <Reveal>
             <h2 className="text-white font-bold text-3xl text-center mb-2">Un precio. Todo incluido.</h2>
             <p className="text-gray-500 text-center text-sm mb-12">Sin sorpresas. Sin comisiones. Sin contratos.</p>
           </Reveal>
           <Reveal delay={200}>
-            <div className="bg-gray-900 border border-indigo-600 rounded-3xl p-8 text-center">
+            <div className="bg-gray-800 border border-indigo-600 rounded-3xl p-8 text-center">
               <div className="inline-block bg-indigo-900 text-indigo-300 text-xs font-semibold px-3 py-1 rounded-full mb-6">
                 Precio de lanzamiento
               </div>
@@ -280,21 +311,25 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-8 py-20 bg-indigo-600">
+      <section className="relative px-8 py-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/comunidad.png" alt="Comunidad de negocios" fill className="object-cover opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-transparent to-gray-950" />
+        </div>
         <Reveal>
-          <div className="max-w-lg mx-auto text-center">
+          <div className="relative z-10 max-w-lg mx-auto text-center">
             <h2 className="text-white font-bold text-4xl mb-4">
               Empieza hoy. Es gratis.
             </h2>
-            <p className="text-indigo-200 mb-2">
+            <p className="text-gray-300 mb-2">
               30 días gratis. Después $199 MXN al mes.
             </p>
-            <p className="text-indigo-300 text-sm mb-10">
+            <p className="text-gray-400 text-sm mb-10">
               Cancelas cuando quieras. Sin contratos.
             </p>
             <Link
               href="/registro"
-              className="bg-white text-indigo-600 font-bold py-4 px-10 rounded-xl transition hover:bg-indigo-50 inline-block text-lg"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-xl transition inline-block text-lg"
             >
               Registrar mi negocio gratis
             </Link>
