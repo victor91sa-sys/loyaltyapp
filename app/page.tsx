@@ -373,9 +373,7 @@ export default function Home() {
               Escríbenos directamente y te respondemos en menos de 24 horas.
             </p>
             
-              href="mailto:sabino@maplo.com.mx"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition inline-block text-lg mb-4"
-            >
+            <a href="mailto:sabino@maplo.com.mx"className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition inline-block text-lg mb-4">
               sabino@maplo.com.mx
             </a>
             <p className="text-gray-400 text-sm">También puedes escribirnos para agendar una demo gratuita.</p>
