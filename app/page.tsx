@@ -145,7 +145,7 @@ export default function Home() {
           >
             Pruébalo gratis 30 días
           </Link>
-          <p className="text-gray-400 text-sm mt-3">Sin tarjeta. Sin letra chica.</p>
+          <p className="text-gray-400 text-sm mt-3">Sin tarjeta. Sin letras pequeñas.</p>
         </div>
       </section>
 
@@ -155,14 +155,14 @@ export default function Home() {
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Cómo funciona</h2>
             <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">En menos de 10 minutos tienes todo listo</p>
           </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {[
               { emoji: '📝', num: '1', title: 'Te registras', desc: 'Pones el nombre de tu negocio y cuántas visitas vale el premio' },
               { emoji: '📲', num: '2', title: 'Pones el QR', desc: 'Lo imprimes y lo pegas en tu mostrador o caja. Ya está.' },
               { emoji: '🎁', num: '3', title: 'Ellos regresan', desc: 'Cada visita los acerca más a su premio. Tú ves todo desde tu panel.' }
             ].map((paso, i) => (
               <Reveal key={paso.num} delay={i * 150}>
-                <div className="text-center bg-white border border-indigo-100 rounded-2xl p-8 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
+                <div className="text-center bg-white border border-indigo-100 rounded-2xl p-8 shadow-[0_4px_20px_rgba(99,102,241,0.08)] h-full flex flex-col items-center justify-start">
                   <div className="text-5xl mb-4">{paso.emoji}</div>
                   <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-sm">
                     {paso.num}
@@ -275,7 +275,7 @@ export default function Home() {
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-12 md:mb-16">Lo que dicen los números</h2>
           </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               { num: '5x', desc: 'más barato retener un cliente que conseguir uno nuevo' },
               { num: '68%', desc: 'de los clientes regresan más seguido cuando tienen recompensas' },
