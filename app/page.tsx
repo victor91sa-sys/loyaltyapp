@@ -38,6 +38,38 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode, delay?: nu
   )
 }
 
+function useCounter(target: number, visible: boolean) {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!visible) return
+    let start = 0
+    const duration = 1500
+    const increment = target / (duration / 16)
+    const timer = setInterval(() => {
+      start += increment
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
+    }, 16)
+    return () => clearInterval(timer)
+  }, [visible, target])
+  return count
+}
+
+function AnimatedStat({ num, suffix, desc }: { num: number, suffix: string, desc: string }) {
+  const { ref, visible } = useScrollReveal()
+  const count = useCounter(num, visible)
+  return (
+    <div ref={ref} className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] border border-indigo-100 text-center">
+      <p className="text-4xl md:text-5xl font-bold text-indigo-600 mb-2">{suffix === '$' ? '$' + count : count + suffix}</p>
+      <p className="text-gray-600 text-sm">{desc}</p>
+    </div>
+  )
+}
+
 function MockupCartel() {
   const [color, setColor] = useState('#4f46e5')
   const colores = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#7c3aed', '#0891b2']
@@ -106,6 +138,8 @@ export default function Home() {
     }
   }, [])
 
+  const negocios = ['☕ Cafeterías', '🌮 Taquerías', '✂️ Barberías', '🫓 Tortillerías', '🛒 Abarrotes', '💅 Salones', '🛍️ Tianguis', '🍽️ Restaurantes', '💊 Farmacias', '🚿 Lavanderías', '☕ Cafeterías', '🌮 Taquerías', '✂️ Barberías', '🫓 Tortillerías', '🛒 Abarrotes']
+
   return (
     <main className="min-h-screen bg-white flex flex-col">
 
@@ -148,6 +182,14 @@ export default function Home() {
           <p className="text-gray-400 text-sm mt-3">Sin tarjeta. Sin letras pequeñas.</p>
         </div>
       </section>
+
+      <div className="overflow-hidden bg-indigo-50 py-4 border-y border-indigo-100">
+        <div className="flex gap-8 animate-marquee whitespace-nowrap">
+          {negocios.concat(negocios).map((n, i) => (
+            <span key={i} className="text-indigo-600 font-semibold text-sm px-2">{n}</span>
+          ))}
+        </div>
+      </div>
 
       <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto">
@@ -271,28 +313,51 @@ export default function Home() {
       </section>
 
       <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <Reveal>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">HuellaClub vs tarjeta de papel</h2>
+            <p className="text-gray-500 text-center text-sm mb-12">¿Todavía usas tarjetitas de papel? Mira la diferencia.</p>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="bg-white rounded-2xl border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)] overflow-hidden">
+              <div className="grid grid-cols-3 bg-indigo-600 text-white text-sm font-semibold">
+                <div className="p-4 text-center">Característica</div>
+                <div className="p-4 text-center border-x border-indigo-500">Tarjeta de papel</div>
+                <div className="p-4 text-center">HuellaClub</div>
+              </div>
+              {[
+                ['Se pierde o se moja', '❌ Sí', '✅ No'],
+                ['El cliente necesita traerla', '❌ Siempre', '✅ Solo su celular'],
+                ['Puedes ver tus métricas', '❌ No', '✅ En tiempo real'],
+                ['Costo mensual', '💸 Impresión', '✅ $199 MXN'],
+                ['El cliente puede hacer trampa', '❌ Fácil', '✅ Protección incluida'],
+                ['Personalización', '❌ Limitada', '✅ Colores y logo'],
+              ].map(([feature, paper, digital], i) => (
+                <div key={i} className={`grid grid-cols-3 text-sm ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                  <div className="p-4 text-gray-700 font-medium">{feature}</div>
+                  <div className="p-4 text-center text-gray-500 border-x border-gray-100">{paper}</div>
+                  <div className="p-4 text-center text-gray-700 font-semibold">{digital}</div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
         <div className="max-w-2xl mx-auto">
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-12 md:mb-16">Lo que dicen los números</h2>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-            {[
-              { num: '5x', desc: 'más barato retener un cliente que conseguir uno nuevo' },
-              { num: '68%', desc: 'de los clientes regresan más seguido cuando tienen recompensas' },
-              { num: '$199', desc: 'MXN al mes. Menos de lo que cuesta perder un cliente frecuente' }
-            ].map((stat, i) => (
-              <Reveal key={stat.num} delay={i * 150}>
-                <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] border border-indigo-100">
-                  <p className="text-4xl md:text-5xl font-bold text-indigo-600 mb-2">{stat.num}</p>
-                  <p className="text-gray-600 text-sm">{stat.desc}</p>
-                </div>
-              </Reveal>
-            ))}
+            <AnimatedStat num={5} suffix="x" desc="más barato retener un cliente que conseguir uno nuevo" />
+            <AnimatedStat num={68} suffix="%" desc="de los clientes regresan más seguido cuando tienen recompensas" />
+            <AnimatedStat num={199} suffix="$" desc="MXN al mes. Menos de lo que cuesta perder un cliente frecuente" />
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto">
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Qué incluye</h2>
@@ -308,7 +373,7 @@ export default function Home() {
               { emoji: '🎨', titulo: 'Editor de cartel', desc: 'Diseña tu cartel en minutos sin necesidad de un diseñador.' }
             ].map((item, i) => (
               <Reveal key={item.titulo} delay={i * 100}>
-                <div className="bg-gray-50 border border-indigo-100 rounded-2xl p-5 md:p-6 flex gap-4 shadow-[0_4px_20px_rgba(99,102,241,0.06)]">
+                <div className="bg-white border border-indigo-100 rounded-2xl p-5 md:p-6 flex gap-4 shadow-[0_4px_20px_rgba(99,102,241,0.06)]">
                   <div className="text-3xl">{item.emoji}</div>
                   <div>
                     <h3 className="text-gray-900 font-semibold mb-1">{item.titulo}</h3>
@@ -316,6 +381,91 @@ export default function Home() {
                   </div>
                 </div>
               </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <Reveal>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Lo que dicen nuestros clientes</h2>
+            <p className="text-gray-500 text-center text-sm mb-12">Negocios reales en Puebla usando HuellaClub</p>
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                nombre: 'Don Ernesto',
+                negocio: 'Tortillería El Molino',
+                emoji: '🫓',
+                texto: 'Antes mis clientes se me iban a la tortillería de enfrente. Ahora regresan porque quieren completar sus visitas. En un mes noté la diferencia.'
+              },
+              {
+                nombre: 'Señora Lupita',
+                negocio: 'Abarrotes La Esperanza',
+                emoji: '🛒',
+                texto: 'Lo puse en mi tienda y mis clientes de siempre ahora vienen más seguido. Hasta me preguntan cuántas visitas les faltan. Muy fácil de usar.'
+              },
+              {
+                nombre: 'Chuy',
+                negocio: 'Barbería El Estilo',
+                emoji: '✂️',
+                texto: 'Mis clientes escanean el QR solos, yo no tengo que hacer nada. El panel me dice cuántos vienen cada semana. Vale lo que cuesta.'
+              }
+            ].map((t, i) => (
+              <Reveal key={t.nombre} delay={i * 150}>
+                <div className="bg-gray-50 border border-indigo-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] flex flex-col gap-4 h-full">
+                  <p className="text-gray-700 text-sm leading-relaxed flex-1">"{t.texto}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-xl">
+                      {t.emoji}
+                    </div>
+                    <div>
+                      <p className="text-gray-900 font-semibold text-sm">{t.nombre}</p>
+                      <p className="text-gray-500 text-xs">{t.negocio}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
+        <div className="max-w-2xl mx-auto">
+          <Reveal>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Preguntas frecuentes</h2>
+            <p className="text-gray-500 text-center text-sm mb-12">Las dudas más comunes antes de empezar</p>
+          </Reveal>
+          <div className="flex flex-col gap-4">
+            {[
+              {
+                pregunta: '¿Mis clientes necesitan descargar una app?',
+                respuesta: 'No. Solo abren la cámara de su celular, escanean el QR y listo. Sin descargas, sin registros complicados.'
+              },
+              {
+                pregunta: '¿Qué pasa si un cliente cambia de número?',
+                respuesta: 'El programa está ligado al número de celular. Si cambia de número, empieza de cero. Pero en la práctica esto casi nunca pasa.'
+              },
+              {
+                pregunta: '¿Puedo cambiar mi recompensa o el número de visitas?',
+                respuesta: 'Sí, en cualquier momento desde tu panel de configuración. Los cambios aplican para nuevas visitas.'
+              },
+              {
+                pregunta: '¿Cómo evito que un cliente haga trampa?',
+                respuesta: 'HuellaClub solo permite una visita por celular cada 24 horas. No importa cuántas veces escaneen.'
+              },
+              {
+                pregunta: '¿Necesito internet en mi negocio para que funcione?',
+                respuesta: 'Tu cliente necesita internet en su celular para escanear. Tú puedes ver tu panel desde cualquier dispositivo con internet.'
+              },
+              {
+                pregunta: '¿Puedo cancelar cuando quiera?',
+                respuesta: 'Sí. Sin contratos ni penalizaciones. Cancelas desde tu panel y listo.'
+              }
+            ].map((faq, i) => (
+              <FAQItem key={i} pregunta={faq.pregunta} respuesta={faq.respuesta} />
             ))}
           </div>
         </div>
@@ -417,13 +567,49 @@ export default function Home() {
         </div>
       </footer>
 
+      
+      <a  href="https://wa.me/525537195028?text=Hola%2C%20me%20interesa%20saber%20más%20sobre%20HuellaClub"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition z-50 text-2xl"
+      >
+        💬
+      </a>
+
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(32px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
       `}</style>
 
     </main>
+  )
+}
+
+function FAQItem({ pregunta, respuesta }: { pregunta: string, respuesta: string }) {
+  const [abierto, setAbierto] = useState(false)
+  return (
+    <div className="bg-white border border-indigo-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
+      <button
+        onClick={() => setAbierto(!abierto)}
+        className="w-full text-left px-6 py-4 flex justify-between items-center"
+      >
+        <span className="text-gray-900 font-semibold text-sm">{pregunta}</span>
+        <span className="text-indigo-600 text-xl ml-4">{abierto ? '−' : '+'}</span>
+      </button>
+      {abierto && (
+        <div className="px-6 pb-4">
+          <p className="text-gray-600 text-sm">{respuesta}</p>
+        </div>
+      )}
+    </div>
   )
 }
