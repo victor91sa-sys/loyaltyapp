@@ -78,17 +78,15 @@ export default function Registro() {
       <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
         <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(99,102,241,0.12)] border border-indigo-100 p-10 text-center max-w-md w-full">
           <div className="text-6xl mb-6">📧</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Revisa tu correo
-          </h1>
-          <p className="text-gray-600 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Revisa tu correo</h1>
+          <p className="text-gray-500 mb-2">
             Te mandamos un enlace de confirmación a:
           </p>
-          <p className="text-indigo-600 font-semibold mb-6 text-lg">
+          <p className="text-indigo-600 font-semibold mb-4 text-lg">
             {formulario.correo}
           </p>
-          <p className="text-gray-500 text-sm mb-8">
-            Haz click en el enlace para activar tu cuenta y empezar tu prueba gratis de 30 días.
+          <p className="text-gray-400 text-sm mb-8">
+            En cuanto lo confirmes, tu comunidad empieza a crecer.
           </p>
           <button
             onClick={reenviarCorreo}
@@ -113,18 +111,21 @@ export default function Registro() {
 
       <div className="hidden lg:flex flex-col justify-between bg-indigo-600 w-96 p-10 flex-shrink-0">
         <div>
-          <Link href="/" className="text-white font-bold text-xl">HuellaClub</Link>
+          <Link href="/" className="block">
+            <span className="text-white font-bold text-xl">HuellaClub</span>
+            <p className="text-indigo-300 text-xs mt-0.5">Vuelven por ti.</p>
+          </Link>
         </div>
         <div>
           <h2 className="text-white font-bold text-3xl mb-6 leading-tight">
-            Tu programa de lealtad listo en 10 minutos
+            Empieza a construir algo que dura
           </h2>
           <ul className="flex flex-col gap-4">
             {[
               { emoji: '✅', texto: '30 días gratis sin tarjeta' },
               { emoji: '📲', texto: 'Tus clientes solo necesitan su celular' },
               { emoji: '🎨', texto: 'QR personalizado con tu marca' },
-              { emoji: '📊', texto: 'Panel con métricas en tiempo real' },
+              { emoji: '📊', texto: 'Ve quién regresa en tiempo real' },
               { emoji: '💬', texto: 'Notificaciones por WhatsApp' },
               { emoji: '🛡️', texto: 'Protección anti-trampa incluida' }
             ].map((item) => (
@@ -143,8 +144,9 @@ export default function Registro() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
         <div className="w-full max-w-md">
 
-          <Link href="/" className="text-indigo-600 font-bold text-xl mb-8 block lg:hidden">
-            HuellaClub
+          <Link href="/" className="block mb-8 lg:hidden">
+            <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
+            <p className="text-gray-400 text-xs">Vuelven por ti.</p>
           </Link>
 
           <div className="flex items-center gap-3 mb-8">
@@ -160,10 +162,10 @@ export default function Registro() {
           {paso === 1 && (
             <>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-                Empieza tu prueba gratis
+                Empieza a construir algo que dura
               </h1>
               <p className="text-gray-500 mb-8 text-sm">
-                Paso 1 de 2 · Datos de acceso
+                Paso 1 de 2 · Crea tu acceso
               </p>
               <form onSubmit={(e) => { e.preventDefault(); setPaso(2) }} className="flex flex-col gap-4">
                 <div>
@@ -217,7 +219,7 @@ export default function Registro() {
                 Cuéntanos de tu negocio
               </h1>
               <p className="text-gray-500 mb-8 text-sm">
-                Paso 2 de 2 · Configura tu programa
+                Paso 2 de 2 · Ya casi estás
               </p>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div>
