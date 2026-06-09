@@ -206,7 +206,7 @@ export default function Home() {
 
       <section className="relative flex flex-col items-center justify-center text-center px-6 md:px-8 py-20 md:py-32 overflow-hidden bg-white">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/hero.png" alt="Dueña de tortillería" fill className="object-cover opacity-30" />
+          <Image src="/images/hero.png" alt="Dueño de negocio" fill className="object-cover opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/50 to-white" />
         </div>
         <div className="relative z-10 w-full max-w-3xl mx-auto" style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
@@ -214,10 +214,10 @@ export default function Home() {
             30 días gratis · Después $199 MXN/mes
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Un sistema para que tus clientes tengan razones para regresar a comprarte más
+            Cada cliente que regresa es prueba de que lo estás haciendo bien
           </h1>
           <p className="text-gray-600 text-base md:text-lg mb-4 max-w-lg mx-auto">
-            Solo pones un código QR en tu negocio. Tus clientes lo escanean, acumulan visitas y ganan premios. Sin apps, sin aparatos, sin complicaciones.
+            HuellaClub convierte cada visita en una señal de que tu negocio está creciendo. Sin apps, sin aparatos, sin complicaciones.
           </p>
           <p className="text-gray-400 text-sm mb-10 max-w-md mx-auto">
             Funciona para cafeterías, restaurantes, barberías, taquerías, tortillerías, abarrotes, tianguis y más.
@@ -226,7 +226,7 @@ export default function Home() {
             href="/registro"
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 md:px-10 rounded-xl transition text-base md:text-lg mb-3 inline-block"
           >
-            Pruébalo gratis 30 días
+            Empieza a construir tu base de clientes
           </Link>
           <p className="text-gray-400 text-sm mt-3">Sin tarjeta. Sin letras pequeñas.</p>
         </div>
@@ -243,14 +243,14 @@ export default function Home() {
       <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Cómo funciona</h2>
-            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">En menos de 10 minutos tienes todo listo</p>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Tan simple como abrir las puertas</h2>
+            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Si ya sabes recibir clientes, ya sabes usar HuellaClub.</p>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {[
-              { emoji: '📝', num: '1', title: 'Te registras', desc: 'Pones el nombre de tu negocio y cuántas visitas vale el premio' },
-              { emoji: '📲', num: '2', title: 'Pones el QR', desc: 'Lo imprimes y lo pegas en tu mostrador o caja. Ya está.' },
-              { emoji: '🎁', num: '3', title: 'Ellos regresan', desc: 'Cada visita los acerca más a su premio. Tú ves todo desde tu panel.' }
+              { emoji: '📝', num: '1', title: 'Registra tu negocio', desc: 'En 10 minutos tienes todo listo. Sin conocimientos técnicos.' },
+              { emoji: '📲', num: '2', title: 'Pon tu QR en caja', desc: 'Lo imprimes y lo pegas. Tus clientes hacen el resto.' },
+              { emoji: '👥', num: '3', title: 'Mira quién regresa', desc: 'Cada visita registrada es un cliente que eligió volver contigo.' }
             ].map((paso, i) => (
               <Reveal key={paso.num} delay={i * 150}>
                 <div className="text-center bg-white border border-indigo-100 rounded-2xl p-8 shadow-[0_4px_20px_rgba(99,102,241,0.08)] h-full flex flex-col items-center justify-start">
@@ -272,14 +272,14 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <Reveal>
               <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(99,102,241,0.15)]">
-                <Image src="/images/tacos.png" alt="Taquero con QR" fill className="object-cover" />
+                <Image src="/images/tacos.png" alt="Taquero con clientes" fill className="object-cover" />
               </div>
             </Reveal>
             <Reveal delay={200}>
               <div>
-                <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">Tu negocio. Tu programa.</h2>
+                <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">Tu negocio. Tu comunidad.</h2>
                 <p className="text-gray-600 mb-6">
-                  No necesitas saber de tecnología. Si sabes usar WhatsApp, puedes usar HuellaClub. En menos de 10 minutos tienes tu programa de lealtad funcionando.
+                  No necesitas ser Starbucks para tener clientes leales. Solo necesitas reconocer a los que ya te eligen. HuellaClub te ayuda a hacerlo en menos de 10 minutos.
                 </p>
                 <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition inline-block">
                   Empieza hoy gratis
@@ -390,9 +390,9 @@ export default function Home() {
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-12 md:mb-16">Lo que dicen los números</h2>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-            <AnimatedStat num={5} suffix="x" desc="más barato retener un cliente que conseguir uno nuevo" />
-            <AnimatedStat num={68} suffix="%" desc="de los clientes regresan más seguido cuando tienen recompensas" />
-            <AnimatedStat num={199} suffix="$" desc="MXN al mes. Menos de lo que cuesta perder un cliente frecuente" />
+            <AnimatedStat num={5} suffix="x" desc="Un cliente que regresa vale 5 veces más que uno nuevo" />
+            <AnimatedStat num={68} suffix="%" desc="De los clientes vuelven más seguido cuando sienten que los reconocen" />
+            <AnimatedStat num={199} suffix="$" desc="MXN al mes. Menos de lo que cuesta perder a tu cliente más fiel" />
           </div>
         </div>
       </section>
@@ -400,13 +400,13 @@ export default function Home() {
       <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Qué incluye</h2>
-            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Todo lo que necesitas para empezar hoy</p>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Todo lo que necesitas para construir tu comunidad</h2>
+            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Sin complicaciones. Sin contratos. Sin sorpresas.</p>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {[
               { emoji: '📱', titulo: 'QR personalizado', desc: 'Con los colores y nombre de tu negocio. Listo para imprimir.' },
-              { emoji: '📊', titulo: 'Panel de control', desc: 'Ve cuántos clientes tienes, visitas y canjes en tiempo real.' },
+              { emoji: '📊', titulo: 'Panel de control', desc: 'Ve cuántos clientes eligieron regresar contigo esta semana.' },
               { emoji: '🚀', titulo: 'Sin apps para tus clientes', desc: 'Solo escanean con la cámara del celular. Nada que descargar.' },
               { emoji: '🛡️', titulo: 'Protección anti-trampa', desc: 'Solo una visita por día por cliente. Sin posibilidad de hacer trampa.' },
               { emoji: '💬', titulo: 'Notificaciones por WhatsApp', desc: 'Tus clientes reciben su progreso directo en WhatsApp.' },
@@ -429,8 +429,8 @@ export default function Home() {
       <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
         <div className="max-w-3xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Lo que dicen nuestros clientes</h2>
-            <p className="text-gray-500 text-center text-sm mb-12">Negocios reales en Puebla usando HuellaClub</p>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Lo que dicen quienes ya lo usan</h2>
+            <p className="text-gray-500 text-center text-sm mb-12">Negocios reales en Puebla que están construyendo su comunidad</p>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
@@ -438,19 +438,19 @@ export default function Home() {
                 nombre: 'Don Ernesto',
                 negocio: 'Tortillería El Molino',
                 foto: '/images/testimonio1.png',
-                texto: 'Antes mis clientes se me iban a la tortillería de enfrente. Ahora regresan porque quieren completar sus visitas. En un mes noté la diferencia.'
+                texto: 'Antes no sabía si mis clientes regresaban por costumbre o porque les gustaba. Ahora lo sé. Y eso me motiva a seguir.'
               },
               {
                 nombre: 'Señora Lupita',
                 negocio: 'Abarrotes La Esperanza',
                 foto: '/images/testimonio2.png',
-                texto: 'Lo puse en mi tienda y mis clientes de siempre ahora vienen más seguido. Hasta me preguntan cuántas visitas les faltan. Muy fácil de usar.'
+                texto: 'Ver que mis clientes regresan me dice que estoy haciendo algo bien. HuellaClub me lo confirma cada semana.'
               },
               {
                 nombre: 'Chuy',
                 negocio: 'Barbería El Estilo',
                 foto: '/images/testimonio3.png',
-                texto: 'Mis clientes escanean el QR solos, yo no tengo que hacer nada. El panel me dice cuántos vienen cada semana. Vale lo que cuesta.'
+                texto: 'Mis mejores clientes ahora saben que los reconozco. Eso no tiene precio.'
               }
             ].map((t, i) => (
               <Reveal key={t.nombre} delay={i * 150}>
@@ -515,7 +515,7 @@ export default function Home() {
         <div className="max-w-lg mx-auto">
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Un precio. Todo incluido.</h2>
-            <p className="text-gray-500 text-center text-sm mb-10 md:mb-12">Sin sorpresas. Sin comisiones. Sin contratos.</p>
+            <p className="text-gray-500 text-center text-sm mb-10 md:mb-12">Invierte en tus clientes. Ellos ya están invirtiendo en ti.</p>
           </Reveal>
           <Reveal delay={200}>
             <div className="bg-white border-2 border-indigo-500 rounded-3xl p-8 md:p-10 text-center shadow-[0_8px_40px_rgba(99,102,241,0.15)]">
@@ -560,7 +560,7 @@ export default function Home() {
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">¿Tienes dudas?</h2>
             <p className="text-gray-600 mb-6">
-              Escríbenos directamente y te respondemos en menos de 24 horas.
+              Cuéntanos de tu negocio y te ayudamos a arrancar.
             </p>
             <a href="mailto:sabino@maplo.com.mx" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition inline-block text-base md:text-lg mb-4">
               sabino@maplo.com.mx
@@ -578,10 +578,10 @@ export default function Home() {
         <Reveal>
           <div className="relative z-10 max-w-lg mx-auto text-center">
             <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-4">
-              Empieza hoy. Es gratis.
+              Tu próximo cliente fiel ya existe. Solo necesitas reconocerlo.
             </h2>
             <p className="text-gray-600 mb-2">
-              30 días gratis. Después $199 MXN al mes.
+              30 días gratis para descubrirlo.
             </p>
             <p className="text-gray-500 text-sm mb-10">
               Cancelas cuando quieras. Sin contratos.
@@ -590,7 +590,7 @@ export default function Home() {
               href="/registro"
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 md:px-10 rounded-xl transition inline-block text-base md:text-lg"
             >
-              Registrar mi negocio gratis
+              Empieza hoy gratis
             </Link>
           </div>
         </Reveal>
