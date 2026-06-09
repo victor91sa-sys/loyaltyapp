@@ -183,7 +183,7 @@ function DashboardContent() {
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500 text-sm">Cargando tu panel...</p>
+          <p className="text-gray-500 text-sm">Cargando tu comunidad...</p>
         </div>
       </main>
     )
@@ -196,7 +196,7 @@ function DashboardContent() {
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-gray-900 font-bold text-lg">{negocio?.nombre || negocioNombre}</h1>
-            <p className="text-gray-500 text-xs">Panel de control</p>
+            <p className="text-gray-500 text-xs">Tu comunidad de clientes</p>
           </div>
           <button onClick={cerrarSesion} className="text-gray-400 hover:text-gray-600 text-sm transition">
             Cerrar sesión
@@ -217,7 +217,7 @@ function DashboardContent() {
           <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_2px_8px_rgba(99,102,241,0.08)]">
             <div>
               <p className="text-indigo-900 font-semibold">Período de prueba</p>
-              <p className="text-indigo-600 text-sm">Te quedan {diasRestantes} días gratis</p>
+              <p className="text-indigo-600 text-sm">Te quedan {diasRestantes} días para seguir reconociendo a tus clientes gratis</p>
             </div>
             <button
               onClick={handlePago}
@@ -232,7 +232,7 @@ function DashboardContent() {
         {!negocio?.suscripcion_activa && !trialActivo && (
           <div className="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6 shadow-[0_2px_8px_rgba(239,68,68,0.08)]">
             <p className="text-red-800 font-semibold mb-1">Tu período de prueba terminó</p>
-            <p className="text-red-600 text-sm mb-4">Suscríbete para reactivar tu programa de lealtad.</p>
+            <p className="text-red-600 text-sm mb-4">Tus clientes siguen ahí. Suscríbete para seguir reconociéndolos.</p>
             <button
               onClick={handlePago}
               disabled={pagando}
@@ -246,23 +246,20 @@ function DashboardContent() {
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
             <p className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{totalClientes}</p>
-            <p className="text-gray-500 text-xs md:text-sm">Clientes totales</p>
-            <p className="text-indigo-500 text-xs mt-1">👥 registrados</p>
+            <p className="text-gray-500 text-xs md:text-sm">Personas que han elegido tu negocio</p>
           </div>
           <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
             <p className="text-4xl md:text-5xl font-bold text-indigo-600 mb-1">{visitasSemana}</p>
-            <p className="text-gray-500 text-xs md:text-sm">Visitas esta semana</p>
-            <p className="text-indigo-500 text-xs mt-1">📅 7 días</p>
+            <p className="text-gray-500 text-xs md:text-sm">Eligieron regresar esta semana</p>
           </div>
           <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
             <p className="text-4xl md:text-5xl font-bold text-green-600 mb-1">{canjes}</p>
-            <p className="text-gray-500 text-xs md:text-sm">Canjes completados</p>
-            <p className="text-green-500 text-xs mt-1">🎁 recompensas</p>
+            <p className="text-gray-500 text-xs md:text-sm">Completaron su lealtad</p>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-6">Visitas últimos 7 días</h2>
+          <h2 className="text-gray-900 font-semibold mb-6">Clientes que regresaron esta semana</h2>
           <div className="flex items-end gap-2 h-32">
             {visitasPorDia.map((d, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
@@ -281,7 +278,7 @@ function DashboardContent() {
         </div>
 
         <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-4">Tu código QR</h2>
+          <h2 className="text-gray-900 font-semibold mb-4">Tu puerta de entrada</h2>
           {accesoActivo ? (
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div ref={qrRef} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
@@ -289,7 +286,7 @@ function DashboardContent() {
               </div>
               <div className="flex flex-col gap-3 flex-1">
                 <p className="text-gray-600 text-sm">
-                  Imprime este QR y colócalo en tu caja. Tus clientes lo escanean para registrar su visita.
+                  Este QR es la forma en que tus clientes te dicen que regresan. Imprímelo y ponlo donde todos lo vean.
                 </p>
                 <button
                   onClick={descargarQR}
@@ -301,13 +298,13 @@ function DashboardContent() {
                   onClick={irAlEditor}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
                 >
-                  Personalizar QR
+                  Personalizar cartel
                 </button>
               </div>
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-500 text-sm mb-4">Tu QR está desactivado. Suscríbete para reactivarlo.</p>
+              <p className="text-gray-500 text-sm mb-4">Tu QR está desactivado. Suscríbete para seguir reconociendo a tus clientes.</p>
               <button
                 onClick={handlePago}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition text-sm"
@@ -320,9 +317,14 @@ function DashboardContent() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-4">🏆 Clientes más frecuentes</h2>
+            <h2 className="text-gray-900 font-semibold mb-1">🏆 Tus clientes más leales</h2>
+            <p className="text-gray-400 text-xs mb-4">Estas personas han elegido tu negocio más que nadie.</p>
             {clientesTop.length === 0 ? (
-              <p className="text-gray-400 text-sm">Aún no tienes clientes.</p>
+              <div className="text-center py-4">
+                <p className="text-4xl mb-2">👥</p>
+                <p className="text-gray-400 text-sm">Aún no tienes clientes.</p>
+                <p className="text-gray-400 text-xs mt-1">Pon tu QR y empezarán a llegar.</p>
+              </div>
             ) : (
               <div className="flex flex-col gap-3">
                 {clientesTop.map((cliente, i) => (
@@ -347,7 +349,8 @@ function DashboardContent() {
           </div>
 
           <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-4">🕐 Actividad reciente</h2>
+            <h2 className="text-gray-900 font-semibold mb-1">🕐 Quién regresó hoy</h2>
+            <p className="text-gray-400 text-xs mb-4">Actividad reciente en tu negocio.</p>
             {actividadReciente.length === 0 ? (
               <p className="text-gray-400 text-sm">Sin actividad reciente.</p>
             ) : (
@@ -456,7 +459,8 @@ function DashboardContent() {
         </div>
 
         <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-4">Todos tus clientes</h2>
+          <h2 className="text-gray-900 font-semibold mb-1">Tu comunidad completa</h2>
+          <p className="text-gray-400 text-xs mb-4">Todas las personas que han elegido tu negocio.</p>
           {clientes.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-4xl mb-3">👥</p>
@@ -473,7 +477,7 @@ function DashboardContent() {
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-900 text-sm font-medium">{cliente.celular}</span>
                       <span className={`text-xs font-semibold ${completo ? 'text-green-600' : 'text-gray-500'}`}>
-                        {completo ? '🎁 Canje completado' : cliente.visitas + ' de ' + negocio.visitas + ' visitas'}
+                        {completo ? '🎁 Recompensa ganada' : cliente.visitas + ' de ' + negocio.visitas + ' visitas'}
                       </span>
                     </div>
                     <div className="w-full bg-indigo-100 rounded-full h-2">
