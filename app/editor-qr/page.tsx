@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense } from 'react'
-import QRCodeStyling from 'qr-code-styling'
 
 const FUENTES = [
   { nombre: 'Moderna', valor: 'sans-serif' },
@@ -50,31 +49,43 @@ function EditorQRContent() {
   const [contacto, setContacto] = useState('')
   const [fuente, setFuente] = useState('sans-serif')
   const [descargando, setDescargando] = useState(false)
+  const [montado, setMontado] = useState(false)
   const qrRef = useRef<HTMLDivElement>(null)
-  const qrCode = useRef<QRCodeStyling | null>(null)
+  const qrCode = useRef<any>(null)
 
   const urlCliente = 'https://huellaclub.app/visita?negocio=' + negocioId
-
   const listo = (usarNombre ? nombrePersonalizado.length > 0 : logo !== null) && titulo.length > 0
 
   useEffect(() => {
-    qrCode.current = new QRCodeStyling({
-      width: 200,
-      height: 200,
-      data: urlCliente,
-      dotsOptions: { color: colorPuntos, type: 'rounded' },
-      backgroundOptions: { color: '#ffffff' },
-      image: logo || undefined,
-      imageOptions: { crossOrigin: 'anonymous', margin: 8 }
-    })
-
-    if (qrRef.current) {
-      qrRef.current.innerHTML = ''
-      qrCode.current.append(qrRef.current)
-    }
+    setMontado(true)
   }, [])
 
   useEffect(() => {
+    if (!montado) return
+
+    const iniciarQR = async () => {
+      const QRCodeStyling = (await import('qr-code-styling')).default
+      qrCode.current = new QRCodeStyling({
+        width: 200,
+        height: 200,
+        data: urlCliente,
+        dotsOptions: { color: colorPuntos, type: 'rounded' },
+        backgroundOptions: { color: '#ffffff' },
+        image: logo || undefined,
+        imageOptions: { crossOrigin: 'anonymous', margin: 8 }
+      })
+
+      if (qrRef.current) {
+        qrRef.current.innerHTML = ''
+        qrCode.current.append(qrRef.current)
+      }
+    }
+
+    iniciarQR()
+  }, [montado])
+
+  useEffect(() => {
+    if (!qrCode.current) return
     qrCode.current?.update({
       dotsOptions: { color: colorPuntos, type: 'rounded' },
       image: logo || undefined,
@@ -102,7 +113,8 @@ function EditorQRContent() {
     })
   }
 
-  const generarQRCanvas = (): Promise<HTMLCanvasElement> => {
+  const generarQRCanvas = async (): Promise<HTMLCanvasElement> => {
+    const QRCodeStyling = (await import('qr-code-styling')).default
     return new Promise((resolve) => {
       const tempDiv = document.createElement('div')
       tempDiv.style.position = 'absolute'
@@ -277,6 +289,17 @@ function EditorQRContent() {
     } finally {
       setDescargando(false)
     }
+  }
+
+  if (!montado) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 text-sm">Cargando editor...</p>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -583,6 +606,8 @@ function EditorQRContent() {
 
 export default function EditorQR() {
   return (
-    <Suspense></Suspense>
+    <Suspense>
+      <EditorQRContent />
+    </Suspense>
   )
 }
