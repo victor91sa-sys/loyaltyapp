@@ -81,9 +81,9 @@ function VisitaContent() {
       <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
         <div className="text-center max-w-sm bg-white rounded-3xl border border-orange-100 shadow-[0_8px_40px_rgba(251,146,60,0.12)] p-10">
           <div className="text-7xl mb-6">⏰</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">Ya registraste hoy</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Ya registraste tu visita hoy</h1>
           <p className="text-gray-500">
-            Solo puedes registrar una visita por día. Vuelve mañana y sigue acumulando.
+            Vuelve mañana. Tu negocio favorito te espera.
           </p>
         </div>
       </main>
@@ -100,8 +100,9 @@ function VisitaContent() {
         <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
           <div className="text-center max-w-sm w-full">
             <div className="text-8xl mb-4" style={{ animation: 'bounce 1s infinite' }}>🎉</div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">¡Felicidades!</h1>
-            <p className="text-2xl text-indigo-600 font-bold mb-4">{resultado.recompensa}</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">¡Lo lograste!</h1>
+            <p className="text-gray-500 text-sm mb-2">Tu lealtad tiene recompensa.</p>
+            <p className="text-2xl text-indigo-600 font-bold mb-6">{resultado.recompensa}</p>
             <p className="text-gray-500 mb-8">
               Muestra esta pantalla en caja para reclamar tu premio.
             </p>
@@ -112,7 +113,7 @@ function VisitaContent() {
                 Completaste {resultado.meta} visitas
               </p>
             </div>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center flex-wrap gap-2">
               {Array.from({ length: resultado.meta }, (_, i) => (
                 <div
                   key={i}
@@ -137,8 +138,9 @@ function VisitaContent() {
       <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
         <div className="text-center max-w-sm w-full">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">¡Visita registrada!</h1>
-          <p className="text-gray-500 text-sm mb-8">en {resultado.negocioNombre}</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">¡Gracias por regresar!</h1>
+          <p className="text-gray-500 text-sm mb-2">{resultado.negocioNombre} te reconoce.</p>
+          <p className="text-gray-400 text-xs mb-8">Has elegido este lugar {resultado.visitas} {resultado.visitas === 1 ? 'vez' : 'veces'}</p>
 
           <div className="bg-white border border-indigo-100 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.10)]">
             <div className="flex justify-between items-center mb-3">
@@ -155,7 +157,7 @@ function VisitaContent() {
             </div>
             <p className="text-indigo-600 text-sm font-medium">
               {faltan === 1
-                ? '¡Solo te falta 1 visita más! 🔥'
+                ? '¡Solo te falta 1 visita más! 🔥 Sigues construyendo algo bueno aquí.'
                 : `Te faltan ${faltan} visitas para: ${resultado.recompensa}`
               }
             </p>
@@ -195,20 +197,18 @@ function VisitaContent() {
             Registra tu visita
           </h1>
           <p className="text-gray-500 text-sm">
-            Ingresa tu número de celular para acumular visitas y ganar recompensas
+            Tu negocio favorito te está reconociendo. Ingresa tu número para acumular visitas y ganar recompensas.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <input
-              type="tel"
-              value={celular}
-              onChange={(e) => setCelular(e.target.value)}
-              placeholder="Ej. 5512345678"
-              className="w-full bg-white border-2 border-gray-200 focus:border-indigo-500 text-gray-900 rounded-2xl px-4 py-4 outline-none transition text-center text-xl tracking-widest shadow-sm"
-            />
-          </div>
+          <input
+            type="tel"
+            value={celular}
+            onChange={(e) => setCelular(e.target.value)}
+            placeholder="Ej. 5512345678"
+            className="w-full bg-white border-2 border-gray-200 focus:border-indigo-500 text-gray-900 rounded-2xl px-4 py-4 outline-none transition text-center text-xl tracking-widest shadow-sm"
+          />
           <button
             type="submit"
             disabled={enviando || !celular}
