@@ -193,7 +193,10 @@ export default function Home() {
     <main className="min-h-screen bg-white flex flex-col">
 
       <nav className="flex items-center justify-between px-6 md:px-8 py-5 sticky top-0 bg-white z-50 border-b border-gray-200 shadow-sm">
-        <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
+        <div>
+          <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
+          <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+        </div>
         <div className="flex items-center gap-3 md:gap-6">
           <Link href="/login" className="text-gray-500 hover:text-gray-900 text-sm transition hidden md:block">
             Ya tengo cuenta
@@ -578,7 +581,7 @@ export default function Home() {
         <Reveal>
           <div className="relative z-10 max-w-lg mx-auto text-center">
             <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-4">
-              Tu próximo cliente fiel ya existe. Solo necesitas reconocerlo.
+              Vuelven por ti. Empieza hoy a saberlo.
             </h2>
             <p className="text-gray-600 mb-2">
               30 días gratis para descubrirlo.
@@ -598,7 +601,10 @@ export default function Home() {
 
       <footer className="px-6 md:px-8 py-8 border-t border-gray-200 bg-white">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <span className="text-gray-500 text-sm">HuellaClub 2026</span>
+          <div>
+            <span className="text-gray-500 text-sm font-semibold">HuellaClub</span>
+            <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+          </div>
           <div className="flex gap-4 md:gap-6">
             <Link href="/terminos" className="text-gray-500 hover:text-gray-700 text-sm transition">Términos</Link>
             <a href="mailto:sabino@maplo.com.mx" className="text-gray-500 hover:text-gray-700 text-sm transition">Contacto</a>
