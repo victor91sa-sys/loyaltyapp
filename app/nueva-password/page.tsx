@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
+import Link from 'next/link'
 
 export default function NuevaPassword() {
   const router = useRouter()
@@ -26,7 +27,7 @@ export default function NuevaPassword() {
           type: 'recovery'
         })
         if (error) {
-          setError('Este enlace expiro. Solicita uno nuevo.')
+          setError('Este enlace expiró. Solicita uno nuevo.')
         } else {
           setListo(true)
         }
@@ -47,12 +48,12 @@ export default function NuevaPassword() {
     setError('')
 
     if (password !== confirmPassword) {
-      setError('Las contrasenas no coinciden')
+      setError('Las contraseñas no coinciden')
       return
     }
 
     if (password.length < 6) {
-      setError('La contrasena debe tener al menos 6 caracteres')
+      setError('La contraseña debe tener al menos 6 caracteres')
       return
     }
 
@@ -69,81 +70,90 @@ export default function NuevaPassword() {
 
   if (error && !listo) {
     return (
-      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-        <div className="text-center max-w-md">
-          <p className="text-6xl mb-6">!</p>
-          <h1 className="text-3xl font-bold text-white mb-4">Enlace expirado</h1>
-          <p className="text-gray-400 mb-8">{error}</p>
-          
-          <a href="/recuperar" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition">
+      <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
+        <div className="bg-white rounded-3xl border border-red-100 shadow-[0_8px_40px_rgba(239,68,68,0.10)] p-10 text-center max-w-md w-full">
+          <div className="text-6xl mb-6">⏰</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Enlace expirado</h1>
+          <p className="text-gray-500 mb-8">{error}</p>
+          <Link
+            href="/recuperar"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition inline-block w-full text-center"
+          >
             Solicitar nuevo enlace
-          </a>
+          </Link>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <h1 className="text-3xl font-bold text-white mb-2">
-          Nueva contrasena
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
+      <div className="bg-white rounded-3xl border border-indigo-100 shadow-[0_8px_40px_rgba(99,102,241,0.12)] p-10 w-full max-w-md">
+        <Link href="/" className="text-indigo-600 font-bold text-xl block mb-8">
+          HuellaClub
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Nueva contraseña
         </h1>
-        <p className="text-gray-400 mb-8">
-          Elige una contrasena segura para tu cuenta
+        <p className="text-gray-500 text-sm mb-8">
+          Elige una contraseña segura para tu cuenta.
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Nueva contrasena</label>
+            <label className="text-gray-700 text-sm font-medium mb-1 block">Nueva contraseña</label>
             <div className="relative">
               <input
                 type={verPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimo 6 caracteres"
-                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+                placeholder="Mínimo 6 caracteres"
+                className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm pr-16"
               />
               <button
                 type="button"
                 onClick={() => setVerPassword(!verPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm transition"
               >
-                {verPassword ? 'Ver' : 'Ocultar'}
+                {verPassword ? 'Ocultar' : 'Ver'}
               </button>
             </div>
           </div>
           <div>
-            <label className="text-gray-300 text-sm mb-1 block">Confirmar contrasena</label>
+            <label className="text-gray-700 text-sm font-medium mb-1 block">Confirmar contraseña</label>
             <div className="relative">
               <input
                 type={verConfirm ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu contrasena"
-                className="w-full bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+                placeholder="Repite tu contraseña"
+                className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm pr-16"
               />
               <button
                 type="button"
                 onClick={() => setVerConfirm(!verConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm transition"
               >
-                {verConfirm ? 'Ver' : 'Ocultar'}
+                {verConfirm ? 'Ocultar' : 'Ver'}
               </button>
             </div>
           </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
           <button
             type="submit"
             disabled={enviando || !password || !confirmPassword || !listo}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50 mt-2"
           >
-            {enviando ? 'Guardando...' : 'Guardar nueva contrasena'}
+            {enviando ? 'Guardando...' : 'Guardar nueva contraseña'}
           </button>
         </form>
         <p className="text-gray-500 text-sm text-center mt-6">
-          <a href="/login" className="text-indigo-400 hover:text-indigo-300">
-            Volver al inicio de sesion
-          </a>
+          <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
+            Volver al inicio de sesión
+          </Link>
         </p>
       </div>
     </main>
