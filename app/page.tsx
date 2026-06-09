@@ -124,6 +124,26 @@ function MockupCartel() {
   )
 }
 
+function FAQItem({ pregunta, respuesta }: { pregunta: string, respuesta: string }) {
+  const [abierto, setAbierto] = useState(false)
+  return (
+    <div className="bg-white border border-indigo-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
+      <button
+        onClick={() => setAbierto(!abierto)}
+        className="w-full text-left px-6 py-4 flex justify-between items-center"
+      >
+        <span className="text-gray-900 font-semibold text-sm">{pregunta}</span>
+        <span className="text-indigo-600 text-xl ml-4">{abierto ? '−' : '+'}</span>
+      </button>
+      {abierto && (
+        <div className="px-6 pb-4">
+          <p className="text-gray-600 text-sm">{respuesta}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Home() {
   const router = useRouter()
 
@@ -138,7 +158,36 @@ export default function Home() {
     }
   }, [])
 
-  const negocios = ['☕ Cafeterías', '🌮 Taquerías', '✂️ Barberías', '🫓 Tortillerías', '🛒 Abarrotes', '💅 Salones', '🛍️ Tianguis', '🍽️ Restaurantes', '💊 Farmacias', '🚿 Lavanderías', '☕ Cafeterías', '🌮 Taquerías', '✂️ Barberías', '🫓 Tortillerías', '🛒 Abarrotes']
+  const negociosMarquee = [
+    '☕ Cafeterías', '🌮 Taquerías', '✂️ Barberías', '🫓 Tortillerías',
+    '🛒 Abarrotes', '💅 Salones', '🛍️ Tianguis', '🍽️ Restaurantes',
+    '💊 Farmacias', '🚿 Lavanderías', '🍕 Pizzerías', '🥐 Panaderías',
+    '🥩 Carnicerías', '✏️ Papelerías', '💐 Florerías', '🐾 Veterinarias',
+    '💪 Gimnasios', '🍊 Fruterías', '🦐 Marisquerías', '🔧 Ferreterías'
+  ]
+
+  const negocios = [
+    { nombre: 'Café Centenario', archivo: 'icono-cafeteria' },
+    { nombre: 'Tacos El Compadre', archivo: 'icono-taqueria' },
+    { nombre: 'Barbería Tres Reyes', archivo: 'icono-barberia' },
+    { nombre: 'Tortillería Doña Carmen', archivo: 'icono-tortilleria' },
+    { nombre: 'Abarrotes El Güero', archivo: 'icono-abarrotes' },
+    { nombre: 'Mercado San Judas', archivo: 'icono-tianguis' },
+    { nombre: 'El Rincón de Lupita', archivo: 'icono-restaurante' },
+    { nombre: 'Salón Divina', archivo: 'icono-salon' },
+    { nombre: 'Farmacia San Ángel', archivo: 'icono-farmacia' },
+    { nombre: 'Lavandería Express 24', archivo: 'icono-lavanderia' },
+    { nombre: 'Pizza Don Paco', archivo: 'icono-pizzeria' },
+    { nombre: 'Panadería La Flor de Trigo', archivo: 'icono-panaderia' },
+    { nombre: 'Carnicería Los Hermanos', archivo: 'icono-carniceria' },
+    { nombre: 'Papelería El Estudiante', archivo: 'icono-papeleria' },
+    { nombre: 'Flores y Más', archivo: 'icono-floreria' },
+    { nombre: 'Clínica Veterinaria Patitas', archivo: 'icono-veterinaria' },
+    { nombre: 'GymFit Cholula', archivo: 'icono-gym' },
+    { nombre: 'Frutas y Verduras El Paraíso', archivo: 'icono-fruteria' },
+    { nombre: 'Mariscos El Capitán', archivo: 'icono-marisqueria' },
+    { nombre: 'Ferretería El Clavo', archivo: 'icono-ferreteria' },
+  ]
 
   return (
     <main className="min-h-screen bg-white flex flex-col">
@@ -185,7 +234,7 @@ export default function Home() {
 
       <div className="overflow-hidden bg-indigo-50 py-4 border-y border-indigo-100">
         <div className="flex gap-8 animate-marquee whitespace-nowrap">
-          {negocios.concat(negocios).map((n, i) => (
+          {negociosMarquee.concat(negociosMarquee).map((n, i) => (
             <span key={i} className="text-indigo-600 font-semibold text-sm px-2">{n}</span>
           ))}
         </div>
@@ -278,36 +327,27 @@ export default function Home() {
       </section>
 
       <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <Reveal>
-              <div>
-                <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">Para cualquier negocio local</h2>
-                <p className="text-gray-600 mb-6">
-                  Si tienes clientes que regresan, HuellaClub es para ti. Sin importar el tamaño de tu negocio.
-                </p>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { emoji: '☕', nombre: 'Cafeterías' },
-                    { emoji: '🌮', nombre: 'Taquerías' },
-                    { emoji: '✂️', nombre: 'Barberías' },
-                    { emoji: '🫓', nombre: 'Tortillerías' },
-                    { emoji: '🛒', nombre: 'Abarrotes' },
-                    { emoji: '🛍️', nombre: 'Tianguis' }
-                  ].map((negocio) => (
-                    <div key={negocio.nombre} className="bg-gray-50 border border-indigo-100 rounded-xl p-3 text-center shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-                      <div className="text-2xl mb-1">{negocio.emoji}</div>
-                      <p className="text-gray-600 text-xs">{negocio.nombre}</p>
-                    </div>
-                  ))}
+        <div className="max-w-5xl mx-auto">
+          <Reveal>
+            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Para cualquier negocio local</h2>
+            <p className="text-gray-500 text-center text-sm mb-12">Si tienes clientes que regresan, HuellaClub es para ti.</p>
+          </Reveal>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {negocios.map((negocio, i) => (
+              <Reveal key={negocio.nombre} delay={i * 50}>
+                <div className="bg-white border border-indigo-100 rounded-2xl p-4 text-center shadow-[0_2px_8px_rgba(99,102,241,0.06)] hover:shadow-[0_4px_20px_rgba(99,102,241,0.12)] transition">
+                  <div className="relative w-16 h-16 mx-auto mb-3">
+                    <Image
+                      src={`/images/${negocio.archivo}.png`}
+                      alt={negocio.nombre}
+                      fill
+                      className="object-contain rounded-xl"
+                    />
+                  </div>
+                  <p className="text-gray-700 text-xs font-medium leading-tight">{negocio.nombre}</p>
                 </div>
-              </div>
-            </Reveal>
-            <Reveal delay={200}>
-              <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(99,102,241,0.15)]">
-                <Image src="/images/barberia.png" alt="Barbero sonriendo" fill className="object-cover" />
-              </div>
-            </Reveal>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -397,19 +437,19 @@ export default function Home() {
               {
                 nombre: 'Don Ernesto',
                 negocio: 'Tortillería El Molino',
-                emoji: '🫓',
+                foto: '/images/testimonio1.png',
                 texto: 'Antes mis clientes se me iban a la tortillería de enfrente. Ahora regresan porque quieren completar sus visitas. En un mes noté la diferencia.'
               },
               {
                 nombre: 'Señora Lupita',
                 negocio: 'Abarrotes La Esperanza',
-                emoji: '🛒',
+                foto: '/images/testimonio2.png',
                 texto: 'Lo puse en mi tienda y mis clientes de siempre ahora vienen más seguido. Hasta me preguntan cuántas visitas les faltan. Muy fácil de usar.'
               },
               {
                 nombre: 'Chuy',
                 negocio: 'Barbería El Estilo',
-                emoji: '✂️',
+                foto: '/images/testimonio3.png',
                 texto: 'Mis clientes escanean el QR solos, yo no tengo que hacer nada. El panel me dice cuántos vienen cada semana. Vale lo que cuesta.'
               }
             ].map((t, i) => (
@@ -417,8 +457,8 @@ export default function Home() {
                 <div className="bg-gray-50 border border-indigo-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] flex flex-col gap-4 h-full">
                   <p className="text-gray-700 text-sm leading-relaxed flex-1">"{t.texto}"</p>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-xl">
-                      {t.emoji}
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-indigo-100">
+                      <Image src={t.foto} alt={t.nombre} fill className="object-cover" />
                     </div>
                     <div>
                       <p className="text-gray-900 font-semibold text-sm">{t.nombre}</p>
@@ -471,7 +511,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
         <div className="max-w-lg mx-auto">
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Un precio. Todo incluido.</h2>
@@ -515,7 +555,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
         <div className="max-w-lg mx-auto text-center">
           <Reveal>
             <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">¿Tienes dudas?</h2>
@@ -567,12 +607,7 @@ export default function Home() {
         </div>
       </footer>
 
-      
-      <a  href="https://wa.me/525537195028?text=Hola%2C%20me%20interesa%20saber%20más%20sobre%20HuellaClub"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition z-50 text-2xl"
-      >
+      <a href="https://wa.me/525537195028?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20HuellaClub" target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition z-50 text-2xl">
         💬
       </a>
 
@@ -591,25 +626,5 @@ export default function Home() {
       `}</style>
 
     </main>
-  )
-}
-
-function FAQItem({ pregunta, respuesta }: { pregunta: string, respuesta: string }) {
-  const [abierto, setAbierto] = useState(false)
-  return (
-    <div className="bg-white border border-indigo-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-      <button
-        onClick={() => setAbierto(!abierto)}
-        className="w-full text-left px-6 py-4 flex justify-between items-center"
-      >
-        <span className="text-gray-900 font-semibold text-sm">{pregunta}</span>
-        <span className="text-indigo-600 text-xl ml-4">{abierto ? '−' : '+'}</span>
-      </button>
-      {abierto && (
-        <div className="px-6 pb-4">
-          <p className="text-gray-600 text-sm">{respuesta}</p>
-        </div>
-      )}
-    </div>
   )
 }
