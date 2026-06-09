@@ -11,8 +11,18 @@ function VisitaContent() {
 
   const [celular, setCelular] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const [resultado, setResultado] = useState<null | { visitas: number, meta: number, recompensa: string, negocioNombre: string }>(null)
+  const [resultado, setResultado] = useState<null | {
+    visitas: number,
+    meta: number,
+    recompensa: string,
+    negocioNombre: string,
+    googleMapsUrl: string
+  }>(null)
   const [bloqueado, setBloqueado] = useState(false)
+  const [estrellas, setEstrellas] = useState(0)
+  const [feedback, setFeedback] = useState('')
+  const [feedbackEnviado, setFeedbackEnviado] = useState(false)
+  const [enviandoFeedback, setEnviandoFeedback] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,7 +30,7 @@ function VisitaContent() {
 
     const { data: negocio } = await supabase
       .from('negocios')
-      .select('visitas, recompensas, nombre')
+      .select('visitas, recompensas, nombre, google_maps_url')
       .eq('id', negocioId)
       .single()
 
@@ -61,6 +71,7 @@ function VisitaContent() {
     const meta = negocio?.visitas ?? 0
     const recompensa = negocio?.recompensas ?? ''
     const negocioNombre = negocio?.nombre ?? ''
+    const googleMapsUrl = negocio?.google_maps_url ?? ''
 
     try {
       await fetch('/api/whatsapp', {
@@ -73,7 +84,33 @@ function VisitaContent() {
     }
 
     setEnviando(false)
-    setResultado({ visitas: visitasActuales, meta, recompensa, negocioNombre })
+    setResultado({ visitas: visitasActuales, meta, recompensa, negocioNombre, googleMapsUrl })
+  }
+
+  const handleEstrellas = (num: number) => {
+    setEstrellas(num)
+    if (num === 5 && resultado?.googleMapsUrl) {
+      window.location.href = resultado.googleMapsUrl
+    }
+  }
+
+  const handleFeedback = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setEnviandoFeedback(true)
+    try {
+      await fetch('/api/cancelar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          correo: 'sabino@maplo.com.mx',
+          motivo: `Feedback de cliente en ${resultado?.negocioNombre}: ${estrellas} estrellas. Comentario: ${feedback}`
+        })
+      })
+    } catch (error) {
+      console.log('Error enviando feedback')
+    }
+    setEnviandoFeedback(false)
+    setFeedbackEnviado(true)
   }
 
   if (bloqueado) {
@@ -96,6 +133,57 @@ function VisitaContent() {
     const progreso = Math.min((resultado.visitas / resultado.meta) * 100, 100)
 
     if (completo) {
+      if (feedbackEnviado) {
+        return (
+          <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+            <div className="text-center max-w-sm w-full bg-white rounded-3xl border border-indigo-100 shadow-[0_8px_40px_rgba(99,102,241,0.12)] p-10">
+              <div className="text-6xl mb-4">🙏</div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-3">¡Gracias por tu opinión!</h1>
+              <p className="text-gray-500 text-sm">
+                Tu feedback ayuda a {resultado.negocioNombre} a mejorar para ti.
+              </p>
+            </div>
+          </main>
+        )
+      }
+
+      if (estrellas > 0 && estrellas < 5) {
+        return (
+          <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+            <div className="text-center max-w-sm w-full">
+              <div className="text-5xl mb-4">💬</div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">¿Qué podemos mejorar?</h1>
+              <p className="text-gray-500 text-sm mb-8">
+                Tu opinión ayuda a {resultado.negocioNombre} a ser mejor para ti.
+              </p>
+              <form onSubmit={handleFeedback} className="flex flex-col gap-4">
+                <textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  placeholder="Cuéntanos qué podría mejorar..."
+                  rows={4}
+                  className="w-full bg-white border-2 border-gray-200 focus:border-indigo-500 text-gray-900 rounded-2xl px-4 py-3 outline-none transition text-sm resize-none shadow-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={enviandoFeedback || !feedback}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition disabled:opacity-50"
+                >
+                  {enviandoFeedback ? 'Enviando...' : 'Enviar comentario'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFeedbackEnviado(true)}
+                  className="text-gray-400 hover:text-gray-600 text-sm transition"
+                >
+                  Omitir
+                </button>
+              </form>
+            </div>
+          </main>
+        )
+      }
+
       return (
         <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
           <div className="text-center max-w-sm w-full">
@@ -103,25 +191,35 @@ function VisitaContent() {
             <h1 className="text-4xl font-bold text-gray-900 mb-2">¡Lo lograste!</h1>
             <p className="text-gray-500 text-sm mb-2">Tu lealtad tiene recompensa.</p>
             <p className="text-2xl text-indigo-600 font-bold mb-6">{resultado.recompensa}</p>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 text-sm mb-8">
               Muestra esta pantalla en caja para reclamar tu premio.
             </p>
-            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.12)]">
+
+            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6 mb-8 shadow-[0_4px_20px_rgba(99,102,241,0.12)]">
               <div className="text-5xl mb-3">🏆</div>
               <p className="text-indigo-700 font-semibold text-lg">{resultado.negocioNombre}</p>
-              <p className="text-indigo-500 text-sm mt-1">
-                Completaste {resultado.meta} visitas
-              </p>
+              <p className="text-indigo-500 text-sm mt-1">Completaste {resultado.meta} visitas</p>
             </div>
-            <div className="flex justify-center flex-wrap gap-2">
-              {Array.from({ length: resultado.meta }, (_, i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm bg-indigo-500"
-                >
-                  ⭐
-                </div>
-              ))}
+
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+              <p className="text-gray-700 font-semibold mb-4">¿Cómo fue tu experiencia?</p>
+              <div className="flex justify-center gap-3 mb-2">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => handleEstrellas(num)}
+                    className="text-4xl transition hover:scale-125"
+                    style={{ opacity: estrellas === 0 || estrellas >= num ? 1 : 0.3 }}
+                  >
+                    ⭐
+                  </button>
+                ))}
+              </div>
+              {resultado.googleMapsUrl && (
+                <p className="text-gray-400 text-xs mt-2">
+                  5 estrellas → te llevamos directo a Google Maps
+                </p>
+              )}
             </div>
           </div>
           <style>{`
