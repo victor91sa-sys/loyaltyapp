@@ -48,20 +48,23 @@ export default function Login() {
 
       <div className="hidden lg:flex flex-col justify-between bg-indigo-600 w-96 p-10 flex-shrink-0">
         <div>
-          <Link href="/" className="text-white font-bold text-xl">HuellaClub</Link>
+          <Link href="/" className="block">
+            <span className="text-white font-bold text-xl">HuellaClub</span>
+            <p className="text-indigo-300 text-xs mt-0.5">Vuelven por ti.</p>
+          </Link>
         </div>
         <div>
           <h2 className="text-white font-bold text-3xl mb-4 leading-tight">
             Bienvenido de vuelta
           </h2>
           <p className="text-indigo-200 text-sm mb-8">
-            Tus clientes te están esperando. Entra a tu panel y ve cómo va tu programa de lealtad.
+            Tus clientes te están esperando. Entra y mira quién regresó.
           </p>
           <div className="bg-indigo-700 rounded-2xl p-5">
             <p className="text-indigo-200 text-xs mb-3">Lo que te espera adentro</p>
             <ul className="flex flex-col gap-2">
               {[
-                '📊 Métricas de tus clientes',
+                '👥 Quién regresó esta semana',
                 '📲 Tu código QR listo',
                 '🎨 Editor de cartel',
                 '💬 Notificaciones por WhatsApp',
@@ -80,15 +83,16 @@ export default function Login() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
         <div className="w-full max-w-md">
 
-          <Link href="/" className="text-indigo-600 font-bold text-xl mb-8 block lg:hidden">
-            HuellaClub
+          <Link href="/" className="block mb-8 lg:hidden">
+            <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
+            <p className="text-gray-400 text-xs">Vuelven por ti.</p>
           </Link>
 
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             Inicia sesión
           </h1>
           <p className="text-gray-500 mb-8 text-sm">
-            Entra a tu panel de control
+            Entra a tu panel y mira quién regresó hoy.
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
