@@ -16,7 +16,8 @@ function VisitaContent() {
     meta: number,
     recompensa: string,
     negocioNombre: string,
-    googleMapsUrl: string
+    googleMapsUrl: string,
+    completo: boolean
   }>(null)
   const [bloqueado, setBloqueado] = useState(false)
   const [estrellas, setEstrellas] = useState(0)
@@ -52,11 +53,39 @@ function VisitaContent() {
         return
       }
 
-      await supabase
-        .from('clientes')
-        .update({ visitas: cliente.visitas + 1, ultima_visita: new Date().toISOString() })
-        .eq('id', cliente.id)
-      cliente.visitas = cliente.visitas + 1
+      const meta = negocio?.visitas ?? 10
+      const nuevasVisitas = cliente.visitas + 1
+      const completo = nuevasVisitas >= meta
+
+      if (completo) {
+        await supabase
+          .from('clientes')
+          .update({ visitas: 0, ultima_visita: new Date().toISOString() })
+          .eq('id', cliente.id)
+      } else {
+        await supabase
+          .from('clientes')
+          .update({ visitas: nuevasVisitas, ultima_visita: new Date().toISOString() })
+          .eq('id', cliente.id)
+      }
+
+      const visitasActuales = completo ? meta : nuevasVisitas
+      const recompensa = negocio?.recompensas ?? ''
+      const negocioNombre = negocio?.nombre ?? ''
+      const googleMapsUrl = negocio?.google_maps_url ?? ''
+
+      try {
+        await fetch('/api/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ celular, visitas: visitasActuales, meta, recompensa, negocioNombre })
+        })
+      } catch (error) {
+        console.log('WhatsApp no disponible')
+      }
+
+      setEnviando(false)
+      setResultado({ visitas: visitasActuales, meta, recompensa, negocioNombre, googleMapsUrl, completo })
 
     } else {
       const { data: nuevoCliente } = await supabase
@@ -64,27 +93,25 @@ function VisitaContent() {
         .insert([{ celular, negocio_id: negocioId, visitas: 1, ultima_visita: new Date().toISOString() }])
         .select()
         .single()
-      cliente = nuevoCliente
+
+      const meta = negocio?.visitas ?? 10
+      const recompensa = negocio?.recompensas ?? ''
+      const negocioNombre = negocio?.nombre ?? ''
+      const googleMapsUrl = negocio?.google_maps_url ?? ''
+
+      try {
+        await fetch('/api/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ celular, visitas: 1, meta, recompensa, negocioNombre })
+        })
+      } catch (error) {
+        console.log('WhatsApp no disponible')
+      }
+
+      setEnviando(false)
+      setResultado({ visitas: 1, meta, recompensa, negocioNombre, googleMapsUrl, completo: false })
     }
-
-    const visitasActuales = cliente?.visitas ?? 0
-    const meta = negocio?.visitas ?? 0
-    const recompensa = negocio?.recompensas ?? ''
-    const negocioNombre = negocio?.nombre ?? ''
-    const googleMapsUrl = negocio?.google_maps_url ?? ''
-
-    try {
-      await fetch('/api/whatsapp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ celular, visitas: visitasActuales, meta, recompensa, negocioNombre })
-      })
-    } catch (error) {
-      console.log('WhatsApp no disponible')
-    }
-
-    setEnviando(false)
-    setResultado({ visitas: visitasActuales, meta, recompensa, negocioNombre, googleMapsUrl })
   }
 
   const handleEstrellas = (num: number) => {
@@ -129,10 +156,10 @@ function VisitaContent() {
 
   if (resultado) {
     const faltan = resultado.meta - resultado.visitas
-    const completo = resultado.visitas >= resultado.meta
     const progreso = Math.min((resultado.visitas / resultado.meta) * 100, 100)
 
-    if (completo) {
+    if (resultado.completo) {
+
       if (feedbackEnviado) {
         return (
           <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
@@ -191,14 +218,24 @@ function VisitaContent() {
             <h1 className="text-4xl font-bold text-gray-900 mb-2">¡Lo lograste!</h1>
             <p className="text-gray-500 text-sm mb-2">Tu lealtad tiene recompensa.</p>
             <p className="text-2xl text-indigo-600 font-bold mb-6">{resultado.recompensa}</p>
-            <p className="text-gray-500 text-sm mb-8">
-              Muestra esta pantalla en caja para reclamar tu premio.
-            </p>
 
-            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6 mb-8 shadow-[0_4px_20px_rgba(99,102,241,0.12)]">
-              <div className="text-5xl mb-3">🏆</div>
-              <p className="text-indigo-700 font-semibold text-lg">{resultado.negocioNombre}</p>
-              <p className="text-indigo-500 text-sm mt-1">Completaste {resultado.meta} visitas</p>
+            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.12)]">
+              <div className="text-4xl mb-2">🏆</div>
+              <p className="text-indigo-700 font-bold text-lg mb-1">{resultado.negocioNombre}</p>
+              <p className="text-indigo-500 text-sm mb-3">Completaste {resultado.meta} visitas</p>
+              <div className="bg-indigo-100 rounded-xl p-3">
+                <p className="text-indigo-700 text-sm font-semibold">
+                  📲 Muestra esta pantalla en caja para reclamar tu premio
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-1.5 mb-8">
+              {Array.from({ length: resultado.meta }, (_, i) => (
+                <div key={i} className="w-8 h-8 rounded-lg flex items-center justify-center text-sm bg-indigo-500">
+                  ⭐
+                </div>
+              ))}
             </div>
 
             <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
