@@ -41,27 +41,42 @@ export default function PagoExitoso() {
 
   if (cargando) {
     return (
-      <main className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <p className="text-gray-400">Cargando...</p>
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 text-sm">Verificando tu pago...</p>
+        </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-      <div className="text-center max-w-md">
-        <p className="text-6xl mb-6">!</p>
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Pago exitoso
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
+      <div className="bg-white rounded-3xl border border-indigo-100 shadow-[0_8px_40px_rgba(99,102,241,0.12)] p-10 text-center max-w-md w-full">
+        <div className="text-7xl mb-6">🎉</div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          ¡Pago exitoso!
         </h1>
-        <p className="text-gray-400 text-lg mb-8">
-          Tu suscripcion a HuellaClub Pro esta activa. Bienvenido al club.
+        <p className="text-gray-500 mb-8">
+          Tu suscripción a HuellaClub Pro está activa. Bienvenido al club.
         </p>
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-5 mb-8">
+          <ul className="flex flex-col gap-2 text-left">
+            {[
+              '✅ Clientes ilimitados',
+              '✅ QR personalizado activo',
+              '✅ Panel de control en tiempo real',
+              '✅ Notificaciones por WhatsApp',
+            ].map((item) => (
+              <li key={item} className="text-green-700 text-sm font-medium">{item}</li>
+            ))}
+          </ul>
+        </div>
         <button
           onClick={irAlDashboard}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition w-full text-lg"
         >
-          Ir a mi dashboard
+          Ir a mi panel
         </button>
       </div>
     </main>
