@@ -102,6 +102,23 @@ function DashboardContent() {
     .sort((a, b) => new Date(b.ultima_visita).getTime() - new Date(a.ultima_visita).getTime())
     .slice(0, 5)
 
+  const hace7dias = new Date()
+  hace7dias.setDate(hace7dias.getDate() - 7)
+  const hace14dias = new Date()
+  hace14dias.setDate(hace14dias.getDate() - 14)
+  const hace30dias = new Date()
+  hace30dias.setDate(hace30dias.getDate() - 30)
+
+  const inactivos7 = clientes.filter(c =>
+    c.ultima_visita && new Date(c.ultima_visita) < hace7dias
+  ).length
+  const inactivos14 = clientes.filter(c =>
+    c.ultima_visita && new Date(c.ultima_visita) < hace14dias
+  ).length
+  const inactivos30 = clientes.filter(c =>
+    c.ultima_visita && new Date(c.ultima_visita) < hace30dias
+  ).length
+
   const irAlEditor = () => {
     router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocio?.nombre || negocioNombre || ''))
   }
@@ -257,6 +274,34 @@ function DashboardContent() {
             <p className="text-gray-500 text-xs md:text-sm">Completaron su lealtad</p>
           </div>
         </div>
+
+        {totalClientes > 0 && (
+          <div className="bg-white rounded-2xl p-6 mb-6 border border-orange-100 shadow-[0_4px_20px_rgba(251,146,60,0.08)]">
+            <h2 className="text-gray-900 font-semibold mb-1">⚠️ Clientes que no han regresado</h2>
+            <p className="text-gray-400 text-xs mb-5">Estos clientes conocen tu negocio pero llevan tiempo sin volver.</p>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center bg-orange-50 rounded-xl p-4 border border-orange-100">
+                <p className="text-3xl font-bold text-orange-500 mb-1">{inactivos7}</p>
+                <p className="text-gray-500 text-xs">Más de 7 días sin visitar</p>
+              </div>
+              <div className="text-center bg-orange-50 rounded-xl p-4 border border-orange-100">
+                <p className="text-3xl font-bold text-orange-600 mb-1">{inactivos14}</p>
+                <p className="text-gray-500 text-xs">Más de 14 días sin visitar</p>
+              </div>
+              <div className="text-center bg-red-50 rounded-xl p-4 border border-red-100">
+                <p className="text-3xl font-bold text-red-500 mb-1">{inactivos30}</p>
+                <p className="text-gray-500 text-xs">Más de 30 días sin visitar</p>
+              </div>
+            </div>
+            {inactivos14 > 0 && (
+              <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+                <p className="text-orange-700 text-sm">
+                  💡 <strong>{inactivos14} clientes</strong> no han regresado en 14 días. Recuérdales que los esperas con un cartel visible o cuéntales de su progreso cuando los veas.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
           <h2 className="text-gray-900 font-semibold mb-6">Clientes que regresaron esta semana</h2>
