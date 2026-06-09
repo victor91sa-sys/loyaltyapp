@@ -78,11 +78,11 @@ function VisitaContent() {
 
   if (bloqueado) {
     return (
-      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-        <div className="text-center max-w-sm">
+      <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+        <div className="text-center max-w-sm bg-white rounded-3xl border border-orange-100 shadow-[0_8px_40px_rgba(251,146,60,0.12)] p-10">
           <div className="text-7xl mb-6">⏰</div>
-          <h1 className="text-3xl font-bold text-white mb-3">Ya registraste hoy</h1>
-          <p className="text-gray-400 text-lg">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">Ya registraste hoy</h1>
+          <p className="text-gray-500">
             Solo puedes registrar una visita por día. Vuelve mañana y sigue acumulando.
           </p>
         </div>
@@ -97,18 +97,30 @@ function VisitaContent() {
 
     if (completo) {
       return (
-        <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-          <div className="text-center max-w-sm">
-            <div className="text-8xl mb-6" style={{ animation: 'bounce 1s infinite' }}>🎉</div>
-            <h1 className="text-4xl font-bold text-white mb-3">¡Felicidades!</h1>
-            <p className="text-2xl text-indigo-400 font-semibold mb-4">Ganaste: {resultado.recompensa}</p>
-            <p className="text-gray-400 mb-8">
-              Muestra esta pantalla en caja para reclamar tu recompensa.
+        <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+          <div className="text-center max-w-sm w-full">
+            <div className="text-8xl mb-4" style={{ animation: 'bounce 1s infinite' }}>🎉</div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">¡Felicidades!</h1>
+            <p className="text-2xl text-indigo-600 font-bold mb-4">{resultado.recompensa}</p>
+            <p className="text-gray-500 mb-8">
+              Muestra esta pantalla en caja para reclamar tu premio.
             </p>
-            <div className="bg-indigo-900 border border-indigo-600 rounded-2xl p-6">
-              <p className="text-indigo-300 text-sm">
-                Completaste {resultado.meta} visitas en {resultado.negocioNombre}
+            <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.12)]">
+              <div className="text-5xl mb-3">🏆</div>
+              <p className="text-indigo-700 font-semibold text-lg">{resultado.negocioNombre}</p>
+              <p className="text-indigo-500 text-sm mt-1">
+                Completaste {resultado.meta} visitas
               </p>
+            </div>
+            <div className="flex justify-center gap-2">
+              {Array.from({ length: resultado.meta }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm bg-indigo-500"
+                >
+                  ⭐
+                </div>
+              ))}
             </div>
           </div>
           <style>{`
@@ -122,27 +134,29 @@ function VisitaContent() {
     }
 
     return (
-      <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
+      <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
         <div className="text-center max-w-sm w-full">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-3xl font-bold text-white mb-2">¡Visita registrada!</h1>
-          <p className="text-gray-400 mb-8">en {resultado.negocioNombre}</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">¡Visita registrada!</h1>
+          <p className="text-gray-500 text-sm mb-8">en {resultado.negocioNombre}</p>
 
-          <div className="bg-gray-900 rounded-2xl p-6 mb-6">
+          <div className="bg-white border border-indigo-100 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.10)]">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-gray-400 text-sm">Tu progreso</span>
-              <span className="text-white font-bold">{resultado.visitas} de {resultado.meta} visitas</span>
+              <span className="text-gray-500 text-sm">Tu progreso</span>
+              <span className="text-gray-900 font-bold text-sm">{resultado.visitas} de {resultado.meta} visitas</span>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-4 mb-3">
+            <div className="w-full bg-indigo-100 rounded-full h-5 mb-4 overflow-hidden">
               <div
-                className="h-4 rounded-full bg-indigo-500 transition-all duration-1000"
+                className="h-5 rounded-full bg-indigo-500 transition-all duration-1000 flex items-center justify-end pr-2"
                 style={{ width: progreso + '%' }}
-              />
+              >
+                {progreso > 15 && <span className="text-white text-xs font-bold">{Math.round(progreso)}%</span>}
+              </div>
             </div>
-            <p className="text-indigo-300 text-sm">
+            <p className="text-indigo-600 text-sm font-medium">
               {faltan === 1
                 ? '¡Solo te falta 1 visita más! 🔥'
-                : `Te faltan ${faltan} visitas para obtener: ${resultado.recompensa}`
+                : `Te faltan ${faltan} visitas para: ${resultado.recompensa}`
               }
             </p>
           </div>
@@ -151,10 +165,12 @@ function VisitaContent() {
             {Array.from({ length: resultado.meta }, (_, i) => (
               <div
                 key={i}
-                className="aspect-square rounded-xl flex items-center justify-center text-lg"
+                className="aspect-square rounded-xl flex items-center justify-center text-base font-bold transition-all duration-300"
                 style={{
-                  backgroundColor: i < resultado.visitas ? '#4f46e5' : '#1f2937',
-                  transition: `background-color 0.3s ease ${i * 100}ms`
+                  backgroundColor: i < resultado.visitas ? '#6366f1' : '#f0f0f0',
+                  color: i < resultado.visitas ? 'white' : '#d1d5db',
+                  transform: i === resultado.visitas - 1 ? 'scale(1.15)' : 'scale(1)',
+                  transition: `all 0.3s ease ${i * 80}ms`
                 }}
               >
                 {i < resultado.visitas ? '⭐' : '○'}
@@ -162,7 +178,7 @@ function VisitaContent() {
             ))}
           </div>
 
-          <p className="text-gray-600 text-xs">
+          <p className="text-gray-400 text-xs">
             Te enviamos tu progreso por WhatsApp
           </p>
         </div>
@@ -171,32 +187,38 @@ function VisitaContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-sm text-center">
-        <div className="text-7xl mb-6">📲</div>
-        <h1 className="text-3xl font-bold text-white mb-2">
-          Registra tu visita
-        </h1>
-        <p className="text-gray-400 mb-10">
-          Ingresa tu número de celular para acumular puntos y ganar recompensas
-        </p>
+    <main className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-4">📲</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Registra tu visita
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Ingresa tu número de celular para acumular visitas y ganar recompensas
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="tel"
-            value={celular}
-            onChange={(e) => setCelular(e.target.value)}
-            placeholder="Ej. 5512345678"
-            className="w-full bg-gray-800 text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-indigo-500 text-center text-xl tracking-widest"
-          />
+          <div>
+            <input
+              type="tel"
+              value={celular}
+              onChange={(e) => setCelular(e.target.value)}
+              placeholder="Ej. 5512345678"
+              className="w-full bg-white border-2 border-gray-200 focus:border-indigo-500 text-gray-900 rounded-2xl px-4 py-4 outline-none transition text-center text-xl tracking-widest shadow-sm"
+            />
+          </div>
           <button
             type="submit"
             disabled={enviando || !celular}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition disabled:opacity-50 text-lg"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition disabled:opacity-50 text-lg shadow-[0_4px_20px_rgba(99,102,241,0.3)]"
           >
             {enviando ? 'Registrando...' : 'Registrar visita'}
           </button>
         </form>
-        <p className="text-gray-700 text-xs mt-8">
+
+        <p className="text-gray-400 text-xs mt-6 text-center">
           Tu número solo se usa para llevar tu progreso. No se comparte con nadie.
         </p>
       </div>
