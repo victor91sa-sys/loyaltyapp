@@ -336,11 +336,19 @@ function EditorQRContent() {
                 />
               ) : (
                 <div>
-                  <input type="file" accept="image/*" onChange={handleLogo} className="text-gray-500 text-sm w-full" />
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-indigo-200 rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                    <span className="text-2xl mb-1">🖼️</span>
+                    <span className="text-indigo-600 text-sm font-semibold">Haz click para subir tu logo</span>
+                    <span className="text-gray-400 text-xs">PNG, JPG o SVG</span>
+                    <input type="file" accept="image/*" onChange={handleLogo} className="hidden" />
+                  </label>
                   {logo && (
-                    <button onClick={() => { setLogo(null); setUsarNombre(true) }} className="text-red-500 text-xs mt-2">
-                      Quitar logo
-                    </button>
+                    <div className="mt-3 flex items-center gap-3">
+                      <img src={logo} alt="logo" className="h-10 object-contain rounded-lg border border-gray-200" />
+                      <button onClick={() => { setLogo(null); setUsarNombre(true) }} className="text-red-500 text-xs hover:text-red-700">
+                        Quitar logo
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
@@ -380,7 +388,7 @@ function EditorQRContent() {
 
             <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
               <label className="text-gray-900 font-semibold block mb-1">3. Color de fondo</label>
-              <p className="text-gray-400 text-xs mb-3">El color principal de tu cartel. Elige uno que represente tu negocio.</p>
+              <p className="text-gray-400 text-xs mb-3">El color principal de tu cartel.</p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {COLORES_FONDO.map((c) => (
                   <button
@@ -575,8 +583,6 @@ function EditorQRContent() {
 
 export default function EditorQR() {
   return (
-    <Suspense>
-      <EditorQRContent />
-    </Suspense>
+    <Suspense></Suspense>
   )
 }
