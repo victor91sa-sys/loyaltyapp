@@ -22,7 +22,8 @@ function DashboardContent() {
   const [configForm, setConfigForm] = useState({
     nombre: '',
     visitas: '',
-    recompensas: ''
+    recompensas: '',
+    google_maps_url: ''
   })
 
   useEffect(() => {
@@ -37,7 +38,8 @@ function DashboardContent() {
       setConfigForm({
         nombre: negocioData?.nombre || '',
         visitas: negocioData?.visitas?.toString() || '',
-        recompensas: negocioData?.recompensas || ''
+        recompensas: negocioData?.recompensas || '',
+        google_maps_url: negocioData?.google_maps_url || ''
       })
 
       const { data: clientesData } = await supabase
@@ -182,7 +184,8 @@ function DashboardContent() {
       .update({
         nombre: configForm.nombre,
         visitas: parseInt(configForm.visitas),
-        recompensas: configForm.recompensas
+        recompensas: configForm.recompensas,
+        google_maps_url: configForm.google_maps_url
       })
       .eq('id', negocioId)
 
@@ -447,9 +450,15 @@ function DashboardContent() {
                 <span className="text-gray-500 text-sm">Visitas para la recompensa</span>
                 <span className="text-gray-900 text-sm font-semibold">{negocio?.visitas} visitas</span>
               </div>
-              <div className="flex justify-between items-center py-3">
+              <div className="flex justify-between items-center py-3 border-b border-gray-100">
                 <span className="text-gray-500 text-sm">Recompensa</span>
                 <span className="text-gray-900 text-sm font-semibold">{negocio?.recompensas}</span>
+              </div>
+              <div className="flex justify-between items-center py-3">
+                <span className="text-gray-500 text-sm">Google Maps</span>
+                <span className="text-gray-900 text-sm font-semibold">
+                  {negocio?.google_maps_url ? '✅ Configurado' : '⬜ Sin configurar'}
+                </span>
               </div>
             </div>
           ) : (
@@ -483,6 +492,17 @@ function DashboardContent() {
                   placeholder="Ej. Un café gratis"
                   className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
                 />
+              </div>
+              <div>
+                <label className="text-gray-700 text-sm font-medium block mb-1">Link de Google Maps (opcional)</label>
+                <input
+                  type="text"
+                  value={configForm.google_maps_url}
+                  onChange={(e) => setConfigForm({ ...configForm, google_maps_url: e.target.value })}
+                  placeholder="https://g.page/r/XXXXXXXXXX/review"
+                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                />
+                <p className="text-gray-400 text-xs mt-1">Tus clientes más felices llegarán directo a dejar su reseña en Google.</p>
               </div>
               <div className="flex gap-3">
                 <button
