@@ -5,6 +5,13 @@ import { QRCodeSVG } from 'qrcode.react'
 import { Suspense, useEffect, useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 
+type Recompensa = {
+  id?: string
+  visitas_requeridas: number
+  descripcion: string
+  orden: number
+}
+
 function DashboardContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -18,6 +25,9 @@ function DashboardContent() {
   const [pagando, setPagando] = useState(false)
   const [editando, setEditando] = useState(false)
   const [guardando, setGuardando] = useState(false)
+  const [editandoRecompensas, setEditandoRecompensas] = useState(false)
+  const [guardandoRecompensas, setGuardandoRecompensas] = useState(false)
+  const [recompensas, setRecompensas] = useState<Recompensa[]>([])
   const [visitasPorDia, setVisitasPorDia] = useState<{ dia: string, visitas: number }[]>([])
   const [configForm, setConfigForm] = useState({
     nombre: '',
@@ -41,6 +51,16 @@ function DashboardContent() {
         recompensas: negocioData?.recompensas || '',
         google_maps_url: negocioData?.google_maps_url || ''
       })
+
+      const { data: recompensasData } = await supabase
+        .from('recompensas')
+        .select('*')
+        .eq('negocio_id', negocioId)
+        .order('orden', { ascending: true })
+
+      if (recompensasData && recompensasData.length > 0) {
+        setRecompensas(recompensasData)
+      }
 
       const { data: clientesData } = await supabase
         .from('clientes')
@@ -200,6 +220,54 @@ function DashboardContent() {
     setGuardando(false)
   }
 
+  const agregarNivel = () => {
+    if (recompensas.length >= 3) return
+    setRecompensas([...recompensas, {
+      visitas_requeridas: 0,
+      descripcion: '',
+      orden: recompensas.length + 1
+    }])
+  }
+
+  const eliminarNivel = (index: number) => {
+    setRecompensas(recompensas.filter((_, i) => i !== index))
+  }
+
+  const actualizarNivel = (index: number, campo: string, valor: string) => {
+    setRecompensas(recompensas.map((r, i) =>
+      i === index ? { ...r, [campo]: campo === 'visitas_requeridas' ? parseInt(valor) : valor } : r
+    ))
+  }
+
+  const guardarRecompensas = async () => {
+    setGuardandoRecompensas(true)
+
+    await supabase
+      .from('recompensas')
+      .delete()
+      .eq('negocio_id', negocioId)
+
+    if (recompensas.length > 0) {
+      const { error } = await supabase
+        .from('recompensas')
+        .insert(recompensas.map((r, i) => ({
+          negocio_id: negocioId,
+          visitas_requeridas: r.visitas_requeridas,
+          descripcion: r.descripcion,
+          orden: i + 1
+        })))
+
+      if (error) {
+        alert('Error al guardar: ' + error.message)
+        setGuardandoRecompensas(false)
+        return
+      }
+    }
+
+    setEditandoRecompensas(false)
+    setGuardandoRecompensas(false)
+  }
+
   const marcarCanjeado = async (clienteId: string) => {
     const { error } = await supabase
       .from('clientes')
@@ -305,7 +373,7 @@ function DashboardContent() {
                 <div key={cliente.id} className="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl p-4">
                   <div>
                     <p className="text-gray-900 text-sm font-medium">{cliente.celular}</p>
-                    <p className="text-green-600 text-xs font-semibold mt-0.5">🏆 Premio ganado: {negocio?.recompensas}</p>
+                    <p className="text-green-600 text-xs font-semibold mt-0.5">🏆 Premio: {negocio?.recompensas}</p>
                   </div>
                   <button
                     onClick={() => marcarCanjeado(cliente.id)}
@@ -514,7 +582,7 @@ function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuántas visitas para la recompensa?</label>
+                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuántas visitas para la recompensa principal?</label>
                 <input
                   type="number"
                   value={configForm.visitas}
@@ -525,7 +593,7 @@ function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuál es la recompensa?</label>
+                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuál es la recompensa principal?</label>
                 <input
                   type="text"
                   value={configForm.recompensas}
@@ -555,6 +623,110 @@ function DashboardContent() {
                 </button>
                 <button
                   onClick={() => setEditando(false)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-gray-900 font-semibold">🎯 Niveles de recompensa</h2>
+            {!editandoRecompensas && (
+              <button
+                onClick={() => setEditandoRecompensas(true)}
+                className="text-indigo-600 hover:text-indigo-700 text-sm font-medium transition"
+              >
+                Editar
+              </button>
+            )}
+          </div>
+          <p className="text-gray-400 text-xs mb-4">Opcional. Agrega hasta 3 niveles para mantener a tus clientes motivados.</p>
+
+          {!editandoRecompensas ? (
+            <div>
+              {recompensas.length === 0 ? (
+                <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
+                  <p className="text-gray-400 text-sm mb-1">Sin niveles adicionales configurados</p>
+                  <p className="text-gray-400 text-xs">Tu programa usa solo la recompensa principal</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {recompensas.map((r, i) => (
+                    <div key={i} className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                      <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                        {i + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-gray-900 text-sm font-semibold">{r.descripcion}</p>
+                        <p className="text-indigo-600 text-xs">{r.visitas_requeridas} visitas</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {recompensas.map((r, i) => (
+                <div key={i} className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-indigo-700 text-sm font-semibold">Nivel {i + 1}</span>
+                    <button
+                      onClick={() => eliminarNivel(i)}
+                      className="text-red-400 hover:text-red-600 text-xs transition"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label className="text-gray-700 text-xs font-medium block mb-1">Visitas requeridas</label>
+                      <input
+                        type="number"
+                        value={r.visitas_requeridas}
+                        onChange={(e) => actualizarNivel(i, 'visitas_requeridas', e.target.value)}
+                        min="1"
+                        max="100"
+                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gray-700 text-xs font-medium block mb-1">Premio</label>
+                      <input
+                        type="text"
+                        value={r.descripcion}
+                        onChange={(e) => actualizarNivel(i, 'descripcion', e.target.value)}
+                        placeholder="Ej. Café grande gratis"
+                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {recompensas.length < 3 && (
+                <button
+                  onClick={agregarNivel}
+                  className="border-2 border-dashed border-indigo-300 hover:border-indigo-500 text-indigo-600 font-semibold py-3 rounded-xl transition text-sm"
+                >
+                  + Agregar nivel {recompensas.length + 1}
+                </button>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={guardarRecompensas}
+                  disabled={guardandoRecompensas}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 text-sm"
+                >
+                  {guardandoRecompensas ? 'Guardando...' : 'Guardar niveles'}
+                </button>
+                <button
+                  onClick={() => setEditandoRecompensas(false)}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition text-sm"
                 >
                   Cancelar
