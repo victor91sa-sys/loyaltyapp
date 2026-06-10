@@ -214,7 +214,7 @@ export default function Home() {
         </div>
         <div className="relative z-10 w-full max-w-3xl mx-auto" style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
           <div className="inline-block bg-indigo-100 text-indigo-600 text-xs font-semibold px-4 py-2 rounded-full mb-6">
-            30 días gratis · Después $199 MXN/mes
+            30 días gratis · Niveles de premio · Reseñas en Google
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Cada cliente que regresa es prueba de que lo estás haciendo bien
@@ -253,7 +253,7 @@ export default function Home() {
             {[
               { emoji: '📝', num: '1', title: 'Registra tu negocio', desc: 'En 10 minutos tienes todo listo. Sin conocimientos técnicos.' },
               { emoji: '📲', num: '2', title: 'Pon tu QR en caja', desc: 'Lo imprimes y lo pegas. Tus clientes hacen el resto.' },
-              { emoji: '👥', num: '3', title: 'Mira quién regresa', desc: 'Cada visita registrada es un cliente que eligió volver contigo.' }
+              { emoji: '🎯', num: '3', title: 'Ellos regresan. Y regresan de nuevo.', desc: 'Cada visita los acerca a su premio. Cuando llegan, hay otro esperándolos. El ciclo nunca para.' }
             ].map((paso, i) => (
               <Reveal key={paso.num} delay={i * 150}>
                 <div className="text-center bg-white border border-indigo-100 rounded-2xl p-8 shadow-[0_4px_20px_rgba(99,102,241,0.08)] h-full flex flex-col items-center justify-start">
@@ -375,6 +375,8 @@ export default function Home() {
                 ['Costo mensual', '💸 Impresión', '✅ $199 MXN'],
                 ['El cliente puede hacer trampa', '❌ Fácil', '✅ Protección incluida'],
                 ['Personalización', '❌ Limitada', '✅ Colores y logo'],
+                ['Múltiples niveles de premio', '❌ Imposible', '✅ Hasta 3 niveles'],
+                ['Reseñas en Google automáticas', '❌ No', '✅ Solo clientes felices'],
               ].map(([feature, paper, digital], i) => (
                 <div key={i} className={`grid grid-cols-3 text-sm ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                   <div className="p-4 text-gray-700 font-medium">{feature}</div>
@@ -413,7 +415,10 @@ export default function Home() {
               { emoji: '🚀', titulo: 'Sin apps para tus clientes', desc: 'Solo escanean con la cámara del celular. Nada que descargar.' },
               { emoji: '🛡️', titulo: 'Protección anti-trampa', desc: 'Solo una visita por día por cliente. Sin posibilidad de hacer trampa.' },
               { emoji: '💬', titulo: 'Notificaciones por WhatsApp', desc: 'Tus clientes reciben su progreso directo en WhatsApp.' },
-              { emoji: '🎨', titulo: 'Editor de cartel', desc: 'Diseña tu cartel en minutos sin necesidad de un diseñador.' }
+              { emoji: '🎨', titulo: 'Editor de cartel', desc: 'Diseña tu cartel en minutos sin necesidad de un diseñador.' },
+              { emoji: '🌟', titulo: 'Solo las mejores reseñas llegan a Google', desc: 'Tus clientes felices te dejan reseñas en Google. Los que tienen algo que decir, te lo dicen a ti primero.' },
+              { emoji: '🎯', titulo: 'Hasta 3 razones para regresar', desc: 'Configura niveles de premio. Cada cliente siempre tiene algo por qué volver.' },
+              { emoji: '👤', titulo: 'Tu cliente sabe cuánto lo reconoces', desc: 'Pueden ver su progreso en cualquier momento desde huellaclub.app/mi-progreso' }
             ].map((item, i) => (
               <Reveal key={item.titulo} delay={i * 100}>
                 <div className="bg-white border border-indigo-100 rounded-2xl p-5 md:p-6 flex gap-4 shadow-[0_4px_20px_rgba(99,102,241,0.06)]">
@@ -488,12 +493,20 @@ export default function Home() {
                 respuesta: 'No. Solo abren la cámara de su celular, escanean el QR y listo. Sin descargas, sin registros complicados.'
               },
               {
-                pregunta: '¿Qué pasa si un cliente cambia de número?',
-                respuesta: 'El programa está ligado al número de celular. Si cambia de número, empieza de cero. Pero en la práctica esto casi nunca pasa.'
+                pregunta: '¿Puedo dar más de un premio?',
+                respuesta: 'Sí. Puedes configurar hasta 3 niveles de recompensa. A las 5 visitas un premio, a las 10 otro, a las 20 el mejor. Tus clientes siempre tienen una razón para seguir.'
               },
               {
-                pregunta: '¿Puedo cambiar mi recompensa o el número de visitas?',
-                respuesta: 'Sí, en cualquier momento desde tu panel de configuración. Los cambios aplican para nuevas visitas.'
+                pregunta: '¿Cómo funciona la integración con Google Maps?',
+                respuesta: 'Cuando un cliente completa su recompensa, le preguntamos cómo fue su experiencia. Si da 5 estrellas, lo llevamos directo a Google Maps. Si da menos, nos manda el comentario a ti directamente.'
+              },
+              {
+                pregunta: '¿Puede un cliente ver su progreso sin ir al negocio?',
+                respuesta: 'Sí. Desde cualquier celular pueden entrar a huellaclub.app/mi-progreso, poner su número y ver cuánto llevan acumulado en todos sus negocios favoritos.'
+              },
+              {
+                pregunta: '¿Qué pasa si un cliente cambia de número?',
+                respuesta: 'El programa está ligado al número de celular. Si cambia de número, empieza de cero. Pero en la práctica esto casi nunca pasa.'
               },
               {
                 pregunta: '¿Cómo evito que un cliente haga trampa?',
@@ -535,6 +548,9 @@ export default function Home() {
                   'Clientes ilimitados',
                   'QR personalizado con tu marca',
                   'Panel de control en tiempo real',
+                  'Hasta 3 niveles de recompensa',
+                  'Reseñas filtradas en Google',
+                  'Portal de progreso para clientes',
                   'Notificaciones por WhatsApp',
                   'Editor de cartel incluido',
                   'Soporte por email',
