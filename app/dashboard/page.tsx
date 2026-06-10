@@ -28,6 +28,7 @@ function DashboardContent() {
   const [editandoRecompensas, setEditandoRecompensas] = useState(false)
   const [guardandoRecompensas, setGuardandoRecompensas] = useState(false)
   const [recompensas, setRecompensas] = useState<Recompensa[]>([])
+  const [errorRecompensas, setErrorRecompensas] = useState('')
   const [visitasPorDia, setVisitasPorDia] = useState<{ dia: string, visitas: number }[]>([])
   const [configForm, setConfigForm] = useState({
     nombre: '',
@@ -222,8 +223,10 @@ function DashboardContent() {
 
   const agregarNivel = () => {
     if (recompensas.length >= 3) return
+    const ultimoNivel = recompensas[recompensas.length - 1]
+    const nuevasVisitas = ultimoNivel ? ultimoNivel.visitas_requeridas + 5 : 5
     setRecompensas([...recompensas, {
-      visitas_requeridas: 0,
+      visitas_requeridas: nuevasVisitas,
       descripcion: '',
       orden: recompensas.length + 1
     }])
@@ -231,15 +234,36 @@ function DashboardContent() {
 
   const eliminarNivel = (index: number) => {
     setRecompensas(recompensas.filter((_, i) => i !== index))
+    setErrorRecompensas('')
   }
 
   const actualizarNivel = (index: number, campo: string, valor: string) => {
     setRecompensas(recompensas.map((r, i) =>
-      i === index ? { ...r, [campo]: campo === 'visitas_requeridas' ? parseInt(valor) : valor } : r
+      i === index ? { ...r, [campo]: campo === 'visitas_requeridas' ? parseInt(valor) || 0 : valor } : r
     ))
+    setErrorRecompensas('')
+  }
+
+  const validarRecompensas = () => {
+    for (let i = 0; i < recompensas.length; i++) {
+      if (!recompensas[i].descripcion) {
+        setErrorRecompensas(`El nivel ${i + 1} necesita un premio`)
+        return false
+      }
+      if (!recompensas[i].visitas_requeridas || recompensas[i].visitas_requeridas < 1) {
+        setErrorRecompensas(`El nivel ${i + 1} necesita al menos 1 visita`)
+        return false
+      }
+      if (i > 0 && recompensas[i].visitas_requeridas <= recompensas[i - 1].visitas_requeridas) {
+        setErrorRecompensas(`El nivel ${i + 1} debe requerir más visitas que el nivel ${i} (más de ${recompensas[i - 1].visitas_requeridas})`)
+        return false
+      }
+    }
+    return true
   }
 
   const guardarRecompensas = async () => {
+    if (!validarRecompensas()) return
     setGuardandoRecompensas(true)
 
     await supabase
@@ -266,6 +290,7 @@ function DashboardContent() {
 
     setEditandoRecompensas(false)
     setGuardandoRecompensas(false)
+    setErrorRecompensas('')
   }
 
   const marcarCanjeado = async (clienteId: string) => {
@@ -582,7 +607,7 @@ function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuántas visitas para la recompensa principal?</label>
+                <label className="text-gray-700 text-sm font-medium block mb-1">¿A cuántas visitas totales se da la recompensa principal?</label>
                 <input
                   type="number"
                   value={configForm.visitas}
@@ -644,7 +669,7 @@ function DashboardContent() {
               </button>
             )}
           </div>
-          <p className="text-gray-400 text-xs mb-4">Opcional. Agrega hasta 3 niveles para mantener a tus clientes motivados.</p>
+          <p className="text-gray-400 text-xs mb-4">Opcional. Agrega hasta 3 niveles adicionales para mantener a tus clientes motivados.</p>
 
           {!editandoRecompensas ? (
             <div>
@@ -662,7 +687,7 @@ function DashboardContent() {
                       </div>
                       <div className="flex-1">
                         <p className="text-gray-900 text-sm font-semibold">{r.descripcion}</p>
-                        <p className="text-indigo-600 text-xs">{r.visitas_requeridas} visitas</p>
+                        <p className="text-indigo-600 text-xs">A las {r.visitas_requeridas} visitas totales</p>
                       </div>
                     </div>
                   ))}
@@ -671,10 +696,16 @@ function DashboardContent() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                <p className="text-indigo-700 text-xs">
+                  💡 Escribe el número total de visitas para cada nivel. Por ejemplo: nivel 1 a las 5 visitas, nivel 2 a las 10, nivel 3 a las 20.
+                </p>
+              </div>
+
               {recompensas.map((r, i) => (
-                <div key={i} className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-indigo-700 text-sm font-semibold">Nivel {i + 1}</span>
+                    <span className="text-gray-700 text-sm font-semibold">Nivel {i + 1}</span>
                     <button
                       onClick={() => eliminarNivel(i)}
                       className="text-red-400 hover:text-red-600 text-xs transition"
@@ -684,18 +715,22 @@ function DashboardContent() {
                   </div>
                   <div className="flex flex-col gap-3">
                     <div>
-                      <label className="text-gray-700 text-xs font-medium block mb-1">Visitas requeridas</label>
+                      <label className="text-gray-700 text-xs font-medium block mb-1">
+                        ¿A cuántas visitas totales se da este premio?
+                        {i > 0 && <span className="text-gray-400 ml-1">(debe ser mayor a {recompensas[i-1].visitas_requeridas})</span>}
+                      </label>
                       <input
                         type="number"
-                        value={r.visitas_requeridas}
+                        value={r.visitas_requeridas || ''}
                         onChange={(e) => actualizarNivel(i, 'visitas_requeridas', e.target.value)}
-                        min="1"
+                        min={i > 0 ? recompensas[i-1].visitas_requeridas + 1 : 1}
                         max="100"
+                        placeholder="Ej. 10"
                         className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
                       />
                     </div>
                     <div>
-                      <label className="text-gray-700 text-xs font-medium block mb-1">Premio</label>
+                      <label className="text-gray-700 text-xs font-medium block mb-1">¿Cuál es el premio?</label>
                       <input
                         type="text"
                         value={r.descripcion}
@@ -717,6 +752,12 @@ function DashboardContent() {
                 </button>
               )}
 
+              {errorRecompensas && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                  <p className="text-red-600 text-sm">{errorRecompensas}</p>
+                </div>
+              )}
+
               <div className="flex gap-3">
                 <button
                   onClick={guardarRecompensas}
@@ -726,7 +767,7 @@ function DashboardContent() {
                   {guardandoRecompensas ? 'Guardando...' : 'Guardar niveles'}
                 </button>
                 <button
-                  onClick={() => setEditandoRecompensas(false)}
+                  onClick={() => { setEditandoRecompensas(false); setErrorRecompensas('') }}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition text-sm"
                 >
                   Cancelar
