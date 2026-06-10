@@ -17,7 +17,8 @@ function VisitaContent() {
     recompensa: string,
     negocioNombre: string,
     googleMapsUrl: string,
-    completo: boolean
+    completo: boolean,
+    premioPendiente: boolean
   }>(null)
   const [bloqueado, setBloqueado] = useState(false)
   const [estrellas, setEstrellas] = useState(0)
@@ -42,7 +43,27 @@ function VisitaContent() {
       .eq('negocio_id', negocioId)
       .single()
 
+    const meta = negocio?.visitas ?? 10
+    const recompensa = negocio?.recompensas ?? ''
+    const negocioNombre = negocio?.nombre ?? ''
+    const googleMapsUrl = negocio?.google_maps_url ?? ''
+
     if (cliente) {
+
+      if (cliente.premio_pendiente) {
+        setEnviando(false)
+        setResultado({
+          visitas: meta,
+          meta,
+          recompensa,
+          negocioNombre,
+          googleMapsUrl,
+          completo: true,
+          premioPendiente: true
+        })
+        return
+      }
+
       const ultimaVisita = new Date(cliente.ultima_visita)
       const ahora = new Date()
       const diferenciaHoras = (ahora.getTime() - ultimaVisita.getTime()) / (1000 * 60 * 60)
@@ -53,51 +74,59 @@ function VisitaContent() {
         return
       }
 
-      const meta = negocio?.visitas ?? 10
       const nuevasVisitas = cliente.visitas + 1
       const completo = nuevasVisitas >= meta
 
       if (completo) {
         await supabase
           .from('clientes')
-          .update({ visitas: 0, ultima_visita: new Date().toISOString() })
+          .update({
+            visitas: nuevasVisitas,
+            ultima_visita: new Date().toISOString(),
+            premio_pendiente: true
+          })
           .eq('id', cliente.id)
       } else {
         await supabase
           .from('clientes')
-          .update({ visitas: nuevasVisitas, ultima_visita: new Date().toISOString() })
+          .update({
+            visitas: nuevasVisitas,
+            ultima_visita: new Date().toISOString()
+          })
           .eq('id', cliente.id)
       }
-
-      const visitasActuales = completo ? meta : nuevasVisitas
-      const recompensa = negocio?.recompensas ?? ''
-      const negocioNombre = negocio?.nombre ?? ''
-      const googleMapsUrl = negocio?.google_maps_url ?? ''
 
       try {
         await fetch('/api/whatsapp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ celular, visitas: visitasActuales, meta, recompensa, negocioNombre })
+          body: JSON.stringify({ celular, visitas: nuevasVisitas, meta, recompensa, negocioNombre })
         })
       } catch (error) {
         console.log('WhatsApp no disponible')
       }
 
       setEnviando(false)
-      setResultado({ visitas: visitasActuales, meta, recompensa, negocioNombre, googleMapsUrl, completo })
+      setResultado({
+        visitas: nuevasVisitas,
+        meta,
+        recompensa,
+        negocioNombre,
+        googleMapsUrl,
+        completo,
+        premioPendiente: completo
+      })
 
     } else {
-      const { data: nuevoCliente } = await supabase
+      await supabase
         .from('clientes')
-        .insert([{ celular, negocio_id: negocioId, visitas: 1, ultima_visita: new Date().toISOString() }])
-        .select()
-        .single()
-
-      const meta = negocio?.visitas ?? 10
-      const recompensa = negocio?.recompensas ?? ''
-      const negocioNombre = negocio?.nombre ?? ''
-      const googleMapsUrl = negocio?.google_maps_url ?? ''
+        .insert([{
+          celular,
+          negocio_id: negocioId,
+          visitas: 1,
+          ultima_visita: new Date().toISOString(),
+          premio_pendiente: false
+        }])
 
       try {
         await fetch('/api/whatsapp', {
@@ -110,7 +139,15 @@ function VisitaContent() {
       }
 
       setEnviando(false)
-      setResultado({ visitas: 1, meta, recompensa, negocioNombre, googleMapsUrl, completo: false })
+      setResultado({
+        visitas: 1,
+        meta,
+        recompensa,
+        negocioNombre,
+        googleMapsUrl,
+        completo: false,
+        premioPendiente: false
+      })
     }
   }
 
@@ -125,12 +162,13 @@ function VisitaContent() {
     e.preventDefault()
     setEnviandoFeedback(true)
     try {
-      await fetch('/api/cancelar', {
+      await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          correo: 'sabino@maplo.com.mx',
-          motivo: `Feedback de cliente en ${resultado?.negocioNombre}: ${estrellas} estrellas. Comentario: ${feedback}`
+          negocioId,
+          estrellas,
+          comentario: feedback
         })
       })
     } catch (error) {
@@ -158,7 +196,7 @@ function VisitaContent() {
     const faltan = resultado.meta - resultado.visitas
     const progreso = Math.min((resultado.visitas / resultado.meta) * 100, 100)
 
-    if (resultado.completo) {
+    if (resultado.completo || resultado.premioPendiente) {
 
       if (feedbackEnviado) {
         return (
@@ -230,6 +268,14 @@ function VisitaContent() {
               </div>
             </div>
 
+            {resultado.premioPendiente && !resultado.completo && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6">
+                <p className="text-yellow-700 text-sm font-medium">
+                  ⏳ Tu premio sigue esperándote. Muestra esta pantalla en caja cuando puedas.
+                </p>
+              </div>
+            )}
+
             <div className="flex flex-wrap justify-center gap-1.5 mb-8">
               {Array.from({ length: resultado.meta }, (_, i) => (
                 <div key={i} className="w-8 h-8 rounded-lg flex items-center justify-center text-sm bg-indigo-500">
@@ -238,26 +284,28 @@ function VisitaContent() {
               ))}
             </div>
 
-            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-              <p className="text-gray-700 font-semibold mb-4">¿Cómo fue tu experiencia?</p>
-              <div className="flex justify-center gap-3 mb-2">
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => handleEstrellas(num)}
-                    className="text-4xl transition hover:scale-125"
-                    style={{ opacity: estrellas === 0 || estrellas >= num ? 1 : 0.3 }}
-                  >
-                    ⭐
-                  </button>
-                ))}
+            {!resultado.premioPendiente && (
+              <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                <p className="text-gray-700 font-semibold mb-4">¿Cómo fue tu experiencia?</p>
+                <div className="flex justify-center gap-3 mb-2">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => handleEstrellas(num)}
+                      className="text-4xl transition hover:scale-125"
+                      style={{ opacity: estrellas === 0 || estrellas >= num ? 1 : 0.3 }}
+                    >
+                      ⭐
+                    </button>
+                  ))}
+                </div>
+                {resultado.googleMapsUrl && (
+                  <p className="text-gray-400 text-xs mt-2">
+                    5 estrellas → te llevamos directo a Google Maps
+                  </p>
+                )}
               </div>
-              {resultado.googleMapsUrl && (
-                <p className="text-gray-400 text-xs mt-2">
-                  5 estrellas → te llevamos directo a Google Maps
-                </p>
-              )}
-            </div>
+            )}
           </div>
           <style>{`
             @keyframes bounce {

@@ -96,7 +96,7 @@ function DashboardContent() {
   const visitasSemana = clientes.filter(c =>
     c.ultima_visita && new Date(c.ultima_visita) > unaSemanaAtras
   ).length
-  const canjes = clientes.filter(c => c.visitas >= (negocio?.visitas || 0)).length
+  const canjes = clientes.filter(c => c.premio_pendiente).length
   const maxVisitas = Math.max(...visitasPorDia.map(d => d.visitas), 1)
   const clientesTop = [...clientes].slice(0, 5)
   const actividadReciente = [...clientes]
@@ -112,14 +112,16 @@ function DashboardContent() {
   hace30dias.setDate(hace30dias.getDate() - 30)
 
   const inactivos7 = clientes.filter(c =>
-    c.ultima_visita && new Date(c.ultima_visita) < hace7dias
+    c.ultima_visita && new Date(c.ultima_visita) < hace7dias && !c.premio_pendiente
   ).length
   const inactivos14 = clientes.filter(c =>
-    c.ultima_visita && new Date(c.ultima_visita) < hace14dias
+    c.ultima_visita && new Date(c.ultima_visita) < hace14dias && !c.premio_pendiente
   ).length
   const inactivos30 = clientes.filter(c =>
-    c.ultima_visita && new Date(c.ultima_visita) < hace30dias
+    c.ultima_visita && new Date(c.ultima_visita) < hace30dias && !c.premio_pendiente
   ).length
+
+  const premiosPendientes = clientes.filter(c => c.premio_pendiente)
 
   const irAlEditor = () => {
     router.push('/editor-qr?id=' + negocioId + '&nombre=' + encodeURIComponent(negocio?.nombre || negocioNombre || ''))
@@ -198,6 +200,22 @@ function DashboardContent() {
     setGuardando(false)
   }
 
+  const marcarCanjeado = async (clienteId: string) => {
+    const { error } = await supabase
+      .from('clientes')
+      .update({
+        premio_pendiente: false,
+        visitas: 0
+      })
+      .eq('id', clienteId)
+
+    if (!error) {
+      setClientes(prev => prev.map(c =>
+        c.id === clienteId ? { ...c, premio_pendiente: false, visitas: 0 } : c
+      ))
+    }
+  }
+
   if (cargando) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -274,9 +292,32 @@ function DashboardContent() {
           </div>
           <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
             <p className="text-4xl md:text-5xl font-bold text-green-600 mb-1">{canjes}</p>
-            <p className="text-gray-500 text-xs md:text-sm">Completaron su lealtad</p>
+            <p className="text-gray-500 text-xs md:text-sm">Premios pendientes de canjear</p>
           </div>
         </div>
+
+        {premiosPendientes.length > 0 && (
+          <div className="bg-white rounded-2xl p-6 mb-6 border border-green-200 shadow-[0_4px_20px_rgba(34,197,94,0.08)]">
+            <h2 className="text-gray-900 font-semibold mb-1">🎁 Premios pendientes de canjear</h2>
+            <p className="text-gray-400 text-xs mb-4">Estos clientes ganaron su premio y están esperando canjearlo.</p>
+            <div className="flex flex-col gap-3">
+              {premiosPendientes.map((cliente) => (
+                <div key={cliente.id} className="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl p-4">
+                  <div>
+                    <p className="text-gray-900 text-sm font-medium">{cliente.celular}</p>
+                    <p className="text-green-600 text-xs font-semibold mt-0.5">🏆 Premio ganado: {negocio?.recompensas}</p>
+                  </div>
+                  <button
+                    onClick={() => marcarCanjeado(cliente.id)}
+                    className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition"
+                  >
+                    Marcar como canjeado
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {totalClientes > 0 && (
           <div className="bg-white rounded-2xl p-6 mb-6 border border-orange-100 shadow-[0_4px_20px_rgba(251,146,60,0.08)]">
@@ -536,21 +577,23 @@ function DashboardContent() {
             <div className="flex flex-col gap-3">
               {clientes.map((cliente) => {
                 const progreso = Math.min((cliente.visitas / negocio.visitas) * 100, 100)
-                const completo = cliente.visitas >= negocio.visitas
+                const completo = cliente.premio_pendiente
                 return (
-                  <div key={cliente.id} className="bg-gray-50 border border-gray-100 rounded-xl p-4">
+                  <div key={cliente.id} className={`border rounded-xl p-4 ${completo ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-100'}`}>
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-900 text-sm font-medium">{cliente.celular}</span>
                       <span className={`text-xs font-semibold ${completo ? 'text-green-600' : 'text-gray-500'}`}>
-                        {completo ? '🎁 Recompensa ganada' : cliente.visitas + ' de ' + negocio.visitas + ' visitas'}
+                        {completo ? '🎁 Premio pendiente' : cliente.visitas + ' de ' + negocio.visitas + ' visitas'}
                       </span>
                     </div>
-                    <div className="w-full bg-indigo-100 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all ${completo ? 'bg-green-500' : 'bg-indigo-500'}`}
-                        style={{ width: progreso + '%' }}
-                      />
-                    </div>
+                    {!completo && (
+                      <div className="w-full bg-indigo-100 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full transition-all bg-indigo-500"
+                          style={{ width: progreso + '%' }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )
               })}
