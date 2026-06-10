@@ -94,7 +94,6 @@ function VisitaContent() {
       }
 
       const nuevasVisitas = cliente.visitas + 1
-
       const nivelGanado = niveles.find(n => n.visitas_requeridas === nuevasVisitas) || null
       const completoPrincipal = nuevasVisitas >= meta
 
@@ -212,8 +211,6 @@ function VisitaContent() {
   }
 
   if (resultado) {
-    const faltan = resultado.meta - resultado.visitas
-    const progreso = Math.min((resultado.visitas / resultado.meta) * 100, 100)
     const tieneNiveles = resultado.niveles.length > 0
 
     if (resultado.completo || resultado.premioPendiente) {
@@ -330,6 +327,10 @@ function VisitaContent() {
       )
     }
 
+    const todosLosNiveles = tieneNiveles
+      ? [...resultado.niveles, { id: 'principal', visitas_requeridas: resultado.meta, descripcion: resultado.recompensa, orden: resultado.niveles.length + 1 }]
+      : []
+
     return (
       <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
         <div className="text-center max-w-sm w-full">
@@ -341,104 +342,114 @@ function VisitaContent() {
           </p>
 
           {tieneNiveles ? (
-            <div className="flex flex-col gap-4 mb-6">
-              {resultado.niveles.map((nivel, i) => {
-                const progresoNivel = Math.min((resultado.visitas / nivel.visitas_requeridas) * 100, 100)
-                const nivelCompleto = resultado.visitas >= nivel.visitas_requeridas
-                const nivelAnterior = i > 0 ? resultado.niveles[i - 1] : null
-                const visitasDesdeAnterior = nivelAnterior ? resultado.visitas - nivelAnterior.visitas_requeridas : resultado.visitas
-                const metaDesdeAnterior = nivelAnterior
+            <div className="flex flex-col gap-3 mb-6">
+              {todosLosNiveles.map((nivel, i) => {
+                const nivelAnterior = i > 0 ? todosLosNiveles[i - 1] : null
+                const visitasDesdeAnterior = nivelAnterior
+                  ? Math.max(0, resultado.visitas - nivelAnterior.visitas_requeridas)
+                  : resultado.visitas
+                const metaDelNivel = nivelAnterior
                   ? nivel.visitas_requeridas - nivelAnterior.visitas_requeridas
                   : nivel.visitas_requeridas
-                const progresoSegmento = Math.min((visitasDesdeAnterior / metaDesdeAnterior) * 100, 100)
+                const nivelCompleto = resultado.visitas >= nivel.visitas_requeridas
+                const nivelEnProgreso = !nivelCompleto && (i === 0 || resultado.visitas >= todosLosNiveles[i - 1].visitas_requeridas)
+                const nivelBloqueado = !nivelCompleto && !nivelEnProgreso
+                const progresoSegmento = nivelCompleto ? 100 : nivelEnProgreso ? Math.min((visitasDesdeAnterior / metaDelNivel) * 100, 100) : 0
 
                 return (
-                  <div key={nivel.id} className={`border rounded-2xl p-4 ${nivelCompleto ? 'bg-green-50 border-green-200' : 'bg-white border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]'}`}>
+                  <div
+                    key={nivel.id}
+                    className={`border rounded-2xl p-4 transition ${
+                      nivelCompleto ? 'bg-green-50 border-green-200' :
+                      nivelEnProgreso ? 'bg-white border-indigo-200 shadow-[0_2px_8px_rgba(99,102,241,0.08)]' :
+                      'bg-gray-50 border-gray-100 opacity-60'
+                    }`}
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${nivelCompleto ? 'bg-green-500 text-white' : 'bg-indigo-600 text-white'}`}>
-                          {nivelCompleto ? '✓' : i + 1}
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                          nivelCompleto ? 'bg-green-500 text-white' :
+                          nivelEnProgreso ? 'bg-indigo-600 text-white' :
+                          'bg-gray-300 text-gray-500'
+                        }`}>
+                          {nivelCompleto ? '✓' : nivelBloqueado ? '🔒' : i + 1}
                         </div>
-                        <span className="text-gray-900 text-sm font-semibold">{nivel.descripcion}</span>
+                        <span className={`text-sm font-semibold ${nivelBloqueado ? 'text-gray-400' : 'text-gray-900'}`}>
+                          {nivel.descripcion}
+                        </span>
                       </div>
-                      <span className={`text-xs font-semibold ${nivelCompleto ? 'text-green-600' : 'text-indigo-600'}`}>
-                        {nivelCompleto ? '✅ Ganado' : `${resultado.visitas} / ${nivel.visitas_requeridas}`}
+                      <span className={`text-xs font-semibold ${
+                        nivelCompleto ? 'text-green-600' :
+                        nivelEnProgreso ? 'text-indigo-600' :
+                        'text-gray-400'
+                      }`}>
+                        {nivelCompleto ? '✅ Ganado' :
+                         nivelBloqueado ? `${metaDelNivel} visitas` :
+                         `${visitasDesdeAnterior} / ${metaDelNivel}`}
                       </span>
                     </div>
-                    {!nivelCompleto && (
-                      <div className="w-full bg-indigo-100 rounded-full h-3 overflow-hidden">
+                    {!nivelBloqueado && (
+                      <div className={`w-full rounded-full h-3 overflow-hidden ${nivelCompleto ? 'bg-green-100' : 'bg-indigo-100'}`}>
                         <div
-                          className="h-3 rounded-full bg-indigo-500 transition-all duration-1000"
-                          style={{ width: progresoNivel + '%' }}
+                          className={`h-3 rounded-full transition-all duration-1000 ${nivelCompleto ? 'bg-green-500' : 'bg-indigo-500'}`}
+                          style={{ width: progresoSegmento + '%' }}
                         />
                       </div>
+                    )}
+                    {nivelEnProgreso && !nivelCompleto && (
+                      <p className="text-indigo-600 text-xs mt-2 font-medium">
+                        {metaDelNivel - visitasDesdeAnterior === 1
+                          ? '¡Solo falta 1 visita! 🔥'
+                          : `Te faltan ${metaDelNivel - visitasDesdeAnterior} visitas`
+                        }
+                      </p>
                     )}
                   </div>
                 )
               })}
-
-              <div className={`border rounded-2xl p-4 ${resultado.visitas >= resultado.meta ? 'bg-green-50 border-green-200' : 'bg-white border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]'}`}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${resultado.visitas >= resultado.meta ? 'bg-green-500 text-white' : 'bg-indigo-600 text-white'}`}>
-                      {resultado.visitas >= resultado.meta ? '✓' : '🏆'}
-                    </div>
-                    <span className="text-gray-900 text-sm font-semibold">{resultado.recompensa}</span>
-                  </div>
-                  <span className={`text-xs font-semibold ${resultado.visitas >= resultado.meta ? 'text-green-600' : 'text-indigo-600'}`}>
-                    {resultado.visitas >= resultado.meta ? '✅ Ganado' : `${resultado.visitas} / ${resultado.meta}`}
-                  </span>
-                </div>
-                {resultado.visitas < resultado.meta && (
-                  <div className="w-full bg-indigo-100 rounded-full h-3 overflow-hidden">
-                    <div
-                      className="h-3 rounded-full bg-indigo-500 transition-all duration-1000"
-                      style={{ width: progreso + '%' }}
-                    />
-                  </div>
-                )}
-              </div>
             </div>
           ) : (
-            <div className="bg-white border border-indigo-100 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.10)]">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-gray-500 text-sm">Tu progreso</span>
-                <span className="text-gray-900 font-bold text-sm">{resultado.visitas} de {resultado.meta} visitas</span>
-              </div>
-              <div className="w-full bg-indigo-100 rounded-full h-5 mb-4 overflow-hidden">
-                <div
-                  className="h-5 rounded-full bg-indigo-500 transition-all duration-1000 flex items-center justify-end pr-2"
-                  style={{ width: progreso + '%' }}
-                >
-                  {progreso > 15 && <span className="text-white text-xs font-bold">{Math.round(progreso)}%</span>}
+            <>
+              <div className="bg-white border border-indigo-100 rounded-2xl p-6 mb-6 shadow-[0_4px_20px_rgba(99,102,241,0.10)]">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-gray-500 text-sm">Tu progreso</span>
+                  <span className="text-gray-900 font-bold text-sm">{resultado.visitas} de {resultado.meta} visitas</span>
                 </div>
+                <div className="w-full bg-indigo-100 rounded-full h-5 mb-4 overflow-hidden">
+                  <div
+                    className="h-5 rounded-full bg-indigo-500 transition-all duration-1000 flex items-center justify-end pr-2"
+                    style={{ width: Math.min((resultado.visitas / resultado.meta) * 100, 100) + '%' }}
+                  >
+                    {Math.min((resultado.visitas / resultado.meta) * 100, 100) > 15 && (
+                      <span className="text-white text-xs font-bold">{Math.round((resultado.visitas / resultado.meta) * 100)}%</span>
+                    )}
+                  </div>
+                </div>
+                <p className="text-indigo-600 text-sm font-medium">
+                  {resultado.meta - resultado.visitas === 1
+                    ? '¡Solo te falta 1 visita más! 🔥'
+                    : `Te faltan ${resultado.meta - resultado.visitas} visitas para: ${resultado.recompensa}`
+                  }
+                </p>
               </div>
-              <p className="text-indigo-600 text-sm font-medium">
-                {faltan === 1
-                  ? '¡Solo te falta 1 visita más! 🔥 Sigues construyendo algo bueno aquí.'
-                  : `Te faltan ${faltan} visitas para: ${resultado.recompensa}`
-                }
-              </p>
-            </div>
-          )}
 
-          {!tieneNiveles && (
-            <div className="grid grid-cols-5 gap-2 mb-6">
-              {Array.from({ length: resultado.meta }, (_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-xl flex items-center justify-center text-base font-bold transition-all duration-300"
-                  style={{
-                    backgroundColor: i < resultado.visitas ? '#6366f1' : '#f0f0f0',
-                    color: i < resultado.visitas ? 'white' : '#d1d5db',
-                    transform: i === resultado.visitas - 1 ? 'scale(1.15)' : 'scale(1)',
-                    transition: `all 0.3s ease ${i * 80}ms`
-                  }}
-                >
-                  {i < resultado.visitas ? '⭐' : '○'}
-                </div>
-              ))}
-            </div>
+              <div className="grid grid-cols-5 gap-2 mb-6">
+                {Array.from({ length: resultado.meta }, (_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square rounded-xl flex items-center justify-center text-base font-bold transition-all duration-300"
+                    style={{
+                      backgroundColor: i < resultado.visitas ? '#6366f1' : '#f0f0f0',
+                      color: i < resultado.visitas ? 'white' : '#d1d5db',
+                      transform: i === resultado.visitas - 1 ? 'scale(1.15)' : 'scale(1)',
+                      transition: `all 0.3s ease ${i * 80}ms`
+                    }}
+                  >
+                    {i < resultado.visitas ? '⭐' : '○'}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
 
           <p className="text-gray-400 text-xs">Te enviamos tu progreso por WhatsApp</p>
