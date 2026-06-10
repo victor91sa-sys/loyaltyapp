@@ -212,6 +212,18 @@ function VisitaContent() {
 
   if (resultado) {
     const tieneNiveles = resultado.niveles.length > 0
+    const todosLosNiveles = tieneNiveles
+      ? [...resultado.niveles, { id: 'principal', visitas_requeridas: resultado.meta, descripcion: resultado.recompensa, orden: resultado.niveles.length + 1 }]
+      : []
+
+    const nivelGanadoIndex = resultado.nivelGanado
+      ? todosLosNiveles.findIndex(n => n.visitas_requeridas === resultado.nivelGanado!.visitas_requeridas)
+      : resultado.visitas >= resultado.meta
+        ? todosLosNiveles.length - 1
+        : -1
+
+    const siguienteNivel = nivelGanadoIndex >= 0 ? todosLosNiveles[nivelGanadoIndex + 1] : null
+    const visitasFaltantesSiguiente = siguienteNivel ? siguienteNivel.visitas_requeridas - resultado.visitas : 0
 
     if (resultado.completo || resultado.premioPendiente) {
 
@@ -298,6 +310,23 @@ function VisitaContent() {
               </div>
             </div>
 
+            {siguienteNivel && (
+              <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-6 text-left">
+                <p className="text-gray-700 text-sm italic mb-3">
+                  "No pares aquí. Cada visita que haces dice que este lugar vale la pena."
+                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-indigo-700 font-bold text-sm">Siguiente: {siguienteNivel.descripcion}</p>
+                    <p className="text-indigo-500 text-xs mt-0.5">
+                      {visitasFaltantesSiguiente} {visitasFaltantesSiguiente === 1 ? 'visita más' : 'visitas más'}
+                    </p>
+                  </div>
+                  <span className="text-2xl">🎯</span>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
               <p className="text-gray-700 font-semibold mb-4">¿Cómo fue tu experiencia?</p>
               <div className="flex justify-center gap-3 mb-2">
@@ -326,10 +355,6 @@ function VisitaContent() {
         </main>
       )
     }
-
-    const todosLosNiveles = tieneNiveles
-      ? [...resultado.niveles, { id: 'principal', visitas_requeridas: resultado.meta, descripcion: resultado.recompensa, orden: resultado.niveles.length + 1 }]
-      : []
 
     return (
       <main className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
