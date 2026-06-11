@@ -1,5 +1,20 @@
 import type { Metadata } from 'next'
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import './globals.css'
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'HuellaClub - Programa de lealtad digital para negocios locales',
@@ -38,8 +53,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
-      <body>{children}</body>
+    <html lang="es" className={`${plusJakarta.variable} ${inter.variable}`}>
+      <body className="font-sans">{children}</body>
     </html>
   )
 }
