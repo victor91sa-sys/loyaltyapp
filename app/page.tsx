@@ -194,7 +194,7 @@ export default function Home() {
 
       <nav className="flex items-center justify-between px-6 md:px-8 py-4 sticky top-0 bg-white z-50 border-b border-gray-200 shadow-sm">
         <div className="flex items-center">
-          <Image src="/images/HUELLA_CLUB.svg" alt="HuellaClub" width={160} height={45} className="h-10 w-auto" />
+        <img src="/images/HUELLA_CLUB.svg" alt="HuellaClub" style={{ height: '40px', width: 'auto' }} />
         </div>
         <div className="flex items-center gap-3 md:gap-6">
           <Link href="/login" className="text-gray-500 hover:text-gray-900 text-sm transition hidden md:block">
