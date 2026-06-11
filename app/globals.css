@@ -1,39 +1,21 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --background: #F0E9DD;
-  --foreground: #1C1C1B;
-
-  --color-linen: #F0E9DD;
-  --color-indigo: #565CE2;
-  --color-scarlet: #F73E1A;
-  --color-ocean: #4044B2;
-  --color-dark: #1C1C1B;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  --color-linen: #F0E9DD;
-  --color-indigo: #565CE2;
-  --color-scarlet: #F73E1A;
-  --color-ocean: #4044B2;
-  --color-dark: #1C1C1B;
-
-  --font-sans: 'Inter', Arial, sans-serif;
-  --font-display: 'Plus Jakarta Sans', Arial, sans-serif;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', Arial, sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 @keyframes marquee {
