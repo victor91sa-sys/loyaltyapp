@@ -75,29 +75,21 @@ export default function Registro() {
 
   if (registrado) {
     return (
-      <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8">
-        <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(99,102,241,0.12)] border border-indigo-100 p-10 text-center max-w-md w-full">
+      <main className="min-h-screen bg-[#FAFBFF] flex flex-col items-center justify-center p-8">
+        <div className="ficha p-10 text-center max-w-md w-full">
           <div className="text-6xl mb-6">📧</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Revisa tu correo</h1>
-          <p className="text-gray-500 mb-2">
-            Te mandamos un enlace de confirmación a:
-          </p>
-          <p className="text-indigo-600 font-semibold mb-4 text-lg">
-            {formulario.correo}
-          </p>
-          <p className="text-gray-400 text-sm mb-8">
-            En cuanto lo confirmes, tu comunidad empieza a crecer.
-          </p>
+          <p className="text-gray-500 mb-2">Te mandamos un enlace de confirmación a:</p>
+          <p className="text-marca-azul font-bold mb-4 text-lg">{formulario.correo}</p>
+          <p className="text-gray-400 text-sm mb-8">En cuanto lo confirmes, tu comunidad empieza a crecer.</p>
           <button
             onClick={reenviarCorreo}
             disabled={reenviando}
-            className="w-full border border-indigo-200 hover:border-indigo-400 text-indigo-600 font-semibold py-3 rounded-xl transition disabled:opacity-50 mb-4"
+            className="w-full border-2 border-[#EDEEFB] hover:border-marca-azul text-marca-azul font-bold py-3 rounded-xl transition disabled:opacity-50 mb-4"
           >
             {reenviando ? 'Reenviando...' : '¿No llegó? Reenviar correo'}
           </button>
-          <p className="text-gray-400 text-xs mb-6">
-            Revisa también tu carpeta de spam.
-          </p>
+          <p className="text-gray-400 text-xs mb-6">Revisa también tu carpeta de spam.</p>
           <Link href="/login" className="text-gray-500 hover:text-gray-700 text-sm transition">
             Volver al inicio de sesión
           </Link>
@@ -107,17 +99,20 @@ export default function Registro() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex">
+    <main className="min-h-screen bg-[#FAFBFF] flex">
 
-      <div className="hidden lg:flex flex-col justify-between bg-indigo-600 w-96 p-10 flex-shrink-0">
+      <div className="hidden lg:flex flex-col justify-between bg-marca-azul w-96 p-10 flex-shrink-0">
         <div>
-          <Link href="/" className="block">
-            <span className="text-white font-bold text-xl">HuellaClub</span>
-            <p className="text-indigo-300 text-xs mt-0.5">Vuelven por ti.</p>
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '34px', width: '34px' }} />
+            <div>
+              <span className="text-white font-bold text-xl" style={{ fontFamily: 'var(--font-fredoka)' }}>HuellaClub</span>
+              <p className="text-white/60 text-xs">Vuelven por ti.</p>
+            </div>
           </Link>
         </div>
         <div>
-          <h2 className="text-white font-bold text-3xl mb-6 leading-tight">
+          <h2 className="text-white font-bold text-3xl mb-6 leading-tight" style={{ fontFamily: 'var(--font-fredoka)' }}>
             Empieza a construir algo que dura
           </h2>
           <ul className="flex flex-col gap-4">
@@ -131,12 +126,12 @@ export default function Registro() {
             ].map((item) => (
               <li key={item.texto} className="flex items-center gap-3">
                 <span className="text-xl">{item.emoji}</span>
-                <p className="text-indigo-100 text-sm">{item.texto}</p>
+                <p className="text-white/90 text-sm">{item.texto}</p>
               </li>
             ))}
           </ul>
         </div>
-        <p className="text-indigo-300 text-xs">
+        <p className="text-white/60 text-xs">
           Después de los 30 días gratis, solo $199 MXN/mes. Cancelas cuando quieras.
         </p>
       </div>
@@ -144,17 +139,20 @@ export default function Registro() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10">
         <div className="w-full max-w-md">
 
-          <Link href="/" className="block mb-8 lg:hidden">
-            <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
-            <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+          <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
+            <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '32px', width: '32px' }} />
+            <div>
+              <span className="text-marca-azul font-bold text-xl" style={{ fontFamily: 'var(--font-fredoka)' }}>HuellaClub</span>
+              <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+            </div>
           </Link>
 
           <div className="flex items-center gap-3 mb-8">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition ${paso >= 1 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition ${paso >= 1 ? 'bg-marca-azul text-white' : 'bg-gray-200 text-gray-500'}`}>
               {paso > 1 ? '✓' : '1'}
             </div>
-            <div className={`flex-1 h-1 rounded transition ${paso > 1 ? 'bg-indigo-600' : 'bg-gray-200'}`} />
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition ${paso >= 2 ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <div className={`flex-1 h-1 rounded transition ${paso > 1 ? 'bg-marca-azul' : 'bg-gray-200'}`} />
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition ${paso >= 2 ? 'bg-marca-azul text-white' : 'bg-gray-200 text-gray-500'}`}>
               2
             </div>
           </div>
@@ -164,12 +162,10 @@ export default function Registro() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                 Empieza a construir algo que dura
               </h1>
-              <p className="text-gray-500 mb-8 text-sm">
-                Paso 1 de 2 · Crea tu acceso
-              </p>
+              <p className="text-gray-500 mb-8 text-sm">Paso 1 de 2 · Crea tu acceso</p>
               <form onSubmit={(e) => { e.preventDefault(); setPaso(2) }} className="flex flex-col gap-4">
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">Correo electrónico</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">Correo electrónico</label>
                   <input
                     type="email"
                     name="correo"
@@ -177,11 +173,11 @@ export default function Registro() {
                     onChange={handleChange}
                     placeholder="tucorreo@email.com"
                     required
-                    className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                    className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition"
                   />
                 </div>
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">Contraseña</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">Contraseña</label>
                   <div className="relative">
                     <input
                       type={verPassword ? 'text' : 'password'}
@@ -191,7 +187,7 @@ export default function Registro() {
                       placeholder="Mínimo 6 caracteres"
                       required
                       minLength={6}
-                      className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm pr-12"
+                      className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition pr-12"
                     />
                     <button
                       type="button"
@@ -205,7 +201,7 @@ export default function Registro() {
                 <button
                   type="submit"
                   disabled={!formulario.correo || !formulario.password}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition mt-2 disabled:opacity-50"
+                  className="btn-3d btn-3d-azul mt-2 disabled:opacity-50"
                 >
                   Continuar →
                 </button>
@@ -218,12 +214,10 @@ export default function Registro() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                 Cuéntanos de tu negocio
               </h1>
-              <p className="text-gray-500 mb-8 text-sm">
-                Paso 2 de 2 · Ya casi estás
-              </p>
+              <p className="text-gray-500 mb-8 text-sm">Paso 2 de 2 · Ya casi estás</p>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">Nombre de tu negocio</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">Nombre de tu negocio</label>
                   <input
                     type="text"
                     name="nombre"
@@ -231,17 +225,17 @@ export default function Registro() {
                     onChange={handleChange}
                     placeholder="Ej. Taquería El Güero"
                     required
-                    className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                    className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition"
                   />
                 </div>
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">Tipo de negocio</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">Tipo de negocio</label>
                   <select
                     name="tipo"
                     value={formulario.tipo}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                    className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition"
                   >
                     <option value="">Selecciona una opción</option>
                     <option value="cafeteria">Cafetería</option>
@@ -263,7 +257,7 @@ export default function Registro() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">¿Cuántas visitas para ganar el premio?</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">¿Cuántas visitas para ganar el premio?</label>
                   <input
                     type="number"
                     name="visitas"
@@ -273,12 +267,12 @@ export default function Registro() {
                     required
                     min="2"
                     max="50"
-                    className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                    className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition"
                   />
                   <p className="text-gray-400 text-xs mt-1">Recomendamos entre 8 y 12 visitas</p>
                 </div>
                 <div>
-                  <label className="text-gray-700 text-sm font-medium mb-1 block">¿Cuál es el premio?</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1 block">¿Cuál es el premio?</label>
                   <input
                     type="text"
                     name="recompensa"
@@ -286,13 +280,13 @@ export default function Registro() {
                     onChange={handleChange}
                     placeholder="Ej. Un café gratis, 20% de descuento..."
                     required
-                    className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+                    className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={enviando || !formulario.nombre || !formulario.tipo || !formulario.visitas || !formulario.recompensa}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition mt-2 disabled:opacity-50"
+                  className="btn-3d btn-3d-azul mt-2 disabled:opacity-50"
                 >
                   {enviando ? 'Creando tu cuenta...' : 'Crear mi programa gratis'}
                 </button>
@@ -309,7 +303,7 @@ export default function Registro() {
 
           <p className="text-gray-500 text-sm text-center mt-6">
             ¿Ya tienes cuenta?{' '}
-            <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link href="/login" className="text-marca-azul hover:brightness-110 font-bold">
               Inicia sesión
             </Link>
           </p>

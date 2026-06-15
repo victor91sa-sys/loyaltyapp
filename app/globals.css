@@ -121,3 +121,9 @@ h1, h2, h3, h4 {
   .animate-marquee { animation: none; }
   .btn-3d, .ficha, .ficha-hover { transition: none; }
 }
+/* Clases de color de marca (fix Tailwind v4) */
+.bg-marca-azul { background-color: #4247B9; }
+.text-marca-azul { color: #4247B9; }
+.bg-marca-naranja { background-color: #FEB000; }
+.text-marca-naranja { color: #FEB000; }
+.border-marca-azul { border-color: #4247B9; }
