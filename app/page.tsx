@@ -9,7 +9,6 @@ import { supabase } from '../lib/supabase'
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true) },
@@ -18,7 +17,6 @@ function useScrollReveal() {
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
   }, [])
-
   return { ref, visible }
 }
 
@@ -47,45 +45,45 @@ function useCounter(target: number, visible: boolean) {
     const increment = target / (duration / 16)
     const timer = setInterval(() => {
       start += increment
-      if (start >= target) {
-        setCount(target)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(start))
-      }
+      if (start >= target) { setCount(target); clearInterval(timer) }
+      else { setCount(Math.floor(start)) }
     }, 16)
     return () => clearInterval(timer)
   }, [visible, target])
   return count
 }
 
-function AnimatedStat({ num, suffix, desc }: { num: number, suffix: string, desc: string }) {
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-2 bg-[#EDEEFB] text-marca-azul text-xs font-bold px-4 py-2 rounded-full mb-5 uppercase tracking-wide">
+      <span className="w-1.5 h-1.5 rounded-full bg-marca-azul" />
+      {children}
+    </div>
+  )
+}
+
+function AnimatedStat({ num, suffix, desc, color }: { num: number, suffix: string, desc: string, color: string }) {
   const { ref, visible } = useScrollReveal()
   const count = useCounter(num, visible)
+  const display = suffix === '$' ? '$' + count : count + suffix
   return (
-    <div ref={ref} className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] border border-indigo-100 text-center">
-      <p className="text-4xl md:text-5xl font-bold text-indigo-600 mb-2">{suffix === '$' ? '$' + count : count + suffix}</p>
+    <div ref={ref} className="ficha ficha-hover p-7 text-center">
+      <p className="text-5xl md:text-6xl font-bold mb-3" style={{ color, fontFamily: 'var(--font-fredoka)' }}>{display}</p>
       <p className="text-gray-600 text-sm">{desc}</p>
     </div>
   )
 }
 
 function MockupCartel() {
-  const [color, setColor] = useState('#4f46e5')
-  const colores = ['#4f46e5', '#e11d48', '#059669', '#d97706', '#7c3aed', '#0891b2']
-
+  const [color, setColor] = useState('#4247B9')
+  const colores = ['#4247B9', '#F726E3', '#FEB000', '#2AEE2A', '#F73D19']
   return (
     <div className="flex flex-col items-center gap-6">
-      <div
-        className="rounded-3xl p-6 w-full max-w-xs shadow-2xl transition-all duration-500"
-        style={{ backgroundColor: color }}
-      >
+      <div className="rounded-3xl p-6 w-full max-w-xs shadow-2xl transition-all duration-500" style={{ backgroundColor: color }}>
         <div className="text-center mb-4">
           <div className="text-4xl mb-1">🌮</div>
           <h3 className="text-white font-bold text-lg">Taquería El Güero</h3>
-          <p className="text-white text-xs mt-1" style={{ opacity: 0.8 }}>
-            Escanea y acumula visitas
-          </p>
+          <p className="text-white text-xs mt-1" style={{ opacity: 0.85 }}>Escanea y acumula visitas</p>
         </div>
         <div className="bg-white rounded-2xl p-4 mb-4 flex items-center justify-center">
           <div className="grid grid-cols-7 gap-0.5">
@@ -94,29 +92,22 @@ function MockupCartel() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl p-3" style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}>
+        <div className="rounded-2xl p-3" style={{ backgroundColor: 'rgba(0,0,0,0.22)' }}>
           <div className="flex justify-between text-white text-xs mb-2">
             <span>Tu progreso</span>
             <span className="font-bold">3 de 10 visitas</span>
           </div>
           <div className="w-full rounded-full h-2 mb-2" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
-            <div className="h-2 rounded-full bg-white transition-all" style={{ width: '30%' }} />
+            <div className="h-2 rounded-full bg-white" style={{ width: '30%' }} />
           </div>
-          <p className="text-white text-xs text-center" style={{ opacity: 0.9 }}>
-            7 visitas más para tu taco gratis 🎁
-          </p>
+          <p className="text-white text-xs text-center" style={{ opacity: 0.9 }}>7 visitas más para tu taco gratis 🎁</p>
         </div>
       </div>
       <div>
-        <p className="text-gray-500 text-xs text-center mb-3">Elige el color de tu negocio</p>
+        <p className="text-gray-500 text-xs text-center mb-3 font-semibold">Elige el color de tu negocio</p>
         <div className="flex gap-3 justify-center">
           {colores.map((c) => (
-            <button
-              key={c}
-              onClick={() => setColor(c)}
-              className="w-8 h-8 rounded-full transition-all hover:scale-110 border-2"
-              style={{ backgroundColor: c, borderColor: color === c ? '#111' : 'transparent' }}
-            />
+            <button key={c} onClick={() => setColor(c)} className="w-9 h-9 rounded-xl transition-all hover:scale-110 border-2" style={{ backgroundColor: c, borderColor: color === c ? '#1f2244' : 'transparent' }} />
           ))}
         </div>
       </div>
@@ -127,19 +118,12 @@ function MockupCartel() {
 function FAQItem({ pregunta, respuesta }: { pregunta: string, respuesta: string }) {
   const [abierto, setAbierto] = useState(false)
   return (
-    <div className="bg-white border border-indigo-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-      <button
-        onClick={() => setAbierto(!abierto)}
-        className="w-full text-left px-6 py-4 flex justify-between items-center"
-      >
-        <span className="text-gray-900 font-semibold text-sm">{pregunta}</span>
-        <span className="text-indigo-600 text-xl ml-4">{abierto ? '−' : '+'}</span>
+    <div className="ficha overflow-hidden">
+      <button onClick={() => setAbierto(!abierto)} className="w-full text-left px-6 py-4 flex justify-between items-center">
+        <span className="text-gray-900 font-bold text-sm">{pregunta}</span>
+        <span className="text-marca-azul text-xl ml-4">{abierto ? '−' : '+'}</span>
       </button>
-      {abierto && (
-        <div className="px-6 pb-4">
-          <p className="text-gray-600 text-sm">{respuesta}</p>
-        </div>
-      )}
+      {abierto && (<div className="px-6 pb-4"><p className="text-gray-600 text-sm">{respuesta}</p></div>)}
     </div>
   )
 }
@@ -189,83 +173,117 @@ export default function Home() {
     { nombre: 'Ferretería El Clavo', archivo: 'icono-ferreteria' },
   ]
 
+  const pasoStamps = [1,1,1,0,0,0,0,0,0,0]
+
   return (
     <main className="min-h-screen bg-white flex flex-col">
 
-      <nav className="flex items-center justify-between px-6 md:px-8 py-4 sticky top-0 bg-white z-50 border-b border-gray-200 shadow-sm">
+      <nav className="flex items-center justify-between px-6 md:px-8 py-4 sticky top-0 bg-white/95 backdrop-blur z-50 border-b border-gray-100">
         <Link href="/" className="flex items-center gap-2">
-          <img
-            src="/images/estrella.svg"
-            alt="estrella HuellaClub"
-            style={{ height: '38px', width: '38px' }}
-          />
+          <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '38px', width: '38px' }} />
           <div>
-            <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
+            <span className="text-marca-azul font-bold text-xl" style={{ fontFamily: 'var(--font-fredoka)' }}>HuellaClub</span>
             <p className="text-gray-400 text-xs">Vuelven por ti.</p>
           </div>
         </Link>
-        <div className="flex items-center gap-3 md:gap-6">
-          <Link href="/login" className="text-gray-500 hover:text-gray-900 text-sm transition hidden md:block">
+        <div className="hidden md:flex items-center gap-7 text-sm font-semibold text-gray-500">
+          <a href="#como-funciona" className="hover:text-marca-azul transition">Cómo funciona</a>
+          <a href="#cartel" className="hover:text-marca-azul transition">Tu cartel</a>
+          <a href="#precio" className="hover:text-marca-azul transition">Precio</a>
+          <a href="#preguntas" className="hover:text-marca-azul transition">Preguntas</a>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/login" className="hidden md:inline-block border border-gray-200 text-gray-700 text-sm font-semibold px-4 py-2 rounded-xl hover:border-gray-300 transition">
             Ya tengo cuenta
           </Link>
-          <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition">
+          <Link href="/registro" className="bg-marca-azul hover:brightness-105 text-white text-sm font-bold px-4 py-2 rounded-xl transition">
             Empezar gratis
           </Link>
         </div>
       </nav>
 
-      <section className="relative flex flex-col items-center justify-center text-center px-6 md:px-8 py-20 md:py-32 overflow-hidden bg-white">
-        <div className="absolute inset-0 z-0">
-          <Image src="/images/hero.png" alt="Dueño de negocio" fill className="object-cover opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/50 to-white" />
-        </div>
-        <div className="relative z-10 w-full max-w-3xl mx-auto" style={{ animation: 'fadeUp 0.8s ease forwards', opacity: 0 }}>
-          <div className="inline-block bg-indigo-100 text-indigo-600 text-xs font-semibold px-4 py-2 rounded-full mb-6">
-            30 días gratis · Niveles de premio · Reseñas en Google
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <Eyebrow>30 días gratis · Niveles de premio · Reseñas en Google</Eyebrow>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-[1.05]">
+              Cada cliente que regresa es prueba de que <span className="text-marca-azul">lo estás haciendo bien</span>
+            </h1>
+            <p className="text-gray-600 text-base md:text-lg mb-3 max-w-lg">
+              HuellaClub convierte cada visita en una señal de que tu negocio está creciendo. Sin apps, sin aparatos, sin complicaciones.
+            </p>
+            <p className="text-gray-400 text-sm mb-8 max-w-md">
+              Funciona para cafeterías, restaurantes, barberías, taquerías, tortillerías, abarrotes, tianguis y más.
+            </p>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <Link href="/registro" className="btn-3d btn-3d-azul">Empieza a construir tu base de clientes</Link>
+              <a href="#como-funciona" className="btn-3d btn-3d-blanco">Ver cómo funciona</a>
+            </div>
+            <p className="text-gray-400 text-sm">🔒 Sin tarjeta. Sin letras pequeñas.</p>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Cada cliente que regresa es prueba de que lo estás haciendo bien
-          </h1>
-          <p className="text-gray-600 text-base md:text-lg mb-4 max-w-lg mx-auto">
-            HuellaClub convierte cada visita en una señal de que tu negocio está creciendo. Sin apps, sin aparatos, sin complicaciones.
-          </p>
-          <p className="text-gray-400 text-sm mb-10 max-w-md mx-auto">
-            Funciona para cafeterías, restaurantes, barberías, taquerías, tortillerías, abarrotes, tianguis y más.
-          </p>
-          <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 md:px-10 rounded-xl transition text-base md:text-lg mb-3 inline-block">
-            Empieza a construir tu base de clientes
-          </Link>
-          <p className="text-gray-400 text-sm mt-3">Sin tarjeta. Sin letras pequeñas.</p>
+
+          <div className="flex justify-center lg:justify-end">
+            <div className="ficha p-6 w-full max-w-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="text-3xl">🌮</div>
+                <div>
+                  <h3 className="text-gray-900 font-bold leading-tight">Taquería El Güero</h3>
+                  <p className="text-gray-400 text-xs">Escanea y acumula visitas</p>
+                </div>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-gray-400 text-xs font-bold uppercase tracking-wide">Tu progreso</span>
+                <span className="text-marca-azul text-sm font-bold">3 de 10 visitas</span>
+              </div>
+              <div className="grid grid-cols-5 gap-2 mb-5">
+                {pasoStamps.map((s, i) => (
+                  <div key={i} className="aspect-square rounded-xl flex items-center justify-center text-lg"
+                    style={s ? { backgroundColor: '#4247B9' } : { border: '2px dashed #DADBF3' }}>
+                    {s ? '🐾' : ''}
+                  </div>
+                ))}
+              </div>
+              <div className="w-full rounded-full h-2.5 mb-3 bg-[#EDEEFB]">
+                <div className="h-2.5 rounded-full bg-marca-azul" style={{ width: '30%' }} />
+              </div>
+              <div className="bg-[#FFF6E0] rounded-xl px-3 py-2 flex items-center gap-2">
+                <span className="text-lg">🎁</span>
+                <p className="text-gray-700 text-xs font-semibold">7 visitas más para tu taco gratis</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="overflow-hidden bg-indigo-50 py-4 border-y border-indigo-100">
-        <div className="flex gap-8 animate-marquee whitespace-nowrap">
+      <div className="overflow-hidden bg-[#F5F6FE] py-5 border-y border-[#EDEEFB]">
+        <div className="flex gap-2 animate-marquee whitespace-nowrap">
           {negociosMarquee.concat(negociosMarquee).map((n, i) => (
-            <span key={i} className="text-indigo-600 font-semibold text-sm px-2">{n}</span>
+            <span key={i} className="inline-flex items-center bg-white border-2 border-[#EDEEFB] text-marca-azul font-bold text-sm px-4 py-2 rounded-full mx-1">{n}</span>
           ))}
         </div>
       </div>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+      <section id="como-funciona" className="px-6 md:px-8 py-16 md:py-24 bg-white">
+        <div className="max-w-5xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Tan simple como abrir las puertas</h2>
-            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Si ya sabes recibir clientes, ya sabes usar HuellaClub.</p>
+            <div className="text-center mb-14">
+              <Eyebrow>Tan fácil como un juego de 3 pasos</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-3">Tan simple como abrir las puertas</h2>
+              <p className="text-gray-500 text-sm">Si ya sabes recibir clientes, ya sabes usar HuellaClub.</p>
+            </div>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {[
-              { emoji: '📝', num: '1', title: 'Registra tu negocio', desc: 'En 10 minutos tienes todo listo. Sin conocimientos técnicos.' },
-              { emoji: '📲', num: '2', title: 'Pon tu QR en caja', desc: 'Lo imprimes y lo pegas. Tus clientes hacen el resto.' },
-              { emoji: '🎯', num: '3', title: 'Ellos regresan. Y regresan de nuevo.', desc: 'Cada visita los acerca a su premio. Cuando llegan, hay otro esperándolos. El ciclo nunca para.' }
+              { emoji: '📝', num: '1', label: 'Paso 1', title: 'Registra tu negocio', desc: 'En 10 minutos tienes todo listo. Sin conocimientos técnicos.', color: '#4247B9' },
+              { emoji: '📲', num: '2', label: 'Paso 2', title: 'Pon tu QR en caja', desc: 'Lo imprimes y lo pegas. Tus clientes hacen el resto.', color: '#FEB000' },
+              { emoji: '🎯', num: '3', label: 'Paso 3', title: 'Ellos regresan. Y regresan de nuevo.', desc: 'Cada visita los acerca a su premio. Cuando llegan, hay otro esperándolos. El ciclo nunca para.', color: '#F726E3' }
             ].map((paso, i) => (
               <Reveal key={paso.num} delay={i * 150}>
-                <div className="text-center bg-white border border-indigo-100 rounded-2xl p-8 shadow-[0_4px_20px_rgba(99,102,241,0.08)] h-full flex flex-col items-center justify-start">
-                  <div className="text-5xl mb-4">{paso.emoji}</div>
-                  <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-sm">
-                    {paso.num}
-                  </div>
-                  <h3 className="text-gray-900 font-semibold mb-2">{paso.title}</h3>
+                <div className="ficha ficha-hover relative p-7 h-full overflow-hidden">
+                  <span className="absolute top-3 right-5 text-7xl font-bold opacity-10" style={{ color: paso.color, fontFamily: 'var(--font-fredoka)' }}>{paso.num}</span>
+                  <div className="text-4xl mb-4">{paso.emoji}</div>
+                  <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: paso.color }}>{paso.label}</p>
+                  <h3 className="text-gray-900 font-bold mb-2">{paso.title}</h3>
                   <p className="text-gray-600 text-sm">{paso.desc}</p>
                 </div>
               </Reveal>
@@ -274,42 +292,39 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <Reveal>
-              <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-[0_8px_40px_rgba(99,102,241,0.15)]">
+              <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden ficha">
                 <Image src="/images/tacos.png" alt="Taquero con clientes" fill className="object-cover" />
               </div>
             </Reveal>
             <Reveal delay={200}>
               <div>
-                <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">Tu negocio. Tu comunidad.</h2>
-                <p className="text-gray-600 mb-6">
-                  No necesitas ser Starbucks para tener clientes leales. Solo necesitas reconocer a los que ya te eligen. HuellaClub te ayuda a hacerlo en menos de 10 minutos.
-                </p>
-                <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition inline-block">
-                  Empieza hoy gratis
-                </Link>
+                <Eyebrow>Tu negocio · Tu comunidad</Eyebrow>
+                <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">No necesitas ser Starbucks para tener clientes leales</h2>
+                <p className="text-gray-600 mb-6">Solo necesitas reconocer a los que ya te eligen. HuellaClub te ayuda a hacerlo en menos de 10 minutos.</p>
+                <Link href="/registro" className="btn-3d btn-3d-azul">Empieza hoy gratis</Link>
               </div>
             </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+      <section id="cartel" className="px-6 md:px-8 py-16 md:py-24 bg-[#FAFBFF]">
+        <div className="max-w-5xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Tu QR, a tu manera</h2>
-            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Personaliza tu cartel con los colores y nombre de tu negocio. Listo para imprimir.</p>
+            <div className="text-center mb-14">
+              <Eyebrow>Tu QR, a tu manera</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-3">Diseña tu cartel en minutos</h2>
+              <p className="text-gray-500 text-sm">Personaliza tu cartel con los colores y nombre de tu negocio. Listo para imprimir.</p>
+            </div>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <Reveal delay={100}>
-              <MockupCartel />
-            </Reveal>
+            <Reveal delay={100}><MockupCartel /></Reveal>
             <Reveal delay={250}>
               <div>
-                <h3 className="text-gray-900 font-bold text-xl md:text-2xl mb-4">Diseña tu cartel en minutos</h3>
                 <ul className="flex flex-col gap-4 mb-8">
                   {[
                     { emoji: '🎨', texto: 'Elige los colores de tu negocio' },
@@ -324,29 +339,29 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition inline-block">
-                  Crear mi cartel gratis
-                </Link>
+                <Link href="/registro" className="btn-3d btn-3d-azul">Crear mi cartel gratis</Link>
               </div>
             </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
         <div className="max-w-5xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Para cualquier negocio local</h2>
-            <p className="text-gray-500 text-center text-sm mb-12">Si tienes clientes que regresan, HuellaClub es para ti.</p>
+            <div className="text-center mb-12">
+              <Eyebrow>Para cualquier negocio local</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl">Si tienes clientes que regresan, HuellaClub es para ti</h2>
+            </div>
           </Reveal>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {negocios.map((negocio, i) => (
-              <Reveal key={negocio.nombre} delay={i * 50}>
-                <div className="bg-white border border-indigo-100 rounded-2xl p-4 text-center shadow-[0_2px_8px_rgba(99,102,241,0.06)] hover:shadow-[0_4px_20px_rgba(99,102,241,0.12)] transition">
+              <Reveal key={negocio.nombre} delay={i * 40}>
+                <div className="ficha ficha-hover p-4 text-center">
                   <div className="relative w-16 h-16 mx-auto mb-3">
                     <Image src={`/images/${negocio.archivo}.png`} alt={negocio.nombre} fill className="object-contain rounded-xl" />
                   </div>
-                  <p className="text-gray-700 text-xs font-medium leading-tight">{negocio.nombre}</p>
+                  <p className="text-gray-700 text-xs font-semibold leading-tight">{negocio.nombre}</p>
                 </div>
               </Reveal>
             ))}
@@ -354,21 +369,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-[#FAFBFF]">
         <div className="max-w-4xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">HuellaClub vs tarjeta de papel</h2>
-            <p className="text-gray-500 text-center text-sm mb-12">¿Todavía usas tarjetitas de papel? Mira la diferencia.</p>
+            <div className="text-center mb-12">
+              <Eyebrow>Comparativa</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-3">HuellaClub vs. la tarjeta de papel</h2>
+              <p className="text-gray-500 text-sm">¿Todavía usas tarjetitas de papel? Mira la diferencia.</p>
+            </div>
           </Reveal>
           <Reveal delay={100}>
-            <div className="bg-white rounded-2xl border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)] overflow-hidden">
-              <div className="grid grid-cols-3 bg-indigo-600 text-white text-sm font-semibold">
+            <div className="ficha overflow-hidden">
+              <div className="grid grid-cols-3 bg-marca-azul text-white text-sm font-bold">
                 <div className="p-4 text-center">Característica</div>
-                <div className="p-4 text-center border-x border-indigo-500">Tarjeta de papel</div>
+                <div className="p-4 text-center border-x border-white/20">Tarjeta de papel</div>
                 <div className="p-4 text-center">HuellaClub</div>
               </div>
               {[
-                ['Se pierde o se moja', '❌ Sí', '✅ No'],
+                ['Se pierde o se moja', '❌ Sí', '✅ Nunca'],
                 ['El cliente necesita traerla', '❌ Siempre', '✅ Solo su celular'],
                 ['Puedes ver tus métricas', '❌ No', '✅ En tiempo real'],
                 ['Costo mensual', '💸 Impresión', '✅ $199 MXN'],
@@ -377,10 +395,10 @@ export default function Home() {
                 ['Múltiples niveles de premio', '❌ Imposible', '✅ Hasta 3 niveles'],
                 ['Reseñas en Google automáticas', '❌ No', '✅ Solo clientes felices'],
               ].map(([feature, paper, digital], i) => (
-                <div key={i} className={`grid grid-cols-3 text-sm ${i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                  <div className="p-4 text-gray-700 font-medium">{feature}</div>
+                <div key={i} className={`grid grid-cols-3 text-sm ${i % 2 === 0 ? 'bg-[#FAFBFF]' : 'bg-white'}`}>
+                  <div className="p-4 text-gray-700 font-semibold">{feature}</div>
                   <div className="p-4 text-center text-gray-500 border-x border-gray-100">{paper}</div>
-                  <div className="p-4 text-center text-gray-700 font-semibold">{digital}</div>
+                  <div className="p-4 text-center text-gray-800 font-bold">{digital}</div>
                 </div>
               ))}
             </div>
@@ -388,26 +406,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
-        <div className="max-w-2xl mx-auto">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
+        <div className="max-w-3xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-12 md:mb-16">Lo que dicen los números</h2>
+            <div className="text-center mb-14">
+              <Eyebrow>Lo que dicen los números</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl">Los clientes leales valen más</h2>
+            </div>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-            <AnimatedStat num={5} suffix="x" desc="Un cliente que regresa vale 5 veces más que uno nuevo" />
-            <AnimatedStat num={68} suffix="%" desc="De los clientes vuelven más seguido cuando sienten que los reconocen" />
-            <AnimatedStat num={199} suffix="$" desc="MXN al mes. Menos de lo que cuesta perder a tu cliente más fiel" />
+            <AnimatedStat num={5} suffix="x" color="#4247B9" desc="Un cliente que regresa vale 5 veces más que uno nuevo" />
+            <AnimatedStat num={68} suffix="%" color="#F726E3" desc="De los clientes vuelven más seguido cuando sienten que los reconocen" />
+            <AnimatedStat num={199} suffix="$" color="#2AB84A" desc="MXN al mes. Menos de lo que cuesta perder a tu cliente más fiel" />
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-[#FAFBFF]">
+        <div className="max-w-4xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Todo lo que necesitas para construir tu comunidad</h2>
-            <p className="text-gray-500 text-center text-sm mb-12 md:mb-16">Sin complicaciones. Sin contratos. Sin sorpresas.</p>
+            <div className="text-center mb-14">
+              <Eyebrow>Todo incluido</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-3">Todo lo que necesitas para construir tu comunidad</h2>
+              <p className="text-gray-500 text-sm">Sin complicaciones. Sin contratos. Sin sorpresas.</p>
+            </div>
           </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { emoji: '📱', titulo: 'QR personalizado', desc: 'Con los colores y nombre de tu negocio. Listo para imprimir.' },
               { emoji: '📊', titulo: 'Panel de control', desc: 'Ve cuántos clientes eligieron regresar contigo esta semana.' },
@@ -415,17 +439,15 @@ export default function Home() {
               { emoji: '🛡️', titulo: 'Protección anti-trampa', desc: 'Solo una visita por día por cliente. Sin posibilidad de hacer trampa.' },
               { emoji: '💬', titulo: 'Notificaciones por WhatsApp', desc: 'Tus clientes reciben su progreso directo en WhatsApp.' },
               { emoji: '🎨', titulo: 'Editor de cartel', desc: 'Diseña tu cartel en minutos sin necesidad de un diseñador.' },
-              { emoji: '🌟', titulo: 'Solo las mejores reseñas llegan a Google', desc: 'Tus clientes felices te dejan reseñas en Google. Los que tienen algo que decir, te lo dicen a ti primero.' },
+              { emoji: '🌟', titulo: 'Las mejores reseñas llegan a Google', desc: 'Tus clientes felices te dejan reseñas. Los que tienen algo que decir, te lo dicen a ti primero.' },
               { emoji: '🎯', titulo: 'Hasta 3 razones para regresar', desc: 'Configura niveles de premio. Cada cliente siempre tiene algo por qué volver.' },
-              { emoji: '👤', titulo: 'Tu cliente sabe cuánto lo reconoces', desc: 'Pueden ver su progreso en cualquier momento desde huellaclub.app/mi-progreso' }
+              { emoji: '👤', titulo: 'Tu cliente sabe cuánto lo reconoces', desc: 'Pueden ver su progreso cuando quieran desde huellaclub.app/mi-progreso' }
             ].map((item, i) => (
-              <Reveal key={item.titulo} delay={i * 100}>
-                <div className="bg-white border border-indigo-100 rounded-2xl p-5 md:p-6 flex gap-4 shadow-[0_4px_20px_rgba(99,102,241,0.06)]">
-                  <div className="text-3xl">{item.emoji}</div>
-                  <div>
-                    <h3 className="text-gray-900 font-semibold mb-1">{item.titulo}</h3>
-                    <p className="text-gray-600 text-sm">{item.desc}</p>
-                  </div>
+              <Reveal key={item.titulo} delay={i * 80}>
+                <div className="ficha ficha-hover p-6 h-full">
+                  <div className="text-3xl mb-3">{item.emoji}</div>
+                  <h3 className="text-gray-900 font-bold mb-1 text-sm">{item.titulo}</h3>
+                  <p className="text-gray-600 text-sm">{item.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -433,11 +455,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
-        <div className="max-w-3xl mx-auto">
+      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
+        <div className="max-w-4xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Lo que dicen quienes ya lo usan</h2>
-            <p className="text-gray-500 text-center text-sm mb-12">Negocios reales en Puebla que están construyendo su comunidad</p>
+            <div className="text-center mb-12">
+              <Eyebrow>Negocios reales que ya construyen comunidad</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl">Lo que dicen quienes ya lo usan</h2>
+            </div>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
@@ -446,14 +470,15 @@ export default function Home() {
               { nombre: 'Chuy', negocio: 'Barbería El Estilo', foto: '/images/testimonio3.png', texto: 'Mis mejores clientes ahora saben que los reconozco. Eso no tiene precio.' }
             ].map((t, i) => (
               <Reveal key={t.nombre} delay={i * 150}>
-                <div className="bg-gray-50 border border-indigo-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.08)] flex flex-col gap-4 h-full">
-                  <p className="text-gray-700 text-sm leading-relaxed flex-1">"{t.texto}"</p>
+                <div className="ficha p-6 flex flex-col gap-4 h-full">
+                  <div className="text-marca-naranja text-sm">★★★★★</div>
+                  <p className="text-gray-700 text-sm leading-relaxed flex-1">&quot;{t.texto}&quot;</p>
                   <div className="flex items-center gap-3">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-indigo-100">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#EDEEFB]">
                       <Image src={t.foto} alt={t.nombre} fill className="object-cover" />
                     </div>
                     <div>
-                      <p className="text-gray-900 font-semibold text-sm">{t.nombre}</p>
+                      <p className="text-gray-900 font-bold text-sm">{t.nombre}</p>
                       <p className="text-gray-500 text-xs">{t.negocio}</p>
                     </div>
                   </div>
@@ -464,11 +489,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
+      <section id="preguntas" className="px-6 md:px-8 py-16 md:py-24 bg-[#FAFBFF]">
         <div className="max-w-2xl mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Preguntas frecuentes</h2>
-            <p className="text-gray-500 text-center text-sm mb-12">Las dudas más comunes antes de empezar</p>
+            <div className="text-center mb-12">
+              <Eyebrow>Preguntas frecuentes</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl">Las dudas más comunes antes de empezar</h2>
+            </div>
           </Reveal>
           <div className="flex flex-col gap-4">
             {[
@@ -480,85 +507,65 @@ export default function Home() {
               { pregunta: '¿Cómo evito que un cliente haga trampa?', respuesta: 'HuellaClub solo permite una visita por celular cada 24 horas. No importa cuántas veces escaneen.' },
               { pregunta: '¿Necesito internet en mi negocio para que funcione?', respuesta: 'Tu cliente necesita internet en su celular para escanear. Tú puedes ver tu panel desde cualquier dispositivo con internet.' },
               { pregunta: '¿Puedo cancelar cuando quiera?', respuesta: 'Sí. Sin contratos ni penalizaciones. Cancelas desde tu panel y listo.' }
-            ].map((faq, i) => (
-              <FAQItem key={i} pregunta={faq.pregunta} respuesta={faq.respuesta} />
-            ))}
+            ].map((faq, i) => (<FAQItem key={i} pregunta={faq.pregunta} respuesta={faq.respuesta} />))}
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-white">
+      <section id="precio" className="px-6 md:px-8 py-16 md:py-24 bg-white">
         <div className="max-w-lg mx-auto">
           <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl text-center mb-2">Un precio. Todo incluido.</h2>
-            <p className="text-gray-500 text-center text-sm mb-10 md:mb-12">Invierte en tus clientes. Ellos ya están invirtiendo en ti.</p>
+            <div className="text-center mb-10">
+              <Eyebrow>Un precio. Todo incluido.</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-3">Invierte en tus clientes</h2>
+              <p className="text-gray-500 text-sm">Ellos ya están invirtiendo en ti.</p>
+            </div>
           </Reveal>
           <Reveal delay={200}>
-            <div className="bg-white border-2 border-indigo-500 rounded-3xl p-8 md:p-10 text-center shadow-[0_8px_40px_rgba(99,102,241,0.15)]">
-              <div className="inline-block bg-indigo-100 text-indigo-600 text-xs font-semibold px-3 py-1 rounded-full mb-6">
-                Precio de lanzamiento
-              </div>
+            <div className="ficha p-8 md:p-10 text-center" style={{ borderColor: '#4247B9', borderWidth: '2px' }}>
+              <div className="inline-block bg-marca-coral text-white text-xs font-bold px-3 py-1 rounded-full mb-6">⚡ PRECIO DE LANZAMIENTO</div>
               <div className="mb-2">
-                <span className="text-6xl md:text-7xl font-bold text-gray-900">$199</span>
+                <span className="text-6xl md:text-7xl font-bold text-marca-azul" style={{ fontFamily: 'var(--font-fredoka)' }}>$199</span>
                 <span className="text-gray-500 text-lg"> MXN/mes</span>
               </div>
-              <p className="text-gray-400 text-sm mb-8">Primeros 30 días completamente gratis</p>
+              <p className="text-marca-verde-oscuro text-sm font-bold mb-8" style={{ color: '#2AB84A' }}>✨ Primeros 30 días completamente gratis</p>
               <ul className="flex flex-col gap-3 mb-8 text-left">
-                {[
-                  'Clientes ilimitados',
-                  'QR personalizado con tu marca',
-                  'Panel de control en tiempo real',
-                  'Hasta 3 niveles de recompensa',
-                  'Reseñas filtradas en Google',
-                  'Portal de progreso para clientes',
-                  'Notificaciones por WhatsApp',
-                  'Editor de cartel incluido',
-                  'Soporte por email',
-                  'Cancelas cuando quieras'
-                ].map((item) => (
+                {['Clientes ilimitados','QR personalizado con tu marca','Panel de control en tiempo real','Hasta 3 niveles de recompensa','Reseñas filtradas en Google','Portal de progreso para clientes','Notificaciones por WhatsApp','Editor de cartel incluido','Soporte por email','Cancelas cuando quieras'].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-gray-700 text-sm">
-                    <span className="text-indigo-600 font-bold">✓</span>
-                    {item}
+                    <span className="text-marca-verde-oscuro font-bold" style={{ color: '#2AB84A' }}>✓</span>{item}
                   </li>
                 ))}
               </ul>
-              <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition inline-block w-full text-center text-lg">
-                Empezar gratis ahora
-              </Link>
+              <Link href="/registro" className="btn-3d btn-3d-naranja w-full">Empezar gratis ahora</Link>
               <p className="text-gray-400 text-xs mt-4">Sin tarjeta de crédito para empezar</p>
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-20 bg-gray-50">
-        <div className="max-w-lg mx-auto text-center">
-          <Reveal>
-            <h2 className="text-gray-900 font-bold text-2xl md:text-3xl mb-4">¿Tienes dudas?</h2>
-            <p className="text-gray-600 mb-6">Cuéntanos de tu negocio y te ayudamos a arrancar.</p>
-            <a href="mailto:sabino@maplo.com.mx" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition inline-block text-base md:text-lg mb-4">
-              sabino@maplo.com.mx
-            </a>
-            <p className="text-gray-500 text-sm">También puedes escribirnos para agendar una demo gratuita.</p>
-          </Reveal>
-        </div>
+      <section className="px-6 md:px-8 py-14 bg-white">
+        <Reveal>
+          <div className="max-w-3xl mx-auto ficha p-8 md:p-10 bg-[#FAFBFF] grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <div>
+              <Eyebrow>¿Tienes dudas?</Eyebrow>
+              <h2 className="text-gray-900 font-bold text-2xl md:text-3xl">Cuéntanos de tu negocio y te ayudamos a arrancar</h2>
+            </div>
+            <div>
+              <a href="mailto:sabino@maplo.com.mx" className="inline-block bg-white border-2 border-[#EDEEFB] text-marca-azul font-bold px-5 py-3 rounded-xl mb-3">📧 sabino@maplo.com.mx</a>
+              <p className="text-gray-500 text-sm">También puedes escribirnos para agendar una demo gratuita.</p>
+            </div>
+          </div>
+        </Reveal>
       </section>
 
-      <section className="relative px-6 md:px-8 py-24 md:py-32 overflow-hidden bg-gray-50">
-        <div className="absolute inset-0 z-0">
-          <Image src="/images/comunidad.png" alt="Comunidad de negocios" fill className="object-cover opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-50/60 via-gray-50/50 to-gray-50" />
-        </div>
+      <section className="px-6 md:px-8 py-20 md:py-28 bg-marca-azul">
         <Reveal>
-          <div className="relative z-10 max-w-lg mx-auto text-center">
-            <h2 className="text-gray-900 font-bold text-3xl md:text-4xl mb-4">
-              Vuelven por ti. Empieza hoy a saberlo.
-            </h2>
-            <p className="text-gray-600 mb-2">30 días gratis para descubrirlo.</p>
-            <p className="text-gray-500 text-sm mb-10">Cancelas cuando quieras. Sin contratos.</p>
-            <Link href="/registro" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 md:px-10 rounded-xl transition inline-block text-base md:text-lg">
-              Empieza hoy gratis
-            </Link>
+          <div className="max-w-lg mx-auto text-center">
+            <h2 className="text-white font-bold text-3xl md:text-4xl mb-4" style={{ fontFamily: 'var(--font-fredoka)' }}>Vuelven por ti. Empieza hoy a saberlo.</h2>
+            <p className="text-white/90 mb-1">30 días gratis para descubrirlo.</p>
+            <p className="text-white/70 text-sm mb-8">Cancelas cuando quieras. Sin contratos.</p>
+            <Link href="/registro" className="btn-3d btn-3d-naranja">Empieza hoy gratis</Link>
+            <p className="text-white/70 text-xs mt-4">🔒 Sin tarjeta de crédito para empezar</p>
           </div>
         </Reveal>
       </section>
@@ -568,7 +575,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '28px', width: '28px' }} />
             <div>
-              <span className="text-gray-500 text-sm font-semibold">HuellaClub</span>
+              <span className="text-gray-700 text-sm font-bold" style={{ fontFamily: 'var(--font-fredoka)' }}>HuellaClub</span>
               <p className="text-gray-400 text-xs">Vuelven por ti.</p>
             </div>
           </div>
@@ -580,16 +587,7 @@ export default function Home() {
         </div>
       </footer>
 
-      <a href="https://wa.me/525537195028?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20HuellaClub" target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition z-50 text-2xl">
-        💬
-      </a>
-
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(32px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+      <a href="https://wa.me/525537195028?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20HuellaClub" target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition z-50 text-2xl">💬</a>
 
     </main>
   )

@@ -1,16 +1,123 @@
 @import "tailwindcss";
 
-body {
-  background-color: #ffffff;
-  color: #171717;
-  font-family: Arial, Helvetica, sans-serif;
+/* ===========================================
+   HUELLACLUB — DESIGN SYSTEM (Tailwind v4)
+   Paleta de marca + tipografía gaming + botones 3D
+   =========================================== */
+
+@theme {
+  /* --- Colores de marca --- */
+  --color-marca-azul: #4247B9;        /* Principal · botones por defecto */
+  --color-marca-azul-claro: #5E63E3;  /* Hover / brillos */
+  --color-marca-naranja: #FEB000;     /* CTA clave · "el botón que sí quieres" */
+  --color-marca-verde: #2AEE2A;       /* Acento personajes / stats */
+  --color-marca-magenta: #F726E3;     /* Acento personajes / stats */
+  --color-marca-coral: #F73D19;       /* Acento / chispas del logo */
+
+  /* --- Fuentes --- */
+  --font-display: var(--font-fredoka); /* Títulos */
+  --font-sans: var(--font-nunito);     /* Cuerpo */
 }
 
+body {
+  background-color: #ffffff;
+  color: #1f2244;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+/* Títulos siempre en Fredoka */
+h1, h2, h3, h4 {
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ===========================================
+   MARQUEE (rubros) — conservado de tu CSS
+   =========================================== */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+/* ===========================================
+   BOTONES 3D — estilo gaming (Duolingo)
+   Relieve abajo + se "hunde" al presionar
+   =========================================== */
+.btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-fredoka), sans-serif;
+  font-weight: 600;
+  border-radius: 1rem;
+  padding: 0.9rem 1.75rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, filter 0.15s ease;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Azul — acción principal por defecto */
+.btn-3d-azul {
+  background-color: var(--color-marca-azul);
+  color: #ffffff;
+  box-shadow: 0 5px 0 0 #2E3290;
+}
+.btn-3d-azul:hover { filter: brightness(1.05); }
+.btn-3d-azul:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 0 #2E3290;
+}
+
+/* Naranja — el CTA que más quieres que aprieten */
+.btn-3d-naranja {
+  background-color: var(--color-marca-naranja);
+  color: #1f2244;
+  box-shadow: 0 5px 0 0 #C98A00;
+}
+.btn-3d-naranja:hover { filter: brightness(1.04); }
+.btn-3d-naranja:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 0 #C98A00;
+}
+
+/* Blanco — secundario (ej. "Ver cómo funciona") */
+.btn-3d-blanco {
+  background-color: #ffffff;
+  color: var(--color-marca-azul);
+  box-shadow: 0 5px 0 0 #D9DAF2;
+}
+.btn-3d-blanco:hover { filter: brightness(0.99); }
+.btn-3d-blanco:active {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 0 #D9DAF2;
+}
+
+/* ===========================================
+   FICHA DE JUEGO — cards con carácter
+   =========================================== */
+.ficha {
+  background-color: #ffffff;
+  border: 2px solid #EDEEFB;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 0 0 #EDEEFB;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ficha-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 0 #E0E2F7;
+}
+
+/* ===========================================
+   Accesibilidad — respeta reduce-motion
+   =========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+  .btn-3d, .ficha, .ficha-hover { transition: none; }
 }
