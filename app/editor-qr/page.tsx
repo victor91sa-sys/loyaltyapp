@@ -14,13 +14,13 @@ const FUENTES = [
 ]
 
 const COLORES_FONDO = [
-  { nombre: 'Índigo', valor: '#4f46e5' },
-  { nombre: 'Rojo', valor: '#dc2626' },
-  { nombre: 'Verde', valor: '#16a34a' },
-  { nombre: 'Naranja', valor: '#ea580c' },
+  { nombre: 'Azul HuellaClub', valor: '#4247B9' },
+  { nombre: 'Naranja', valor: '#FEB000' },
+  { nombre: 'Verde', valor: '#2AEE2A' },
+  { nombre: 'Magenta', valor: '#F726E3' },
+  { nombre: 'Coral', valor: '#F73D19' },
+  { nombre: 'Azul cielo', valor: '#0284c7' },
   { nombre: 'Morado', valor: '#7c3aed' },
-  { nombre: 'Azul', valor: '#0284c7' },
-  { nombre: 'Rosa', valor: '#db2777' },
   { nombre: 'Negro', valor: '#111827' },
 ]
 
@@ -37,7 +37,7 @@ function EditorQRContent() {
   const negocioId = searchParams.get('id')
   const negocioNombre = searchParams.get('nombre')
 
-  const [colorFondo, setColorFondo] = useState('#4f46e5')
+  const [colorFondo, setColorFondo] = useState('#4247B9')
   const [colorTexto, setColorTexto] = useState('#ffffff')
   const [colorPuntos, setColorPuntos] = useState('#000000')
   const [logo, setLogo] = useState<string | null>(null)
@@ -293,9 +293,9 @@ function EditorQRContent() {
 
   if (!montado) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="min-h-screen bg-[#FAFBFF] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-2 border-marca-azul border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-500 text-sm">Cargando editor...</p>
         </div>
       </main>
@@ -303,23 +303,26 @@ function EditorQRContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-[#FAFBFF]">
 
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-gray-900 font-bold text-lg">Editor de cartel</h1>
-            <p className="text-gray-500 text-xs">{negocioNombre}</p>
+          <div className="flex items-center gap-2">
+            <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '30px', width: '30px' }} />
+            <div>
+              <h1 className="text-gray-900 font-bold text-lg" style={{ fontFamily: 'var(--font-fredoka)' }}>Editor de cartel</h1>
+              <p className="text-gray-500 text-xs">{negocioNombre}</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {listo && (
-              <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
+              <span className="bg-[#EAFBEA] text-[#2AB84A] text-xs font-bold px-3 py-1 rounded-full">
                 ✅ Listo para imprimir
               </span>
             )}
             <button
               onClick={() => router.back()}
-              className="border border-gray-200 hover:border-gray-400 text-gray-600 font-semibold py-2 px-4 rounded-xl transition text-sm"
+              className="border border-gray-200 hover:border-gray-400 text-gray-600 font-bold py-2 px-4 rounded-xl transition text-sm"
             >
               Volver al panel
             </button>
@@ -332,19 +335,19 @@ function EditorQRContent() {
 
           <div className="flex flex-col gap-5">
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">1. Encabezado</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">1. Encabezado</label>
               <p className="text-gray-400 text-xs mb-4">Lo primero que ven tus clientes. Usa tu logo si tienes uno, o el nombre de tu negocio.</p>
               <div className="flex gap-3 mb-4">
                 <button
                   onClick={() => setUsarNombre(true)}
-                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition ${usarNombre ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-bold transition ${usarNombre ? 'bg-marca-azul text-white' : 'bg-gray-100 text-gray-500'}`}
                 >
                   Nombre del negocio
                 </button>
                 <button
                   onClick={() => setUsarNombre(false)}
-                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition ${!usarNombre ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-bold transition ${!usarNombre ? 'bg-marca-azul text-white' : 'bg-gray-100 text-gray-500'}`}
                 >
                   Subir logo
                 </button>
@@ -355,13 +358,13 @@ function EditorQRContent() {
                   value={nombrePersonalizado}
                   onChange={(e) => setNombrePersonalizado(e.target.value)}
                   placeholder="Ej. Taquería El Güero"
-                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
                 />
               ) : (
                 <div>
-                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-indigo-200 rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition">
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-[#C9CBF0] rounded-xl cursor-pointer hover:border-marca-azul hover:bg-[#F5F6FE] transition">
                     <span className="text-2xl mb-1">🖼️</span>
-                    <span className="text-indigo-600 text-sm font-semibold">Haz click para subir tu logo</span>
+                    <span className="text-marca-azul text-sm font-bold">Haz click para subir tu logo</span>
                     <span className="text-gray-400 text-xs">PNG, JPG o SVG</span>
                     <input type="file" accept="image/*" onChange={handleLogo} className="hidden" />
                   </label>
@@ -377,14 +380,14 @@ function EditorQRContent() {
               )}
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">2. Título del cartel</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">2. Título del cartel</label>
               <p className="text-gray-400 text-xs mb-3">El mensaje que motiva a tu cliente a participar.</p>
               <input
                 type="text"
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
-                className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm mb-3"
+                className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm mb-3"
               />
               <p className="text-gray-400 text-xs mb-2">Sugerencias rápidas:</p>
               <div className="flex flex-wrap gap-2 mb-3">
@@ -392,7 +395,7 @@ function EditorQRContent() {
                   <button
                     key={s}
                     onClick={() => setTitulo(s)}
-                    className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs px-3 py-1 rounded-full transition"
+                    className="bg-[#EDEEFB] hover:brightness-95 text-marca-azul text-xs px-3 py-1 rounded-full transition"
                   >
                     {s}
                   </button>
@@ -405,12 +408,12 @@ function EditorQRContent() {
                 max="36"
                 value={tamanoTitulo}
                 onChange={(e) => setTamanoTitulo(Number(e.target.value))}
-                className="w-full accent-indigo-600"
+                className="w-full accent-[#4247B9]"
               />
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">3. Color de fondo</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">3. Color de fondo</label>
               <p className="text-gray-400 text-xs mb-3">El color principal de tu cartel.</p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {COLORES_FONDO.map((c) => (
@@ -437,25 +440,25 @@ function EditorQRContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">4. Color del texto</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">4. Color del texto</label>
               <p className="text-gray-400 text-xs mb-3">Asegúrate de que el texto se vea bien sobre tu color de fondo.</p>
               <div className="flex gap-3 mb-3">
                 <button
                   onClick={() => setColorTexto('#ffffff')}
-                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition border-2 ${colorTexto === '#ffffff' ? 'border-indigo-600 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-500'}`}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-bold transition border-2 ${colorTexto === '#ffffff' ? 'border-marca-azul bg-[#F5F6FE] text-marca-azul' : 'border-gray-200 text-gray-500'}`}
                 >
                   Blanco
                 </button>
                 <button
                   onClick={() => setColorTexto('#111827')}
-                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition border-2 ${colorTexto === '#111827' ? 'border-indigo-600 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-500'}`}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-bold transition border-2 ${colorTexto === '#111827' ? 'border-marca-azul bg-[#F5F6FE] text-marca-azul' : 'border-gray-200 text-gray-500'}`}
                 >
                   Negro
                 </button>
                 <button
                   onClick={() => setColorTexto('#fef08a')}
-                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition border-2 ${colorTexto === '#fef08a' ? 'border-indigo-600 bg-indigo-50 text-indigo-600' : 'border-gray-200 text-gray-500'}`}
+                  className={`flex-1 py-2 px-3 rounded-xl text-sm font-bold transition border-2 ${colorTexto === '#fef08a' ? 'border-marca-azul bg-[#F5F6FE] text-marca-azul' : 'border-gray-200 text-gray-500'}`}
                 >
                   Amarillo
                 </button>
@@ -471,8 +474,8 @@ function EditorQRContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">5. Color del QR</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">5. Color del QR</label>
               <p className="text-gray-400 text-xs mb-3">El color de los puntos del código QR. El fondo del QR siempre es blanco para que funcione.</p>
               <div className="flex items-center gap-3">
                 <input
@@ -485,15 +488,15 @@ function EditorQRContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">6. Tipografía</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">6. Tipografía</label>
               <p className="text-gray-400 text-xs mb-3">El estilo de letra de todo el cartel.</p>
               <div className="grid grid-cols-2 gap-2">
                 {FUENTES.map((f) => (
                   <button
                     key={f.valor}
                     onClick={() => setFuente(f.valor)}
-                    className={`py-3 px-4 rounded-xl text-sm text-center transition border-2 ${fuente === f.valor ? 'border-indigo-600 bg-indigo-50 text-indigo-600 font-semibold' : 'border-gray-200 text-gray-600'}`}
+                    className={`py-3 px-4 rounded-xl text-sm text-center transition border-2 ${fuente === f.valor ? 'border-marca-azul bg-[#F5F6FE] text-marca-azul font-bold' : 'border-gray-200 text-gray-600'}`}
                     style={{ fontFamily: f.valor }}
                   >
                     {f.nombre}
@@ -502,40 +505,40 @@ function EditorQRContent() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">7. Instrucción para el cliente</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">7. Instrucción para el cliente</label>
               <p className="text-gray-400 text-xs mb-3">Aparece debajo del QR. Explica cómo escanear.</p>
               <input
                 type="text"
                 value={subtitulo}
                 onChange={(e) => setSubtitulo(e.target.value)}
-                className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
               />
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-[0_2px_8px_rgba(99,102,241,0.06)]">
-              <label className="text-gray-900 font-semibold block mb-1">8. Contacto o redes sociales</label>
+            <div className="ficha p-5">
+              <label className="text-gray-900 font-bold block mb-1">8. Contacto o redes sociales</label>
               <p className="text-gray-400 text-xs mb-3">Opcional. Aparece al pie del cartel.</p>
               <input
                 type="text"
                 value={contacto}
                 onChange={(e) => setContacto(e.target.value)}
                 placeholder="Ej. @minegocio o minegocio.com"
-                className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
               />
             </div>
 
             <button
               onClick={descargarCartel}
               disabled={descargando || !listo}
-              className={`font-bold py-4 px-6 rounded-xl transition text-lg ${listo ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_4px_20px_rgba(99,102,241,0.3)]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+              className={`${listo ? 'btn-3d btn-3d-azul' : 'bg-gray-200 text-gray-400 cursor-not-allowed font-bold py-4 px-6 rounded-xl'} text-lg`}
             >
               {descargando ? '⏳ Generando cartel...' : listo ? '⬇️ Descargar cartel en PNG' : 'Completa el encabezado para descargar'}
             </button>
 
             <button
               onClick={() => router.back()}
-              className="border border-gray-200 hover:border-gray-400 text-gray-500 font-semibold py-3 px-6 rounded-xl transition text-center text-sm"
+              className="border border-gray-200 hover:border-gray-400 text-gray-500 font-bold py-3 px-6 rounded-xl transition text-center text-sm"
             >
               Volver al panel sin guardar
             </button>
@@ -544,9 +547,9 @@ function EditorQRContent() {
 
           <div className="lg:sticky lg:top-24 flex flex-col items-center gap-4">
             <div className="flex items-center justify-between w-full">
-              <p className="text-gray-500 text-sm font-medium">Vista previa del cartel</p>
+              <p className="text-gray-500 text-sm font-bold">Vista previa del cartel</p>
               {listo && (
-                <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-[#EAFBEA] text-[#2AB84A] text-xs font-bold px-3 py-1 rounded-full">
                   ✅ Listo para imprimir
                 </span>
               )}
@@ -587,13 +590,13 @@ function EditorQRContent() {
               )}
             </div>
 
-            <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 w-full">
-              <p className="text-indigo-700 text-xs font-semibold mb-2">💡 Consejos para un buen cartel</p>
+            <div className="ficha p-4 w-full">
+              <p className="text-marca-azul text-xs font-bold mb-2">💡 Consejos para un buen cartel</p>
               <ul className="flex flex-col gap-1">
-                <li className="text-indigo-600 text-xs">• Usa colores de tu negocio para que lo reconozcan</li>
-                <li className="text-indigo-600 text-xs">• Imprime en tamaño carta o media carta</li>
-                <li className="text-indigo-600 text-xs">• Ponlo donde el cliente espera o paga</li>
-                <li className="text-indigo-600 text-xs">• Plastifícalo para que dure más</li>
+                <li className="text-gray-600 text-xs">• Usa colores de tu negocio para que lo reconozcan</li>
+                <li className="text-gray-600 text-xs">• Imprime en tamaño carta o media carta</li>
+                <li className="text-gray-600 text-xs">• Ponlo donde el cliente espera o paga</li>
+                <li className="text-gray-600 text-xs">• Plastifícalo para que dure más</li>
               </ul>
             </div>
           </div>
