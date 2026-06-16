@@ -311,9 +311,9 @@ function DashboardContent() {
 
   if (cargando) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="min-h-screen bg-[#FAFBFF] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-2 border-marca-azul border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-500 text-sm">Cargando tu comunidad...</p>
         </div>
       </main>
@@ -321,13 +321,16 @@ function DashboardContent() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-[#FAFBFF]">
 
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-gray-900 font-bold text-lg">{negocio?.nombre || negocioNombre}</h1>
-            <p className="text-gray-500 text-xs">Tu comunidad de clientes</p>
+          <div className="flex items-center gap-2">
+            <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '30px', width: '30px' }} />
+            <div>
+              <h1 className="text-gray-900 font-bold text-lg" style={{ fontFamily: 'var(--font-fredoka)' }}>{negocio?.nombre || negocioNombre}</h1>
+              <p className="text-gray-500 text-xs">Tu comunidad de clientes</p>
+            </div>
           </div>
           <button onClick={cerrarSesion} className="text-gray-400 hover:text-gray-600 text-sm transition">
             Cerrar sesión
@@ -338,22 +341,22 @@ function DashboardContent() {
       <div className="max-w-3xl mx-auto px-6 py-8">
 
         {negocio?.suscripcion_activa && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 flex items-center gap-3 shadow-[0_2px_8px_rgba(34,197,94,0.08)]">
-            <span className="text-green-500 text-xl">✅</span>
-            <p className="text-green-700 text-sm font-semibold">HuellaClub Pro activo</p>
+          <div className="bg-[#EAFBEA] border-2 border-[#A6E9A6] rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <span className="text-[#2AB84A] text-xl">✅</span>
+            <p className="text-[#2AB84A] text-sm font-bold">HuellaClub Pro activo</p>
           </div>
         )}
 
         {!negocio?.suscripcion_activa && trialActivo && (
-          <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_2px_8px_rgba(99,102,241,0.08)]">
+          <div className="ficha p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <p className="text-indigo-900 font-semibold">Período de prueba</p>
-              <p className="text-indigo-600 text-sm">Te quedan {diasRestantes} días para seguir reconociendo a tus clientes gratis</p>
+              <p className="text-gray-900 font-bold">Período de prueba</p>
+              <p className="text-marca-azul text-sm">Te quedan {diasRestantes} días para seguir reconociendo a tus clientes gratis</p>
             </div>
             <button
               onClick={handlePago}
               disabled={pagando}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm whitespace-nowrap"
+              className="btn-3d btn-3d-naranja text-sm disabled:opacity-50 whitespace-nowrap"
             >
               {pagando ? 'Cargando...' : 'Suscribirme $199/mes'}
             </button>
@@ -361,13 +364,13 @@ function DashboardContent() {
         )}
 
         {!negocio?.suscripcion_activa && !trialActivo && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6 shadow-[0_2px_8px_rgba(239,68,68,0.08)]">
-            <p className="text-red-800 font-semibold mb-1">Tu período de prueba terminó</p>
+          <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-5 mb-6">
+            <p className="text-red-800 font-bold mb-1">Tu período de prueba terminó</p>
             <p className="text-red-600 text-sm mb-4">Tus clientes siguen ahí. Suscríbete para seguir reconociéndolos.</p>
             <button
               onClick={handlePago}
               disabled={pagando}
-              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-5 rounded-xl transition disabled:opacity-50 text-sm"
+              className="btn-3d btn-3d-naranja text-sm disabled:opacity-50"
             >
               {pagando ? 'Cargando...' : 'Reactivar por $199/mes'}
             </button>
@@ -375,34 +378,34 @@ function DashboardContent() {
         )}
 
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <p className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">{totalClientes}</p>
+          <div className="ficha p-5 text-center">
+            <p className="text-4xl md:text-5xl font-bold text-gray-900 mb-1" style={{ fontFamily: 'var(--font-fredoka)' }}>{totalClientes}</p>
             <p className="text-gray-500 text-xs md:text-sm">Personas que han elegido tu negocio</p>
           </div>
-          <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <p className="text-4xl md:text-5xl font-bold text-indigo-600 mb-1">{visitasSemana}</p>
+          <div className="ficha p-5 text-center">
+            <p className="text-4xl md:text-5xl font-bold text-marca-azul mb-1" style={{ fontFamily: 'var(--font-fredoka)' }}>{visitasSemana}</p>
             <p className="text-gray-500 text-xs md:text-sm">Eligieron regresar esta semana</p>
           </div>
-          <div className="bg-white rounded-2xl p-5 text-center border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <p className="text-4xl md:text-5xl font-bold text-green-600 mb-1">{canjes}</p>
+          <div className="ficha p-5 text-center">
+            <p className="text-4xl md:text-5xl font-bold mb-1" style={{ color: '#2AB84A', fontFamily: 'var(--font-fredoka)' }}>{canjes}</p>
             <p className="text-gray-500 text-xs md:text-sm">Premios pendientes de canjear</p>
           </div>
         </div>
 
         {premiosPendientes.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 mb-6 border border-green-200 shadow-[0_4px_20px_rgba(34,197,94,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-1">🎁 Premios pendientes de canjear</h2>
+          <div className="ficha p-6 mb-6" style={{ borderColor: '#A6E9A6' }}>
+            <h2 className="text-gray-900 font-bold mb-1">🎁 Premios pendientes de canjear</h2>
             <p className="text-gray-400 text-xs mb-4">Estos clientes ganaron su premio y están esperando canjearlo.</p>
             <div className="flex flex-col gap-3">
               {premiosPendientes.map((cliente) => (
-                <div key={cliente.id} className="flex items-center justify-between bg-green-50 border border-green-100 rounded-xl p-4">
+                <div key={cliente.id} className="flex items-center justify-between bg-[#EAFBEA] border border-[#A6E9A6] rounded-xl p-4">
                   <div>
                     <p className="text-gray-900 text-sm font-medium">{cliente.celular}</p>
-                    <p className="text-green-600 text-xs font-semibold mt-0.5">🏆 Premio: {negocio?.recompensas}</p>
+                    <p className="text-[#2AB84A] text-xs font-bold mt-0.5">🏆 Premio: {negocio?.recompensas}</p>
                   </div>
                   <button
                     onClick={() => marcarCanjeado(cliente.id)}
-                    className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition"
+                    className="bg-[#2AB84A] hover:brightness-105 text-white text-xs font-bold px-4 py-2 rounded-xl transition"
                   >
                     Marcar como canjeado
                   </button>
@@ -413,26 +416,26 @@ function DashboardContent() {
         )}
 
         {totalClientes > 0 && (
-          <div className="bg-white rounded-2xl p-6 mb-6 border border-orange-100 shadow-[0_4px_20px_rgba(251,146,60,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-1">⚠️ Clientes que no han regresado</h2>
+          <div className="ficha p-6 mb-6" style={{ borderColor: '#FFE0B8' }}>
+            <h2 className="text-gray-900 font-bold mb-1">⚠️ Clientes que no han regresado</h2>
             <p className="text-gray-400 text-xs mb-5">Estos clientes conocen tu negocio pero llevan tiempo sin volver.</p>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center bg-orange-50 rounded-xl p-4 border border-orange-100">
-                <p className="text-3xl font-bold text-orange-500 mb-1">{inactivos7}</p>
+              <div className="text-center bg-[#FFF6E0] rounded-xl p-4 border border-[#FFE0B8]">
+                <p className="text-3xl font-bold text-marca-naranja mb-1">{inactivos7}</p>
                 <p className="text-gray-500 text-xs">Más de 7 días sin visitar</p>
               </div>
-              <div className="text-center bg-orange-50 rounded-xl p-4 border border-orange-100">
-                <p className="text-3xl font-bold text-orange-600 mb-1">{inactivos14}</p>
+              <div className="text-center bg-[#FFF6E0] rounded-xl p-4 border border-[#FFE0B8]">
+                <p className="text-3xl font-bold mb-1" style={{ color: '#E89200' }}>{inactivos14}</p>
                 <p className="text-gray-500 text-xs">Más de 14 días sin visitar</p>
               </div>
               <div className="text-center bg-red-50 rounded-xl p-4 border border-red-100">
-                <p className="text-3xl font-bold text-red-500 mb-1">{inactivos30}</p>
+                <p className="text-3xl font-bold text-marca-coral mb-1">{inactivos30}</p>
                 <p className="text-gray-500 text-xs">Más de 30 días sin visitar</p>
               </div>
             </div>
             {inactivos14 > 0 && (
-              <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
-                <p className="text-orange-700 text-sm">
+              <div className="mt-4 bg-[#FFF6E0] border border-[#FFE0B8] rounded-xl p-4">
+                <p className="text-[#9A6800] text-sm">
                   💡 <strong>{inactivos14} clientes</strong> no han regresado en 14 días. Recuérdales que los esperas con un cartel visible o cuéntales de su progreso cuando los veas.
                 </p>
               </div>
@@ -440,8 +443,8 @@ function DashboardContent() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-6">Clientes que regresaron esta semana</h2>
+        <div className="ficha p-6 mb-6">
+          <h2 className="text-gray-900 font-bold mb-6">Clientes que regresaron esta semana</h2>
           <div className="flex items-end gap-2 h-32">
             {visitasPorDia.map((d, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
@@ -450,7 +453,7 @@ function DashboardContent() {
                   className="w-full rounded-t-lg transition-all duration-500"
                   style={{
                     height: Math.max((d.visitas / maxVisitas) * 100, d.visitas > 0 ? 8 : 4) + 'px',
-                    backgroundColor: d.visitas > 0 ? '#6366f1' : '#e0e7ff',
+                    backgroundColor: d.visitas > 0 ? '#4247B9' : '#EDEEFB',
                   }}
                 />
                 <span className="text-gray-400 text-xs">{d.dia}</span>
@@ -459,11 +462,11 @@ function DashboardContent() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-4">Tu puerta de entrada</h2>
+        <div className="ficha p-6 mb-6">
+          <h2 className="text-gray-900 font-bold mb-4">Tu puerta de entrada</h2>
           {accesoActivo ? (
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <div ref={qrRef} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+              <div ref={qrRef} className="bg-white p-4 rounded-xl border-2 border-[#EDEEFB]">
                 <QRCodeSVG value={urlCliente} size={120} />
               </div>
               <div className="flex flex-col gap-3 flex-1">
@@ -472,13 +475,13 @@ function DashboardContent() {
                 </p>
                 <button
                   onClick={descargarQR}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-xl transition text-sm"
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-xl transition text-sm"
                 >
                   Descargar QR en PNG
                 </button>
                 <button
                   onClick={irAlEditor}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition text-sm"
+                  className="btn-3d btn-3d-azul text-sm"
                 >
                   Personalizar cartel
                 </button>
@@ -489,7 +492,7 @@ function DashboardContent() {
               <p className="text-gray-500 text-sm mb-4">Tu QR está desactivado. Suscríbete para seguir reconociendo a tus clientes.</p>
               <button
                 onClick={handlePago}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-xl transition text-sm"
+                className="btn-3d btn-3d-azul text-sm"
               >
                 Reactivar
               </button>
@@ -498,8 +501,8 @@ function DashboardContent() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-1">🏆 Tus clientes más leales</h2>
+          <div className="ficha p-6">
+            <h2 className="text-gray-900 font-bold mb-1">🏆 Tus clientes más leales</h2>
             <p className="text-gray-400 text-xs mb-4">Estas personas han elegido tu negocio más que nadie.</p>
             {clientesTop.length === 0 ? (
               <div className="text-center py-4">
@@ -516,22 +519,22 @@ function DashboardContent() {
                     </span>
                     <div className="flex-1">
                       <p className="text-gray-900 text-sm">{cliente.celular}</p>
-                      <div className="w-full bg-indigo-100 rounded-full h-1.5 mt-1">
+                      <div className="w-full bg-[#EDEEFB] rounded-full h-1.5 mt-1">
                         <div
-                          className="bg-indigo-500 h-1.5 rounded-full"
+                          className="bg-marca-azul h-1.5 rounded-full"
                           style={{ width: Math.min((cliente.visitas / negocio.visitas) * 100, 100) + '%' }}
                         />
                       </div>
                     </div>
-                    <span className="text-indigo-600 text-sm font-bold">{cliente.visitas}</span>
+                    <span className="text-marca-azul text-sm font-bold">{cliente.visitas}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-            <h2 className="text-gray-900 font-semibold mb-1">🕐 Quién regresó hoy</h2>
+          <div className="ficha p-6">
+            <h2 className="text-gray-900 font-bold mb-1">🕐 Quién regresó hoy</h2>
             <p className="text-gray-400 text-xs mb-4">Actividad reciente en tu negocio.</p>
             {actividadReciente.length === 0 ? (
               <p className="text-gray-400 text-sm">Sin actividad reciente.</p>
@@ -561,13 +564,13 @@ function DashboardContent() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
+        <div className="ficha p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-gray-900 font-semibold">Configuración de tu programa</h2>
+            <h2 className="text-gray-900 font-bold">Configuración de tu programa</h2>
             {!editando && (
               <button
                 onClick={() => setEditando(true)}
-                className="text-indigo-600 hover:text-indigo-700 text-sm font-medium transition"
+                className="text-marca-azul hover:brightness-110 text-sm font-bold transition"
               >
                 Editar
               </button>
@@ -578,19 +581,19 @@ function DashboardContent() {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between items-center py-3 border-b border-gray-100">
                 <span className="text-gray-500 text-sm">Nombre del negocio</span>
-                <span className="text-gray-900 text-sm font-semibold">{negocio?.nombre}</span>
+                <span className="text-gray-900 text-sm font-bold">{negocio?.nombre}</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-gray-100">
                 <span className="text-gray-500 text-sm">Visitas para la recompensa</span>
-                <span className="text-gray-900 text-sm font-semibold">{negocio?.visitas} visitas</span>
+                <span className="text-gray-900 text-sm font-bold">{negocio?.visitas} visitas</span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-gray-100">
                 <span className="text-gray-500 text-sm">Recompensa</span>
-                <span className="text-gray-900 text-sm font-semibold">{negocio?.recompensas}</span>
+                <span className="text-gray-900 text-sm font-bold">{negocio?.recompensas}</span>
               </div>
               <div className="flex justify-between items-center py-3">
                 <span className="text-gray-500 text-sm">Google Maps</span>
-                <span className="text-gray-900 text-sm font-semibold">
+                <span className="text-gray-900 text-sm font-bold">
                   {negocio?.google_maps_url ? '✅ Configurado' : '⬜ Sin configurar'}
                 </span>
               </div>
@@ -598,43 +601,43 @@ function DashboardContent() {
           ) : (
             <div className="flex flex-col gap-4">
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">Nombre del negocio</label>
+                <label className="text-gray-700 text-sm font-bold block mb-1">Nombre del negocio</label>
                 <input
                   type="text"
                   value={configForm.nombre}
                   onChange={(e) => setConfigForm({ ...configForm, nombre: e.target.value })}
-                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">¿A cuántas visitas totales se da la recompensa principal?</label>
+                <label className="text-gray-700 text-sm font-bold block mb-1">¿A cuántas visitas totales se da la recompensa principal?</label>
                 <input
                   type="number"
                   value={configForm.visitas}
                   onChange={(e) => setConfigForm({ ...configForm, visitas: e.target.value })}
                   min="2"
                   max="50"
-                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">¿Cuál es la recompensa principal?</label>
+                <label className="text-gray-700 text-sm font-bold block mb-1">¿Cuál es la recompensa principal?</label>
                 <input
                   type="text"
                   value={configForm.recompensas}
                   onChange={(e) => setConfigForm({ ...configForm, recompensas: e.target.value })}
                   placeholder="Ej. Un café gratis"
-                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
                 />
               </div>
               <div>
-                <label className="text-gray-700 text-sm font-medium block mb-1">Link de Google Maps (opcional)</label>
+                <label className="text-gray-700 text-sm font-bold block mb-1">Link de Google Maps (opcional)</label>
                 <input
                   type="text"
                   value={configForm.google_maps_url}
                   onChange={(e) => setConfigForm({ ...configForm, google_maps_url: e.target.value })}
                   placeholder="https://g.page/r/XXXXXXXXXX/review"
-                  className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-3 outline-none focus:border-marca-azul transition text-sm"
                 />
                 <p className="text-gray-400 text-xs mt-1">Tus clientes más felices llegarán directo a dejar su reseña en Google.</p>
               </div>
@@ -642,13 +645,13 @@ function DashboardContent() {
                 <button
                   onClick={guardarConfiguracion}
                   disabled={guardando}
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 text-sm"
+                  className="flex-1 btn-3d btn-3d-azul disabled:opacity-50 text-sm"
                 >
                   {guardando ? 'Guardando...' : 'Guardar cambios'}
                 </button>
                 <button
                   onClick={() => setEditando(false)}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition text-sm"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition text-sm"
                 >
                   Cancelar
                 </button>
@@ -657,13 +660,13 @@ function DashboardContent() {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl p-6 mb-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
+        <div className="ficha p-6 mb-6">
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-gray-900 font-semibold">🎯 Niveles de recompensa</h2>
+            <h2 className="text-gray-900 font-bold">🎯 Niveles de recompensa</h2>
             {!editandoRecompensas && (
               <button
                 onClick={() => setEditandoRecompensas(true)}
-                className="text-indigo-600 hover:text-indigo-700 text-sm font-medium transition"
+                className="text-marca-azul hover:brightness-110 text-sm font-bold transition"
               >
                 Editar
               </button>
@@ -674,20 +677,20 @@ function DashboardContent() {
           {!editandoRecompensas ? (
             <div>
               {recompensas.length === 0 ? (
-                <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
+                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-6 text-center">
                   <p className="text-gray-400 text-sm mb-1">Sin niveles adicionales configurados</p>
                   <p className="text-gray-400 text-xs">Tu programa usa solo la recompensa principal</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
                   {recompensas.map((r, i) => (
-                    <div key={i} className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-                      <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    <div key={i} className="flex items-center gap-3 bg-[#EDEEFB] border border-[#C9CBF0] rounded-xl p-4">
+                      <div className="w-8 h-8 bg-marca-azul rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                         {i + 1}
                       </div>
                       <div className="flex-1">
-                        <p className="text-gray-900 text-sm font-semibold">{r.descripcion}</p>
-                        <p className="text-indigo-600 text-xs">A las {r.visitas_requeridas} visitas totales</p>
+                        <p className="text-gray-900 text-sm font-bold">{r.descripcion}</p>
+                        <p className="text-marca-azul text-xs">A las {r.visitas_requeridas} visitas totales</p>
                       </div>
                     </div>
                   ))}
@@ -696,16 +699,16 @@ function DashboardContent() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-                <p className="text-indigo-700 text-xs">
+              <div className="bg-[#EDEEFB] border border-[#C9CBF0] rounded-xl p-4">
+                <p className="text-marca-azul text-xs">
                   💡 Escribe el número total de visitas para cada nivel. Por ejemplo: nivel 1 a las 5 visitas, nivel 2 a las 10, nivel 3 a las 20.
                 </p>
               </div>
 
               {recompensas.map((r, i) => (
-                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div key={i} className="bg-gray-50 border-2 border-gray-200 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-gray-700 text-sm font-semibold">Nivel {i + 1}</span>
+                    <span className="text-gray-700 text-sm font-bold">Nivel {i + 1}</span>
                     <button
                       onClick={() => eliminarNivel(i)}
                       className="text-red-400 hover:text-red-600 text-xs transition"
@@ -715,7 +718,7 @@ function DashboardContent() {
                   </div>
                   <div className="flex flex-col gap-3">
                     <div>
-                      <label className="text-gray-700 text-xs font-medium block mb-1">
+                      <label className="text-gray-700 text-xs font-bold block mb-1">
                         ¿A cuántas visitas totales se da este premio?
                         {i > 0 && <span className="text-gray-400 ml-1">(debe ser mayor a {recompensas[i-1].visitas_requeridas})</span>}
                       </label>
@@ -726,17 +729,17 @@ function DashboardContent() {
                         min={i > 0 ? recompensas[i-1].visitas_requeridas + 1 : 1}
                         max="100"
                         placeholder="Ej. 10"
-                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                        className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-2 outline-none focus:border-marca-azul transition text-sm"
                       />
                     </div>
                     <div>
-                      <label className="text-gray-700 text-xs font-medium block mb-1">¿Cuál es el premio?</label>
+                      <label className="text-gray-700 text-xs font-bold block mb-1">¿Cuál es el premio?</label>
                       <input
                         type="text"
                         value={r.descripcion}
                         onChange={(e) => actualizarNivel(i, 'descripcion', e.target.value)}
                         placeholder="Ej. Café grande gratis"
-                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 text-sm shadow-sm"
+                        className="w-full bg-white border-2 border-[#EDEEFB] text-gray-900 rounded-xl px-4 py-2 outline-none focus:border-marca-azul transition text-sm"
                       />
                     </div>
                   </div>
@@ -746,7 +749,7 @@ function DashboardContent() {
               {recompensas.length < 3 && (
                 <button
                   onClick={agregarNivel}
-                  className="border-2 border-dashed border-indigo-300 hover:border-indigo-500 text-indigo-600 font-semibold py-3 rounded-xl transition text-sm"
+                  className="border-2 border-dashed border-[#C9CBF0] hover:border-marca-azul text-marca-azul font-bold py-3 rounded-xl transition text-sm"
                 >
                   + Agregar nivel {recompensas.length + 1}
                 </button>
@@ -762,13 +765,13 @@ function DashboardContent() {
                 <button
                   onClick={guardarRecompensas}
                   disabled={guardandoRecompensas}
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 text-sm"
+                  className="flex-1 btn-3d btn-3d-azul disabled:opacity-50 text-sm"
                 >
                   {guardandoRecompensas ? 'Guardando...' : 'Guardar niveles'}
                 </button>
                 <button
                   onClick={() => { setEditandoRecompensas(false); setErrorRecompensas('') }}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition text-sm"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl transition text-sm"
                 >
                   Cancelar
                 </button>
@@ -777,8 +780,8 @@ function DashboardContent() {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)]">
-          <h2 className="text-gray-900 font-semibold mb-1">Tu comunidad completa</h2>
+        <div className="ficha p-6">
+          <h2 className="text-gray-900 font-bold mb-1">Tu comunidad completa</h2>
           <p className="text-gray-400 text-xs mb-4">Todas las personas que han elegido tu negocio.</p>
           {clientes.length === 0 ? (
             <div className="text-center py-8">
@@ -792,17 +795,17 @@ function DashboardContent() {
                 const progreso = Math.min((cliente.visitas / negocio.visitas) * 100, 100)
                 const completo = cliente.premio_pendiente
                 return (
-                  <div key={cliente.id} className={`border rounded-xl p-4 ${completo ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-100'}`}>
+                  <div key={cliente.id} className={`border-2 rounded-xl p-4 ${completo ? 'bg-[#EAFBEA] border-[#A6E9A6]' : 'bg-gray-50 border-gray-100'}`}>
                     <div className="flex justify-between mb-2">
                       <span className="text-gray-900 text-sm font-medium">{cliente.celular}</span>
-                      <span className={`text-xs font-semibold ${completo ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className={`text-xs font-bold ${completo ? 'text-[#2AB84A]' : 'text-gray-500'}`}>
                         {completo ? '🎁 Premio pendiente' : cliente.visitas + ' de ' + negocio.visitas + ' visitas'}
                       </span>
                     </div>
                     {!completo && (
-                      <div className="w-full bg-indigo-100 rounded-full h-2">
+                      <div className="w-full bg-[#EDEEFB] rounded-full h-2">
                         <div
-                          className="h-2 rounded-full transition-all bg-indigo-500"
+                          className="h-2 rounded-full transition-all bg-marca-azul"
                           style={{ width: progreso + '%' }}
                         />
                       </div>
