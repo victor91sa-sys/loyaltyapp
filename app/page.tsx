@@ -251,9 +251,9 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-5 gap-2 mb-5">
                 {pasoStamps.map((s, i) => (
-                  <div key={i} className="aspect-square rounded-xl flex items-center justify-center text-lg"
-                    style={s ? { backgroundColor: '#4247B9' } : { border: '2px dashed #DADBF3' }}>
-                    {s ? '🐾' : ''}
+                  <div key={i} className="aspect-square rounded-xl flex items-center justify-center text-lg font-bold"
+                    style={s ? { backgroundColor: '#4247B9', color: 'white' } : { border: '2px dashed #DADBF3' }}>
+                    {s ? '✓' : ''}
                   </div>
                 ))}
               </div>
