@@ -66,12 +66,15 @@ export default function MiProgreso() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
+    <main className="min-h-screen bg-[#FAFBFF] flex flex-col">
 
-      <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
-        <Link href="/" className="block">
-          <span className="text-indigo-600 font-bold text-xl">HuellaClub</span>
-          <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+      <nav className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/images/estrella.svg" alt="estrella HuellaClub" style={{ height: '32px', width: '32px' }} />
+          <div>
+            <span className="text-marca-azul font-bold text-xl" style={{ fontFamily: 'var(--font-fredoka)' }}>HuellaClub</span>
+            <p className="text-gray-400 text-xs">Vuelven por ti.</p>
+          </div>
         </Link>
         <Link href="/login" className="text-gray-500 hover:text-gray-700 text-sm transition">
           Soy dueño de un negocio
@@ -100,12 +103,12 @@ export default function MiProgreso() {
                   onChange={(e) => setCelular(e.target.value)}
                   placeholder="Ej. 5512345678"
                   required
-                  className="w-full bg-white border-2 border-gray-200 focus:border-indigo-500 text-gray-900 rounded-2xl px-4 py-4 outline-none transition text-center text-xl tracking-widest shadow-sm"
+                  className="w-full bg-white border-2 border-[#EDEEFB] focus:border-marca-azul text-gray-900 rounded-2xl px-4 py-4 outline-none transition text-center text-xl tracking-widest"
                 />
                 <button
                   type="submit"
                   disabled={buscando || !celular}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition disabled:opacity-50 text-lg shadow-[0_4px_20px_rgba(99,102,241,0.3)]"
+                  className="btn-3d btn-3d-azul disabled:opacity-50"
                 >
                   {buscando ? 'Buscando...' : 'Ver mi progreso'}
                 </button>
@@ -123,7 +126,7 @@ export default function MiProgreso() {
               </div>
 
               {resultados && resultados.length === 0 ? (
-                <div className="bg-white rounded-3xl border border-indigo-100 shadow-[0_8px_40px_rgba(99,102,241,0.08)] p-10 text-center">
+                <div className="ficha p-10 text-center">
                   <div className="text-6xl mb-4">📲</div>
                   <h2 className="text-gray-900 font-bold text-lg mb-2">Aún no tienes visitas registradas</h2>
                   <p className="text-gray-500 text-sm mb-6">
@@ -131,7 +134,7 @@ export default function MiProgreso() {
                   </p>
                   <button
                     onClick={() => { setResultados(null); setBuscado(false); setCelular('') }}
-                    className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                    className="text-marca-azul hover:brightness-110 text-sm font-bold"
                   >
                     Intentar con otro número
                   </button>
@@ -144,14 +147,11 @@ export default function MiProgreso() {
                     const faltan = r.meta - r.visitas
 
                     return (
-                      <div
-                        key={i}
-                        className="bg-white rounded-2xl border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.08)] p-6"
-                      >
+                      <div key={i} className="ficha p-6">
                         <div className="flex items-center justify-between mb-4">
                           <h2 className="text-gray-900 font-bold text-lg">{r.negocioNombre}</h2>
                           {completo && (
-                            <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
+                            <span className="bg-[#EAFBEA] text-[#2AB84A] text-xs font-bold px-3 py-1 rounded-full">
                               🎁 Premio ganado
                             </span>
                           )}
@@ -162,14 +162,14 @@ export default function MiProgreso() {
                           <span className="text-gray-900 font-bold text-sm">{r.visitas} de {r.meta} visitas</span>
                         </div>
 
-                        <div className="w-full bg-indigo-100 rounded-full h-4 mb-3 overflow-hidden">
+                        <div className="w-full bg-[#EDEEFB] rounded-full h-4 mb-3 overflow-hidden">
                           <div
-                            className={`h-4 rounded-full transition-all duration-1000 ${completo ? 'bg-green-500' : 'bg-indigo-500'}`}
+                            className={`h-4 rounded-full transition-all duration-1000 ${completo ? 'bg-[#2AB84A]' : 'bg-marca-azul'}`}
                             style={{ width: progreso + '%' }}
                           />
                         </div>
 
-                        <p className={`text-sm font-medium ${completo ? 'text-green-600' : 'text-indigo-600'}`}>
+                        <p className={`text-sm font-bold ${completo ? 'text-[#2AB84A]' : 'text-marca-azul'}`}>
                           {completo
                             ? `¡Completaste tu recompensa! Premio: ${r.recompensa}`
                             : faltan === 1
@@ -179,16 +179,16 @@ export default function MiProgreso() {
                         </p>
 
                         <div className="flex flex-wrap gap-1.5 mt-4">
-                          {Array.from({ length: r.meta }, (_, i) => (
+                          {Array.from({ length: r.meta }, (_, idx) => (
                             <div
-                              key={i}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-xs transition-all"
+                              key={idx}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold transition-all"
                               style={{
-                                backgroundColor: i < r.visitas ? (completo ? '#22c55e' : '#6366f1') : '#f0f0f0',
-                                color: i < r.visitas ? 'white' : '#d1d5db',
+                                backgroundColor: idx < r.visitas ? (completo ? '#2AB84A' : '#4247B9') : '#EDEEFB',
+                                color: idx < r.visitas ? 'white' : '#C9CBF0',
                               }}
                             >
-                              {i < r.visitas ? '⭐' : '○'}
+                              {idx < r.visitas ? '✓' : ''}
                             </div>
                           ))}
                         </div>
