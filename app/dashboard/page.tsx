@@ -109,7 +109,8 @@ function DashboardContent() {
   })() : 0
 
   const trialActivo = diasRestantes > 0
-  const accesoActivo = negocio?.suscripcion_activa || trialActivo
+  const cortesiaActiva = negocio?.cortesia_hasta && new Date(negocio.cortesia_hasta) > new Date()
+  const accesoActivo = negocio?.suscripcion_activa || trialActivo || cortesiaActiva
 
   const totalClientes = clientes.length
   const unaSemanaAtras = new Date()
@@ -340,14 +341,14 @@ function DashboardContent() {
 
       <div className="max-w-3xl mx-auto px-6 py-8">
 
-        {negocio?.suscripcion_activa && (
+        {(negocio?.suscripcion_activa || cortesiaActiva) && (
           <div className="bg-[#EAFBEA] border-2 border-[#A6E9A6] rounded-2xl p-4 mb-6 flex items-center gap-3">
             <span className="text-[#2AB84A] text-xl">✅</span>
             <p className="text-[#2AB84A] text-sm font-bold">HuellaClub Pro activo</p>
           </div>
         )}
 
-        {!negocio?.suscripcion_activa && trialActivo && (
+        {!negocio?.suscripcion_activa && !cortesiaActiva && trialActivo && (
           <div className="ficha p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="text-gray-900 font-bold">Período de prueba</p>
@@ -363,7 +364,7 @@ function DashboardContent() {
           </div>
         )}
 
-        {!negocio?.suscripcion_activa && !trialActivo && (
+        {!negocio?.suscripcion_activa && !cortesiaActiva && !trialActivo && (
           <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-5 mb-6">
             <p className="text-red-800 font-bold mb-1">Tu período de prueba terminó</p>
             <p className="text-red-600 text-sm mb-4">Tus clientes siguen ahí. Suscríbete para seguir reconociéndolos.</p>
