@@ -53,6 +53,18 @@ function useCounter(target: number, visible: boolean) {
   return count
 }
 
+function Mascota({ src, className, size = 70 }: { src: string, className: string, size?: number }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      className={`pointer-events-none select-none absolute opacity-90 hidden md:block ${className}`}
+      style={{ width: size, height: size }}
+    />
+  )
+}
+
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <div className="inline-flex items-center gap-2 bg-[#EDEEFB] text-marca-azul text-xs font-bold px-4 py-2 rounded-full mb-5 uppercase tracking-wide">
@@ -176,7 +188,7 @@ export default function Home() {
   const pasoStamps = [1,1,1,0,0,0,0,0,0,0]
 
   return (
-    <main className="min-h-screen bg-white flex flex-col">
+    <main className="min-h-screen bg-white flex flex-col overflow-x-hidden">
 
       <nav className="flex items-center justify-between px-6 md:px-8 py-4 sticky top-0 bg-white/95 backdrop-blur z-50 border-b border-gray-100">
         <Link href="/" className="flex items-center gap-2">
@@ -202,8 +214,10 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="relative px-6 md:px-8 py-16 md:py-24 bg-white">
+        <Mascota src="/images/clover.svg" className="top-10 left-4 rotate-[-12deg]" size={64} />
+        <Mascota src="/images/flower.svg" className="bottom-8 left-10" size={52} />
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div>
             <Eyebrow>30 días gratis · Niveles de premio · Reseñas en Google</Eyebrow>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-[1.05]">
@@ -263,8 +277,9 @@ export default function Home() {
         </div>
       </div>
 
-      <section id="como-funciona" className="px-6 md:px-8 py-16 md:py-24 bg-white">
-        <div className="max-w-5xl mx-auto">
+      <section id="como-funciona" className="relative px-6 md:px-8 py-16 md:py-24 bg-white">
+        <Mascota src="/images/sun.svg" className="top-12 right-6 rotate-[10deg]" size={58} />
+        <div className="max-w-5xl mx-auto relative z-10">
           <Reveal>
             <div className="text-center mb-14">
               <Eyebrow>Tan fácil como un juego de 3 pasos</Eyebrow>
@@ -406,8 +421,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 md:px-8 py-16 md:py-24 bg-white">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative px-6 md:px-8 py-16 md:py-24 bg-white">
+        <Mascota src="/images/sun.svg" className="top-16 right-8 rotate-[-8deg]" size={56} />
+        <div className="max-w-3xl mx-auto relative z-10">
           <Reveal>
             <div className="text-center mb-14">
               <Eyebrow>Lo que dicen los números</Eyebrow>
@@ -528,11 +544,11 @@ export default function Home() {
                 <span className="text-6xl md:text-7xl font-bold text-marca-azul" style={{ fontFamily: 'var(--font-fredoka)' }}>$199</span>
                 <span className="text-gray-500 text-lg"> MXN/mes</span>
               </div>
-              <p className="text-marca-verde-oscuro text-sm font-bold mb-8" style={{ color: '#2AB84A' }}>✨ Primeros 30 días completamente gratis</p>
+              <p className="text-sm font-bold mb-8" style={{ color: '#2AB84A' }}>✨ Primeros 30 días completamente gratis</p>
               <ul className="flex flex-col gap-3 mb-8 text-left">
                 {['Clientes ilimitados','QR personalizado con tu marca','Panel de control en tiempo real','Hasta 3 niveles de recompensa','Reseñas filtradas en Google','Portal de progreso para clientes','Notificaciones por WhatsApp','Editor de cartel incluido','Soporte por email','Cancelas cuando quieras'].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-gray-700 text-sm">
-                    <span className="text-marca-verde-oscuro font-bold" style={{ color: '#2AB84A' }}>✓</span>{item}
+                    <span className="font-bold" style={{ color: '#2AB84A' }}>✓</span>{item}
                   </li>
                 ))}
               </ul>
@@ -558,9 +574,11 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <section className="px-6 md:px-8 py-20 md:py-28 bg-marca-azul">
+      <section className="relative px-6 md:px-8 py-20 md:py-28 bg-marca-azul overflow-hidden">
+        <Mascota src="/images/flower.svg" className="top-12 left-8" size={62} />
+        <Mascota src="/images/sun.svg" className="bottom-10 right-10" size={58} />
         <Reveal>
-          <div className="max-w-lg mx-auto text-center">
+          <div className="max-w-lg mx-auto text-center relative z-10">
             <h2 className="text-white font-bold text-3xl md:text-4xl mb-4" style={{ fontFamily: 'var(--font-fredoka)' }}>Vuelven por ti. Empieza hoy a saberlo.</h2>
             <p className="text-white/90 mb-1">30 días gratis para descubrirlo.</p>
             <p className="text-white/70 text-sm mb-8">Cancelas cuando quieras. Sin contratos.</p>
