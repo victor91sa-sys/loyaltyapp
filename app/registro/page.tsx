@@ -4,6 +4,12 @@ import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import Link from 'next/link'
 
+declare global {
+  interface Window {
+    fbq?: (...args: any[]) => void
+  }
+}
+
 export default function Registro() {
   const [paso, setPaso] = useState(1)
   const [formulario, setFormulario] = useState({
@@ -57,6 +63,10 @@ export default function Registro() {
     if (error) {
       alert('Hubo un error: ' + error.message)
     } else {
+      // Evento de conversión para Meta Pixel: registro completado
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'CompleteRegistration')
+      }
       setRegistrado(true)
     }
   }
